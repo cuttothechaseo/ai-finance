@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 10, 10, 10;
+  --background-end-rgb: 17, 17, 17;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      180deg,
+      rgb(var(--background-start-rgb)) 0%,
+      rgb(var(--background-end-rgb)) 100%
+    );
+}
+
+@layer base {
+  body {
+    @apply bg-secondary text-white;
+  }
+}
+
+@layer components {
+  .gradient-bg {
+    @apply bg-gradient-to-br from-secondary-dark via-secondary to-secondary-light;
+  }
+  
+  .bg-gradient-dark {
+    @apply bg-gradient-to-b from-secondary-dark to-black;
+  }
+  
+  .bg-divider {
+    @apply h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent my-8;
+  }
+  
+  .bg-card {
+    @apply bg-gray-900/80 backdrop-blur-sm border border-gray-800 hover:border-gray-700 transition-colors duration-300;
+  }
+  
+  .py-section {
+    @apply py-16 md:py-24;
+  }
+  
+  .primary-button {
+    @apply px-6 py-3 rounded-full bg-gradient-to-r from-primary to-primary-light 
+           hover:from-primary-light hover:to-primary transition-all duration-300 
+           transform hover:scale-105 font-medium text-white shadow-lg;
+  }
+  
+  .secondary-button {
+    @apply px-4 py-2 rounded-full border border-primary-light text-primary-light 
+           hover:bg-primary-light/10 transition-all duration-300;
+  }
+  
+  .nav-link {
+    @apply text-gray-300 hover:text-white transition-colors duration-200;
+  }
+} 
