@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 const navLinks = [
   { name: 'AI-Powered Features', href: '#features', id: 'features' },
@@ -27,26 +28,28 @@ export default function Navbar() {
 
   return (
     <motion.nav 
-      className="fixed top-0 left-0 right-0 z-50 px-4 py-3 bg-secondary/80 backdrop-blur-md"
+      className="fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-secondary/80 backdrop-blur-md"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
       <div className="container mx-auto flex items-center justify-between">
-        <div className="flex items-center">
-          <div 
-            className="cursor-pointer"
-            onClick={scrollToTop}
-          >
-            <motion.div 
-              className="w-8 h-8 rounded-full bg-primary flex items-center justify-center mr-2"
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-            >
-              <span className="text-white font-bold">F</span>
-            </motion.div>
-          </div>
-        </div>
+        <motion.div 
+          className="cursor-pointer flex items-center"
+          onClick={scrollToTop}
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+        >
+          <Image
+            src="/logos/wallstreetai-logo.png"
+            alt="WallStreetAI Logo"
+            width={160}
+            height={50}
+            className="object-contain h-auto w-auto max-h-12"
+            priority
+            style={{ backgroundColor: 'transparent' }}
+          />
+        </motion.div>
         
         <div className="hidden md:flex items-center space-x-6">
           {navLinks.map((link) => (
