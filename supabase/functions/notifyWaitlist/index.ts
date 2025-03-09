@@ -1,15 +1,13 @@
 // Follow this setup guide to integrate the Deno language server with your editor:
 // https://deno.land/manual/getting_started/setup_your_environment
 // This enables autocomplete, go to definition, etc.
-
 // Setup type definitions for built-in Supabase Runtime APIs
-import "jsr:@supabase/functions-js/edge-runtime.d.ts"
-
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 import { Resend } from "https://esm.sh/resend@1.0.0";
 
-console.log("Hello from Functions!")
+console.log("Starting notifyWaitlist function...");
 
 // Create a Supabase client
 const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
@@ -20,23 +18,34 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const resendApiKey = Deno.env.get("RESEND_API_KEY") || "";
 const resend = new Resend(resendApiKey);
 
-// Add a log to help with debugging
+// Log API key availability
 console.log("Resend API Key available:", !!resendApiKey);
+console.log("Supabase URL available:", !!supabaseUrl);
+console.log("Supabase Service Role Key available:", !!supabaseKey);
 
-serve(async (req: Request) => {
+serve(async (req) => {
   try {
-    const { name, email, university, interest } = await req.json();
+    console.log("Received request");
 
+    // Parse request
+    const { name, email, university, interest } = await req.json();
+    console.log("Parsed request:", { name, email, university, interest });
+
+    // Validate request fields
     if (!name || !email || !university || !interest) {
-      return new Response(JSON.stringify({ error: "Missing fields" }), { 
+      console.error("Missing required fields!");
+      return new Response(JSON.stringify({ error: "Missing fields" }), {
         status: 400,
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
       });
     }
 
+    // Log before sending the email
+    console.log("Sending email via Resend API...");
+
     const { error } = await resend.emails.send({
       from: "waitlist@wallstreetai.app",
-      to: "chaseottimo@gmail.com",  // Updated to a more appropriate email
+      to: "chaseottimo@gmail.com",
       subject: "New Waitlist Signup!",
       html: `
         <h2>New Waitlist Signup</h2>
@@ -48,26 +57,30 @@ serve(async (req: Request) => {
       `,
     });
 
+    // If email sending failed, log it
     if (error) {
-      return new Response(JSON.stringify({ error: error.message }), { 
+      console.error("Resend API Error:", error.message);
+      return new Response(JSON.stringify({ error: error.message }), {
         status: 500,
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
       });
     }
 
-    return new Response(JSON.stringify({ success: true }), { 
+    console.log("Email sent successfully!");
+
+    return new Response(JSON.stringify({ success: true }), {
       status: 200,
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
     });
+
   } catch (error) {
-    return new Response(JSON.stringify({ error: "Server error" }), { 
+    console.error("Server Error:", error);
+    return new Response(JSON.stringify({ error: "Server error" }), {
       status: 500,
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
     });
   }
-});
-
-/* To invoke locally:
+}); /* To invoke locally:
 
   1. Run `supabase start` (see: https://supabase.com/docs/reference/cli/supabase-start)
   2. Make an HTTP request:
@@ -77,4 +90,4 @@ serve(async (req: Request) => {
     --header 'Content-Type: application/json' \
     --data '{"name":"John Doe", "email":"john@example.com", "university":"Harvard", "interest":"Investment Banking"}'
 
-*/
+*/ 
