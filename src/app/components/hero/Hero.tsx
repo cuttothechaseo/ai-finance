@@ -6,14 +6,6 @@ import AnimatedBackground from './AnimatedBackground';
 import { useEffect, useRef } from 'react';
 
 export default function Hero() {
-  const scrollToDemo = (e: React.MouseEvent) => {
-    e.preventDefault();
-    const demoElement = document.getElementById('demo');
-    if (demoElement) {
-      demoElement.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   const headingRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
@@ -29,7 +21,7 @@ export default function Hero() {
     const fullText = firstLine + " " + secondLine; // Combine for smoother flow
     let index = 0;
     let lastTimestamp = 0;
-    const charDelay = 70; // Adjusted to 70ms for a balanced typing speed
+    const charDelay = 60; // Adjusted to 60ms for a slightly faster typing speed
 
     // Typewriter animation using requestAnimationFrame
     const typeWriter = (timestamp: number) => {
