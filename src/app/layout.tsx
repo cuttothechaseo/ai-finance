@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
       { url: '/icon.png', type: 'image/png', sizes: '32x32' },
-      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/wallstreetai-logo.svg', type: 'image/svg+xml' },
     ],
     apple: { url: '/apple-icon.png', sizes: '180x180' },
     shortcut: '/favicon.ico',
@@ -29,7 +29,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/icon.png" type="image/png" sizes="32x32" />
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/wallstreetai-logo.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-icon.png" sizes="180x180" />
       </head>
       <body className={inter.className} suppressHydrationWarning>
