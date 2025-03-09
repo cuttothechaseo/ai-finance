@@ -3,12 +3,16 @@ import { useState } from 'react';
 
 // Finance partners array
 const financePartners = [
-  { name: 'Goldman Sachs', logo: 'GS', shortName: 'Goldman' },
-  { name: 'Morgan Stanley', logo: 'MS', shortName: 'Morgan' },
+  { name: 'Goldman Sachs', logo: 'GS', shortName: 'Goldman Sachs' },
+  { name: 'Morgan Stanley', logo: 'MS', shortName: 'Morgan Stanley' },
   { name: 'JP Morgan', logo: 'JPM', shortName: 'JP Morgan' },
   { name: 'Blackstone', logo: 'BX', shortName: 'Blackstone' },
   { name: 'BlackRock', logo: 'BLK', shortName: 'BlackRock' },
-  { name: 'Citadel', logo: 'CTD', shortName: 'Citadel' },
+  { name: 'Evercore', logo: 'EVR', shortName: 'Evercore' },
+  { name: 'UBS', logo: 'UBS', shortName: 'UBS' },
+  { name: 'Credit Suisse', logo: 'CS', shortName: 'Credit Suisse' },
+  { name: 'Deutsche Bank', logo: 'DB', shortName: 'Deutsche Bank' },
+  { name: 'Barclays', logo: 'BCS', shortName: 'Barclays' },
 ];
 
 // Duplicate the array to create a seamless loop
@@ -34,7 +38,7 @@ export default function Partners() {
             animate={{ x: "-33.33%" }}
             transition={{ 
               repeat: Infinity,
-              duration: 30,
+              duration: 15,
               ease: "linear",
               repeatType: "loop",
               ...(isPaused && { playState: 'paused' })
