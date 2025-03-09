@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext, useState, useCallback, useMemo } from 'react';
+import { useContext, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WaitlistContext } from '@/app/contexts/WaitlistContext';
 import { createClient } from '@supabase/supabase-js';
@@ -331,7 +331,7 @@ const WaitlistModal = () => {
 };
 
 export default function JoinWaitlist() {
-  const { isModalOpen, setIsModalOpen } = useContext(WaitlistContext);
+  const { setIsModalOpen } = useContext(WaitlistContext);
   
   // Use useCallback for the click handler to prevent unnecessary re-renders
   const handleOpenModal = useCallback(() => {
