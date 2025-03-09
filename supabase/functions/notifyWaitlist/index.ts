@@ -5,68 +5,61 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
-import { Resend } from "https://esm.sh/resend@1.0.0";
 
-console.log("Starting notifyWaitlist function...");
+console.log("Hello from Functions!");
 
 // Create a Supabase client
 const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
 const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Initialize Resend
+// Resend API details
 const resendApiKey = Deno.env.get("RESEND_API_KEY") || "";
-const resend = new Resend(resendApiKey);
+const resendEndpoint = "https://api.resend.com/emails";
 
-// Log API key availability
+// Check if Resend API Key is loaded
 console.log("Resend API Key available:", !!resendApiKey);
-console.log("Supabase URL available:", !!supabaseUrl);
-console.log("Supabase Service Role Key available:", !!supabaseKey);
 
 serve(async (req) => {
   try {
-    console.log("Received request");
-
-    // Parse request
     const { name, email, university, interest } = await req.json();
-    console.log("Parsed request:", { name, email, university, interest });
-
-    // Validate request fields
     if (!name || !email || !university || !interest) {
-      console.error("Missing required fields!");
       return new Response(JSON.stringify({ error: "Missing fields" }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    // Log before sending the email
-    console.log("Sending email via Resend API...");
-
-    const { error } = await resend.emails.send({
-      from: "waitlist@wallstreetai.app",
-      to: "chaseottimo@gmail.com",
-      subject: "New Waitlist Signup!",
-      html: `
-        <h2>New Waitlist Signup</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>University:</strong> ${university}</p>
-        <p><strong>Interest:</strong> ${interest}</p>
-        <p><em>Time: ${new Date().toISOString()}</em></p>
-      `,
+    // Send email using fetch instead of Resend package
+    const emailResponse = await fetch(resendEndpoint, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${resendApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "onboarding@resend.dev",
+        to: "chaseottimo@gmail.com",
+        subject: "New Waitlist Signup!",
+        html: `
+          <h2>New Waitlist Signup</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>University:</strong> ${university}</p>
+          <p><strong>Interest:</strong> ${interest}</p>
+          <p><em>Time: ${new Date().toISOString()}</em></p>
+        `,
+      }),
     });
 
-    // If email sending failed, log it
-    if (error) {
-      console.error("Resend API Error:", error.message);
-      return new Response(JSON.stringify({ error: error.message }), {
+    const result = await emailResponse.json();
+
+    if (!emailResponse.ok) {
+      return new Response(JSON.stringify({ error: result.message || "Failed to send email" }), {
         status: 500,
         headers: { "Content-Type": "application/json" },
       });
     }
-
-    console.log("Email sent successfully!");
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
@@ -74,7 +67,7 @@ serve(async (req) => {
     });
 
   } catch (error) {
-    console.error("Server Error:", error);
+    console.error("Error:", error);
     return new Response(JSON.stringify({ error: "Server error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
