@@ -29,7 +29,7 @@ export default function Hero() {
     const fullText = firstLine + " " + secondLine; // Combine for smoother flow
     let index = 0;
     let lastTimestamp = 0;
-    const charDelay = 80; // Increased to 80ms for slower, deliberate typing
+    const charDelay = 50; // Reduced from 80ms to 50ms for faster typing
 
     // Typewriter animation using requestAnimationFrame
     const typeWriter = (timestamp: number) => {
