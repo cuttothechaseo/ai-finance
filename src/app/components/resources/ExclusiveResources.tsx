@@ -1,11 +1,11 @@
 'use client';
 
 import { useContext } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { WaitlistContext } from '@/app/contexts/WaitlistContext';
 
 export default function ExclusiveResources() {
-  const { isModalOpen, setIsModalOpen } = useContext(WaitlistContext);
+  const { setIsModalOpen } = useContext(WaitlistContext);
 
   // Resources list with icons
   const resources = [
@@ -86,95 +86,6 @@ export default function ExclusiveResources() {
           </div>
         </div>
       </motion.div>
-    );
-  };
-
-  // Modal component
-  const Modal = () => {
-    return (
-      <AnimatePresence>
-        {isModalOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/70 z-40"
-              onClick={() => setIsModalOpen(false)}
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-900 rounded-xl p-6 md:p-8 w-11/12 max-w-md z-50 shadow-2xl border border-gray-800"
-            >
-              <div className="absolute top-3 right-3">
-                <button 
-                  onClick={() => setIsModalOpen(false)}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              
-              <h3 className="text-2xl font-bold mb-4 text-white">Get Your Free Resources</h3>
-              
-              <form className="space-y-4">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">Full Name</label>
-                  <input 
-                    type="text" 
-                    id="name" 
-                    className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none text-white"
-                    placeholder="Your name"
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">Email Address</label>
-                  <input 
-                    type="email" 
-                    id="email" 
-                    className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none text-white"
-                    placeholder="you@university.edu"
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="university" className="block text-sm font-medium text-gray-300 mb-1">University</label>
-                  <input 
-                    type="text" 
-                    id="university" 
-                    className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none text-white"
-                    placeholder="Your university"
-                  />
-                </div>
-                
-                <motion.button
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="w-full py-3 px-6 bg-gradient-to-r from-primary to-primary-light text-white font-bold rounded-lg shadow-lg hover:shadow-primary/30 transition-all duration-300"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    // This would be where you'd handle form submission
-                    // For now, just close the modal
-                    setIsModalOpen(false);
-                  }}
-                >
-                  Send Me the Resources
-                </motion.button>
-              </form>
-              
-              <p className="text-xs text-gray-400 mt-4 text-center">
-                By submitting, you agree to receive finance interview resources. We respect your privacy and will never spam you.
-              </p>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
     );
   };
 
@@ -260,9 +171,6 @@ export default function ExclusiveResources() {
           </motion.div>
         </div>
       </div>
-      
-      {/* Modal */}
-      <Modal />
     </section>
   );
 } 
