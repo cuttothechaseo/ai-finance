@@ -2,6 +2,14 @@
 
 This Supabase Edge Function sends email notifications when new users join the waitlist.
 
+## Local Development Setup
+
+1. **Add Resend API Key to `.env.local`**:
+   ```
+   # Resend API Key for email notifications
+   RESEND_API_KEY=your_resend_api_key_here
+   ```
+
 ## Deployment Instructions
 
 Since we couldn't deploy the function directly through the CLI due to Docker requirements, follow these steps to deploy it manually:

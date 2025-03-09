@@ -20,6 +20,9 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const resendApiKey = Deno.env.get("RESEND_API_KEY") || "";
 const resend = new Resend(resendApiKey);
 
+// Add a log to help with debugging
+console.log("Resend API Key available:", !!resendApiKey);
+
 serve(async (req: Request) => {
   try {
     const { name, email, university, interest } = await req.json();
