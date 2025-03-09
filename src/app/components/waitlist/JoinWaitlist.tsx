@@ -1,5 +1,6 @@
 'use client';
 
+// Fixed version without useMemo import and with correct destructuring
 import { useContext, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WaitlistContext } from '@/app/contexts/WaitlistContext';
