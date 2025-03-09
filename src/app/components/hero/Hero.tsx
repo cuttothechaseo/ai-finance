@@ -106,23 +106,11 @@ export default function Hero() {
           Get instant feedback on your answers, improve technical & behavioral skills, and land your dream finance job.
         </motion.p>
         
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <button onClick={scrollToDemo} className="primary-button">
-            Try a Demo Interview
-          </button>
-        </motion.div>
-        
         <motion.div 
           className="mt-16 relative"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
           id="demo"
         >
           <div className="w-full max-w-4xl mx-auto rounded-xl overflow-hidden">
