@@ -74,23 +74,23 @@ export default function JoinWaitlist() {
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9, y: 20 }}
                   transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                  className="relative bg-gray-900 rounded-xl p-6 md:p-8 w-full max-w-md z-50 shadow-2xl border border-gray-800 my-8"
+                  className="relative bg-gray-900 rounded-xl p-4 md:p-6 w-full max-w-sm z-50 shadow-2xl border border-gray-800 my-6"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="absolute top-3 right-3">
+                  <div className="absolute top-2 right-2">
                     <button 
                       onClick={() => setIsModalOpen(false)}
                       className="text-gray-400 hover:text-white transition-colors"
                     >
-                      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                       </svg>
                     </button>
                   </div>
                   
-                  <div className="flex justify-center mb-6">
-                    <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center">
-                      <svg className="w-8 h-8 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <div className="flex justify-center mb-4">
+                    <div className="w-14 h-14 bg-gray-800 rounded-full flex items-center justify-center">
+                      <svg className="w-7 h-7 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M19 11H5C3.89543 11 3 11.8954 3 13V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V13C21 11.8954 20.1046 11 19 11Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         <path d="M7 11V7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7V11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         <circle cx="12" cy="16" r="1" fill="currentColor"/>
@@ -98,45 +98,45 @@ export default function JoinWaitlist() {
                     </div>
                   </div>
                   
-                  <h3 className="text-2xl font-bold mb-2 text-white text-center">Join the Waitlist</h3>
-                  <p className="text-gray-300 mb-6 text-center">Be the first to access our premium AI interview coaching features.</p>
+                  <h3 className="text-xl font-bold mb-1 text-white text-center">Join the Waitlist</h3>
+                  <p className="text-gray-300 mb-4 text-center text-sm">Be the first to access our premium AI interview coaching features.</p>
                   
-                  <form className="space-y-4">
+                  <form className="space-y-3">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">Full Name</label>
+                      <label htmlFor="name" className="block text-xs font-medium text-gray-300 mb-1">Full Name</label>
                       <input 
                         type="text" 
                         id="name" 
-                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none text-white"
+                        className="w-full px-3 py-1.5 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none text-white text-sm"
                         placeholder="Your name"
                       />
                     </div>
                     
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">Email Address</label>
+                      <label htmlFor="email" className="block text-xs font-medium text-gray-300 mb-1">Email Address</label>
                       <input 
                         type="email" 
                         id="email" 
-                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none text-white"
+                        className="w-full px-3 py-1.5 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none text-white text-sm"
                         placeholder="you@example.com"
                       />
                     </div>
                     
                     <div>
-                      <label htmlFor="university" className="block text-sm font-medium text-gray-300 mb-1">University</label>
+                      <label htmlFor="university" className="block text-xs font-medium text-gray-300 mb-1">University</label>
                       <input 
                         type="text" 
                         id="university" 
-                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none text-white"
+                        className="w-full px-3 py-1.5 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none text-white text-sm"
                         placeholder="Your university"
                       />
                     </div>
                     
                     <div>
-                      <label htmlFor="interest" className="block text-sm font-medium text-gray-300 mb-1">I&apos;m interested in</label>
+                      <label htmlFor="interest" className="block text-xs font-medium text-gray-300 mb-1">I&apos;m interested in</label>
                       <select 
                         id="interest" 
-                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none text-white"
+                        className="w-full px-3 py-1.5 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none text-white text-sm"
                       >
                         <option value="">Select your interest</option>
                         <option value="ib">Investment Banking</option>
@@ -149,7 +149,7 @@ export default function JoinWaitlist() {
                     <motion.button
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.97 }}
-                      className="w-full py-3 px-6 bg-gradient-to-r from-primary to-primary-light text-white font-bold rounded-lg shadow-lg hover:shadow-primary/30 transition-all duration-300"
+                      className="w-full py-2 px-4 bg-gradient-to-r from-primary to-primary-light text-white font-bold rounded-lg shadow-lg hover:shadow-primary/30 transition-all duration-300 text-sm mt-2"
                       onClick={(e) => {
                         e.preventDefault();
                         // This would be where you'd handle form submission
@@ -161,7 +161,7 @@ export default function JoinWaitlist() {
                     </motion.button>
                   </form>
                   
-                  <p className="text-xs text-gray-400 mt-4 text-center">
+                  <p className="text-xs text-gray-400 mt-3 text-center">
                     We&apos;ll notify you when premium features become available. No spam, ever.
                   </p>
                 </motion.div>
