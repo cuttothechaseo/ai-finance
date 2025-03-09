@@ -26,6 +26,11 @@ body {
     will-change: contents; /* Hint to browser for optimization */
     transform: translateZ(0); /* Force hardware acceleration */
   }
+  
+  .flex-1.overflow-y-auto {
+    will-change: scroll-position, contents;
+    transform: translateZ(0); /* Hardware acceleration */
+  }
 }
 
 @layer components {
