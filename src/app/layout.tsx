@@ -6,7 +6,7 @@ import { WaitlistProvider } from './contexts/WaitlistContext';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Wall Street AI - Ace Your Finance Interviews',
+  title: 'Wall Street AI',
   description: 'Get instant feedback on your answers, improve technical & behavioral skills, and land your dream finance job.',
   icons: {
     icon: [
