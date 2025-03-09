@@ -1,4 +1,4 @@
-# AI Finance Interview Landing Page
+# nce Interview Landing Page
 
 A responsive finance-themed landing page built with Next.js, TailwindCSS, and Framer Motion.
 
