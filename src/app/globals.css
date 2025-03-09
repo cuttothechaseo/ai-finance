@@ -21,6 +21,11 @@ body {
   body {
     @apply bg-secondary text-white;
   }
+  
+  h1 {
+    will-change: contents; /* Hint to browser for optimization */
+    transform: translateZ(0); /* Force hardware acceleration */
+  }
 }
 
 @layer components {
