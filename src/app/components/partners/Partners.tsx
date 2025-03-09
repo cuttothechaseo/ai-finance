@@ -38,7 +38,7 @@ export default function Partners() {
             animate={{ x: "-33.33%" }}
             transition={{ 
               repeat: Infinity,
-              duration: 15,
+              duration: 10,
               ease: "linear",
               repeatType: "loop",
               ...(isPaused && { playState: 'paused' })
