@@ -35,8 +35,7 @@ export default function Hero() {
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           Ace your Finance<br />
-          Interviews with<br />
-          <span className="text-primary-light">AI.</span>
+          Interviews with <span className="text-primary-light">AI.</span>
         </motion.h1>
         
         <motion.p 
