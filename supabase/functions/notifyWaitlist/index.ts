@@ -1,36 +1,67 @@
-// Follow this setup guide to integrate the Deno language server with your editor:
-// https://deno.land/manual/getting_started/setup_your_environment
-// This enables autocomplete, go to definition, etc.
+/**
+ * Supabase Edge Function for Waitlist Email Notifications
+ * 
+ * This function sends an email notification when a new user joins the waitlist.
+ * It's triggered by a database trigger on the waitlist table.
+ */
+
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
-
-console.log("Hello from Functions!");
 
 // Create a Supabase client
 const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
 const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Resend API details
+// Resend API configuration
 const resendApiKey = Deno.env.get("RESEND_API_KEY") || "";
 const resendEndpoint = "https://api.resend.com/emails";
 
-// Check if Resend API Key is loaded
-console.log("Resend API Key available:", !!resendApiKey);
+// Email template for waitlist notifications
+const generateEmailHtml = (name: string, email: string, university: string, interest: string) => `
+  <h2>New Waitlist Signup</h2>
+  <p><strong>Name:</strong> ${name}</p>
+  <p><strong>Email:</strong> ${email}</p>
+  <p><strong>University:</strong> ${university}</p>
+  <p><strong>Interest:</strong> ${interest}</p>
+  <p><em>Time: ${new Date().toISOString()}</em></p>
+`;
 
-serve(async (req) => {
+serve(async (req: Request) => {
   try {
+    // Parse and validate request data
     const { name, email, university, interest } = await req.json();
+    
     if (!name || !email || !university || !interest) {
-      return new Response(JSON.stringify({ error: "Missing fields" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: "Missing required fields" 
+        }), 
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
-    // Send email using fetch instead of Resend package
+    // Verify API key is available
+    if (!resendApiKey) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: "Email service configuration error" 
+        }), 
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    // Send email notification
     const emailResponse = await fetch(resendEndpoint, {
       method: "POST",
       headers: {
@@ -41,37 +72,47 @@ serve(async (req) => {
         from: "onboarding@resend.dev",
         to: "chaseottimo@gmail.com",
         subject: "New Waitlist Signup!",
-        html: `
-          <h2>New Waitlist Signup</h2>
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>University:</strong> ${university}</p>
-          <p><strong>Interest:</strong> ${interest}</p>
-          <p><em>Time: ${new Date().toISOString()}</em></p>
-        `,
+        html: generateEmailHtml(name, email, university, interest),
       }),
     });
 
     const result = await emailResponse.json();
 
     if (!emailResponse.ok) {
-      return new Response(JSON.stringify({ error: result.message || "Failed to send email" }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: result.message || "Failed to send email notification" 
+        }), 
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({ 
+        success: true,
+        message: "Notification sent successfully" 
+      }), 
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
 
   } catch (error) {
-    console.error("Error:", error);
-    return new Response(JSON.stringify({ error: "Server error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({ 
+        success: false, 
+        error: "Server error processing notification request" 
+      }), 
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 }); /* To invoke locally:
 
