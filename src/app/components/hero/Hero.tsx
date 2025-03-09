@@ -23,60 +23,51 @@ export default function Hero() {
     // Clear initial content
     heading.innerHTML = "";
 
-    // Split the text into two parts for the line break
+    // Define the text parts
     const firstLine = "Ace your Finance";
     const secondLine = "Interviews with AI";
-    
-    let currentLine = 1; // Track which line we're currently typing
+    const fullText = firstLine + " " + secondLine; // Combine for smoother flow
     let index = 0;
+    let lastTimestamp = 0;
+    const charDelay = 40; // Reduced to 40ms for smoother, faster typing
 
-    // Typewriter animation function
-    const typeWriter = () => {
-      if (currentLine === 1) {
-        // Typing the first line
-        if (index < firstLine.length) {
-          heading.textContent = firstLine.slice(0, index + 1);
+    // Typewriter animation using requestAnimationFrame
+    const typeWriter = (timestamp: number) => {
+      if (!lastTimestamp) lastTimestamp = timestamp;
+
+      // Only update if enough time has passed (charDelay)
+      if (timestamp - lastTimestamp >= charDelay) {
+        if (index < fullText.length) {
+          const currentText = fullText.slice(0, index + 1);
+
+          // Handle line break and "AI" styling at the end
+          if (index < firstLine.length) {
+            heading.textContent = currentText; // First line
+          } else if (index === firstLine.length) {
+            heading.innerHTML = firstLine + '<br>'; // Add line break
+          } else {
+            const secondLineText = fullText.slice(firstLine.length + 1, index + 1);
+            if (index >= fullText.length - 2) {
+              // Reached "AI", apply styling
+              heading.innerHTML = `${firstLine}<br>${secondLine.slice(0, -2)}<span class="text-primary-light">AI</span>`;
+            } else {
+              heading.innerHTML = `${firstLine}<br>${secondLineText}`;
+            }
+          }
           index++;
-          setTimeout(typeWriter, 80);
+          lastTimestamp = timestamp;
         } else {
-          // First line complete, add line break and start second line
-          heading.innerHTML = firstLine + '<br>';
-          currentLine = 2;
-          index = 0;
-          setTimeout(typeWriter, 80);
-        }
-      } else {
-        // Typing the second line
-        if (index < secondLine.length) {
-          // Handle the "AI" part specially when we reach it
-          if (index === secondLine.length - 2) {
-            // We've reached "A" of "AI", add everything before "AI"
-            heading.innerHTML = firstLine + '<br>' + secondLine.slice(0, index);
-            // Add "AI" with special styling
-            const aiSpan = document.createElement('span');
-            aiSpan.className = 'text-primary-light';
-            aiSpan.textContent = 'AI';
-            heading.appendChild(aiSpan);
-            index = secondLine.length; // Skip to the end
-            setTimeout(typeWriter, 80);
-          } else if (index < secondLine.length - 2) {
-            // Normal typing for everything before "AI"
-            heading.innerHTML = firstLine + '<br>' + secondLine.slice(0, index + 1);
-            index++;
-            setTimeout(typeWriter, 80);
-          }
-        } else {
-          // Add the period after "AI"
-          const aiSpan = heading.querySelector('span');
-          if (aiSpan) {
-            aiSpan.textContent = 'AI.';
-          }
+          // Finish with the period
+          heading.innerHTML = `${firstLine}<br>${secondLine.slice(0, -2)}<span class="text-primary-light">AI.</span>`;
+          return; // Stop animation
         }
       }
+
+      requestAnimationFrame(typeWriter); // Continue animation
     };
 
-    // Start typewriter after the fade-in animation delay
-    setTimeout(typeWriter, 200); // Matches the 0.2s delay of motion.h1
+    // Start after fade-in delay
+    setTimeout(() => requestAnimationFrame(typeWriter), 200); // Matches 0.2s delay of motion.h1
   }, []); // Runs only once on mount
 
   return (
