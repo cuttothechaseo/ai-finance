@@ -20,21 +20,58 @@ export default function Hero() {
     const heading = headingRef.current;
     if (!heading) return;
 
-    // Full text to animate (excluding HTML tags for animation purposes)
-    const text = "Ace your Finance Interviews with AI";
-    heading.textContent = ""; // Clear initial content
+    // Clear initial content
+    heading.innerHTML = "";
 
+    // Split the text into two parts for the line break
+    const firstLine = "Ace your Finance";
+    const secondLine = "Interviews with AI";
+    
+    let currentLine = 1; // Track which line we're currently typing
     let index = 0;
 
     // Typewriter animation function
     const typeWriter = () => {
-      if (index < text.length) {
-        heading.textContent = text.slice(0, index + 1); // Add one character at a time
-        index++;
-        setTimeout(typeWriter, 80); // Increased from 50ms to 80ms for a slower effect
+      if (currentLine === 1) {
+        // Typing the first line
+        if (index < firstLine.length) {
+          heading.textContent = firstLine.slice(0, index + 1);
+          index++;
+          setTimeout(typeWriter, 80);
+        } else {
+          // First line complete, add line break and start second line
+          heading.innerHTML = firstLine + '<br>';
+          currentLine = 2;
+          index = 0;
+          setTimeout(typeWriter, 80);
+        }
       } else {
-        // Restore original HTML structure with <br> and <span> after animation
-        heading.innerHTML = 'Ace your Finance<br />Interviews with <span class="text-primary-light">AI.</span>';
+        // Typing the second line
+        if (index < secondLine.length) {
+          // Handle the "AI" part specially when we reach it
+          if (index === secondLine.length - 2) {
+            // We've reached "A" of "AI", add everything before "AI"
+            heading.innerHTML = firstLine + '<br>' + secondLine.slice(0, index);
+            // Add "AI" with special styling
+            const aiSpan = document.createElement('span');
+            aiSpan.className = 'text-primary-light';
+            aiSpan.textContent = 'AI';
+            heading.appendChild(aiSpan);
+            index = secondLine.length; // Skip to the end
+            setTimeout(typeWriter, 80);
+          } else if (index < secondLine.length - 2) {
+            // Normal typing for everything before "AI"
+            heading.innerHTML = firstLine + '<br>' + secondLine.slice(0, index + 1);
+            index++;
+            setTimeout(typeWriter, 80);
+          }
+        } else {
+          // Add the period after "AI"
+          const aiSpan = heading.querySelector('span');
+          if (aiSpan) {
+            aiSpan.textContent = 'AI.';
+          }
+        }
       }
     };
 
