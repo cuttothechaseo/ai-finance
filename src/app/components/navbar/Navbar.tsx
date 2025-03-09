@@ -2,6 +2,8 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { useContext } from 'react';
+import { WaitlistContext } from '@/app/contexts/WaitlistContext';
 
 const navLinks = [
   { name: 'AI-Powered Features', href: '#features', id: 'features' },
@@ -11,6 +13,8 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+  const { setIsModalOpen } = useContext(WaitlistContext);
+
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -22,8 +26,8 @@ export default function Navbar() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const scrollToWaitlist = () => {
-    document.getElementById("join-waitlist")?.scrollIntoView({ behavior: "smooth" });
+  const openWaitlistModal = () => {
+    setIsModalOpen(true);
   };
 
   return (
@@ -68,7 +72,7 @@ export default function Navbar() {
           transition={{ type: 'spring', stiffness: 400, damping: 10 }}
         >
           <button 
-            onClick={scrollToWaitlist}
+            onClick={openWaitlistModal}
             className="secondary-button"
           >
             Join waitlist

@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { WaitlistContext } from '@/app/contexts/WaitlistContext';
 
 export default function ExclusiveResources() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isModalOpen, setIsModalOpen } = useContext(WaitlistContext);
 
   // Resources list with icons
   const resources = [

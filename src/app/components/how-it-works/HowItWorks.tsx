@@ -142,26 +142,6 @@ export default function HowItWorks() {
             </motion.div>
           ))}
         </div>
-        
-        {/* CTA */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="mt-16 text-center"
-        >
-          <motion.button 
-            className="primary-button"
-            whileHover={{ 
-              scale: 1.05,
-              boxShadow: "0 0 15px rgba(168, 85, 247, 0.5)"
-            }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Start Your Interview Prep
-          </motion.button>
-        </motion.div>
       </div>
     </section>
   );
