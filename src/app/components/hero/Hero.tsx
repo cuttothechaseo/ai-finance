@@ -31,7 +31,7 @@ export default function Hero() {
       if (index < text.length) {
         heading.textContent = text.slice(0, index + 1); // Add one character at a time
         index++;
-        setTimeout(typeWriter, 50); // 50ms per character for quick effect
+        setTimeout(typeWriter, 80); // Increased from 50ms to 80ms for a slower effect
       } else {
         // Restore original HTML structure with <br> and <span> after animation
         heading.innerHTML = 'Ace your Finance<br />Interviews with <span class="text-primary-light">AI.</span>';
