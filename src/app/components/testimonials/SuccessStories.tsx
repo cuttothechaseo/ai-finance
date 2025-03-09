@@ -135,11 +135,6 @@ export default function SuccessStories() {
                     const index = (currentIndex + offset) % testimonials.length;
                     return (
                       <div key={testimonials[index].id} className="bg-card p-6 rounded-xl">
-                        <div className="flex text-yellow-400 mb-2">
-                          {[...Array(5)].map((_, i) => (
-                            <span key={i} className="text-primary">★</span>
-                          ))}
-                        </div>
                         <p className="text-gray-300 mb-6">&ldquo;{testimonials[index].quote}&rdquo;</p>
                         <div>
                           <p className="font-bold">{testimonials[index].student}</p>
