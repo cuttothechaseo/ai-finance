@@ -75,7 +75,7 @@ export default function ChatDemo() {
 
     const messageTimer = setTimeout(
       () => addNextMessage(),
-      currentIndex === 0 ? 500 : 3000
+      currentIndex === 0 ? 4000 : 3000
     );
     return () => clearTimeout(messageTimer);
   }, [currentIndex]);
