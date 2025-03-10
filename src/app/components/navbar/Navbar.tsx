@@ -73,9 +73,15 @@ export default function Navbar() {
         >
           <button 
             onClick={openWaitlistModal}
-            className="secondary-button"
+            className="secondary-button group relative overflow-hidden"
           >
-            Join waitlist
+            <span className="relative z-10">🚀 Get Early Access ➡</span>
+            
+            {/* Subtle highlight effect on hover */}
+            <motion.div 
+              className="absolute inset-0 bg-primary-light/0 group-hover:bg-primary-light/10 transition-colors duration-300"
+              initial={false}
+            />
           </button>
         </motion.div>
       </div>

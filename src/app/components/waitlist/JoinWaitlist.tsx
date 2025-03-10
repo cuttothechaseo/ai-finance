@@ -375,10 +375,57 @@ export default function JoinWaitlist() {
                 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleOpenModal}
-                className="py-4 px-8 bg-gradient-to-r from-primary to-primary-light text-white text-lg font-bold rounded-xl shadow-lg hover:shadow-primary/30 transition-all duration-300"
+                className="py-5 px-10 bg-gradient-to-r from-primary to-primary-light text-white text-lg font-bold rounded-xl shadow-lg hover:shadow-primary/30 transition-all duration-300 flex items-center justify-center group relative overflow-hidden mb-6 sm:mb-8 md:mb-10"
               >
-                Join the Waitlist
+                <span className="relative z-10">🚀 Secure Your Spot – AI-Powered Finance Prep ➡</span>
+                
+                {/* Subtle pulsing glow effect */}
+                <motion.div 
+                  className="absolute inset-0 bg-primary-light/20"
+                  animate={{
+                    opacity: [0.2, 0.4, 0.2],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
               </motion.button>
+              
+              {/* Urgency indicators */}
+              <motion.div
+                className="md:text-left text-center max-w-xs mx-auto md:mx-0"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+              >
+                {/* Live counter */}
+                <p className="text-gray-300 text-xs sm:text-sm mb-3">
+                  <span className="font-semibold text-white">142</span> students have joined this week
+                </p>
+                
+                {/* Progress bar */}
+                <div className="w-full max-w-xs mx-auto md:mx-0 mb-2 bg-gray-700 rounded-full h-2.5 overflow-hidden">
+                  <motion.div 
+                    className="bg-primary-light h-2.5 rounded-full"
+                    initial={{ width: 0 }}
+                    whileInView={{ width: '84%' }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1, delay: 0.4 }}
+                  />
+                </div>
+                <p className="text-gray-400 text-xs font-medium">
+                  <motion.span 
+                    className="font-bold text-primary-light"
+                    animate={{ opacity: [0.8, 1, 0.8] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    84%
+                  </motion.span> of early access spots are now filled
+                </p>
+              </motion.div>
             </div>
           </div>
         </motion.div>

@@ -3,10 +3,12 @@
 import { motion } from 'framer-motion';
 import ChatDemo from './ChatDemo';
 import AnimatedBackground from './AnimatedBackground';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useContext } from 'react';
+import { WaitlistContext } from '@/app/contexts/WaitlistContext';
 
 export default function Hero() {
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const { setIsModalOpen } = useContext(WaitlistContext);
 
   useEffect(() => {
     const heading = headingRef.current;
@@ -98,8 +100,72 @@ export default function Hero() {
           Get instant feedback on your answers, improve technical & behavioral skills, and land your dream finance job.
         </motion.p>
         
+        <motion.div
+          className="flex justify-center mb-6 sm:mb-8 md:mb-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
+          <motion.button
+            whileHover={{ 
+              scale: 1.05,
+              boxShadow: "0 0 20px rgba(168, 85, 247, 0.5)"
+            }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setIsModalOpen(true)}
+            className="py-5 px-10 bg-gradient-to-r from-primary to-primary-light text-white text-lg font-bold rounded-xl shadow-lg hover:shadow-primary/30 transition-all duration-300 flex items-center justify-center group relative overflow-hidden pulse-animation"
+          >
+            <span className="relative z-10">🚀 Secure Your Spot Now ➡</span>
+            
+            {/* Subtle pulsing glow effect */}
+            <motion.div 
+              className="absolute inset-0 bg-primary-light/20"
+              animate={{
+                opacity: [0.2, 0.4, 0.2],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+          </motion.button>
+        </motion.div>
+        
+        {/* Urgency indicators */}
+        <motion.div
+          className="max-w-xs mx-auto mb-12"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.7 }}
+        >
+          {/* Live counter */}
+          <p className="text-gray-300 text-xs sm:text-sm mb-3">
+            <span className="font-semibold text-white">142</span> students have joined this week
+          </p>
+          
+          {/* Progress bar */}
+          <div className="w-full mx-auto mb-2 bg-gray-700 rounded-full h-2.5 overflow-hidden">
+            <motion.div 
+              className="bg-primary-light h-2.5 rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: '84%' }}
+              transition={{ duration: 1, delay: 0.8 }}
+            />
+          </div>
+          <p className="text-gray-400 text-xs font-medium">
+            <motion.span 
+              className="font-bold text-primary-light"
+              animate={{ opacity: [0.8, 1, 0.8] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              84%
+            </motion.span> of early access spots are now filled
+          </p>
+        </motion.div>
+        
         <motion.div 
-          className="mt-16 relative"
+          className="mt-8 relative"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}

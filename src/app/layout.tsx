@@ -11,10 +11,10 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
-      { url: '/icon.png', type: 'image/png', sizes: '32x32' },
-      { url: '/wallstreetai-logo.svg', type: 'image/svg+xml' },
+      { url: '/assets/icons/icon.png', type: 'image/png', sizes: '32x32' },
+      { url: '/assets/logos/wallstreetai-logo.svg', type: 'image/svg+xml' },
     ],
-    apple: { url: '/apple-icon.png', sizes: '180x180' },
+    apple: { url: '/assets/icons/apple-icon.png', sizes: '180x180' },
     shortcut: '/favicon.ico',
   },
 };
@@ -28,9 +28,9 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/icon.png" type="image/png" sizes="32x32" />
-        <link rel="icon" href="/wallstreetai-logo.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/apple-icon.png" sizes="180x180" />
+        <link rel="icon" href="/assets/icons/icon.png" type="image/png" sizes="32x32" />
+        <link rel="icon" href="/assets/logos/wallstreetai-logo.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/assets/icons/apple-icon.png" sizes="180x180" />
       </head>
       <body className={inter.className} suppressHydrationWarning>
         <WaitlistProvider>
