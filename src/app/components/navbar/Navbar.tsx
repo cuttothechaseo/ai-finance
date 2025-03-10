@@ -45,7 +45,7 @@ export default function Navbar() {
           transition={{ type: 'spring', stiffness: 400, damping: 10 }}
         >
           <Image
-            src="/logos/wallstreetai-logo.png"
+            src="/assets/logos/wallstreetai-logo.png"
             alt="WallStreetAI Logo"
             width={160}
             height={50}
