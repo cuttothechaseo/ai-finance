@@ -15,6 +15,16 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   poweredByHeader: false,
+  
+  // Add rewrite rule for sitemap.xml
+  async rewrites() {
+    return [
+      {
+        source: '/sitemap.xml',
+        destination: '/api/sitemap',
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig; 
