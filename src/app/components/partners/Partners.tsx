@@ -37,8 +37,8 @@ const financePartners: Partner[] = [
     name: 'Morgan Stanley', 
     hasLogo: true,
     logoPath: '/assets/logos/partners/Morgan-Stanley-Logo.png', 
-    width: 1000,
-    height: 500,
+    width: 150,
+    height: 50,
     logo: 'MS', 
     shortName: 'Morgan Stanley' 
   },
@@ -46,8 +46,8 @@ const financePartners: Partner[] = [
     name: 'JP Morgan', 
     hasLogo: true,
     logoPath: '/assets/logos/partners/jpmorgan-logo.png', 
-    width: 1000,
-    height: 500,
+    width: 150,
+    height: 50,
     logo: 'JPM', 
     shortName: 'JP Morgan' 
   },
@@ -55,8 +55,8 @@ const financePartners: Partner[] = [
     name: 'Blackstone', 
     hasLogo: true,
     logoPath: '/assets/logos/partners/Blackstone-Logo.png', 
-    width: 350,
-    height: 150,
+    width: 150,
+    height: 50,
     logo: 'BX', 
     shortName: 'Blackstone' 
   },
@@ -139,6 +139,14 @@ export default function Partners() {
   
   return (
     <section className="py-16 bg-gray-950 border-t border-gray-900">
+      <style jsx global>{`
+        .logo-uniform {
+          width: 150px !important;
+          height: 50px !important;
+          object-fit: contain !important;
+        }
+      `}</style>
+      
       <div className="container mx-auto px-4 mb-6">
         <h3 className="text-center text-gray-400 text-sm uppercase tracking-wider font-medium mb-8">
           Our students work at top financial institutions
@@ -181,28 +189,26 @@ export default function Partners() {
                     transition: { duration: 0.3 }
                   }}
                 >
-                  <div className="h-12 flex items-center justify-center">
-                    {partner.hasLogo ? (
-                      // Display logo for firms with available logos
-                      <div className="relative w-[120px] h-[40px] sm:w-[150px] sm:h-[50px]">
-                        <Image
-                          src={partner.logoPath}
-                          alt={partner.name}
-                          fill
-                          className="object-contain filter brightness-0 invert opacity-90 hover:opacity-100 transition-all duration-300 hover:brightness-110"
-                          sizes="150px"
-                        />
+                  {partner.hasLogo ? (
+                    // Display logo for firms with available logos
+                    <div className="w-[150px] h-[50px] flex items-center justify-center">
+                      <Image
+                        src={partner.logoPath}
+                        alt={partner.name}
+                        width={150}
+                        height={50}
+                        className="logo-uniform object-contain filter brightness-0 invert opacity-90 hover:opacity-100 transition-all duration-300 hover:brightness-110"
+                      />
+                    </div>
+                  ) : (
+                    // Display text for firms without logos
+                    <div className="w-[150px] h-[50px] flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
+                        <span className="text-white font-bold text-lg">{partner.logo}</span>
                       </div>
-                    ) : (
-                      // Display text for firms without logos
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
-                          <span className="text-white font-bold text-lg">{partner.logo}</span>
-                        </div>
-                        <span className="text-white font-light text-xl tracking-wide whitespace-nowrap">{partner.shortName}</span>
-                      </div>
-                    )}
-                  </div>
+                      <span className="text-white font-light text-xl tracking-wide whitespace-nowrap">{partner.shortName}</span>
+                    </div>
+                  )}
                 </motion.div>
               ))}
             </motion.div>
