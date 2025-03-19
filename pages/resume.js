@@ -27,34 +27,30 @@ export default function ResumeUpload() {
         setUploading(true);
         const filePath = `resumes/${Date.now()}-${file.name}`;
 
-        // Get authenticated user
+        // ✅ Fetch authenticated user
         const { data: user, error: userError } = await supabase.auth.getUser();
-        if (userError || !user) {
+        if (userError || !user || !user.user) {
             setMessage("User authentication failed.");
             setMessageType("error");
             setUploading(false);
             return;
         }
 
-        const { data, error } = await supabase.storage
-            .from("resumes")
-            .upload(filePath, file);
+        // ✅ Upload file to Supabase Storage
+        const { data, error } = await supabase.storage.from("resumes").upload(filePath, file);
 
         if (error) {
             setMessage("Upload failed.");
             setMessageType("error");
             console.error(error);
         } else {
-            const { data: urlData } = supabase.storage
-                .from("resumes")
-                .getPublicUrl(filePath);
-
+            const { data: urlData } = await supabase.storage.from("resumes").getPublicUrl(filePath);
             const publicURL = urlData.publicUrl;
 
-            // Store resume URL in the database with user_id
+            // ✅ Ensure user_id is included in database insert
             const { error: dbError } = await supabase.from("resumes").insert([
                 { 
-                    user_id: user.user.id, 
+                    user_id: user.user.id,  // ✅ Ensure user_id is correctly assigned
                     resume_url: publicURL,
                     file_name: file.name,
                     file_type: file.name.split(".").pop().toLowerCase(),
@@ -70,7 +66,7 @@ export default function ResumeUpload() {
                 setMessage("Resume uploaded successfully! Redirecting to dashboard...");
                 setMessageType("success");
                 
-                // Redirect to dashboard after successful upload
+                // ✅ Redirect to dashboard after successful upload
                 setTimeout(() => {
                     router.push("/dashboard");
                 }, 2000);
