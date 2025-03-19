@@ -25,7 +25,8 @@ export default function ResumeUpload() {
         }
 
         setUploading(true);
-        const filePath = `resumes/${Date.now()}-${file.name}`;
+        const bucketName = "resumes";  // ✅ Ensure this matches your actual bucket name
+        const filePath = `${Date.now()}-${file.name.replace(/\s+/g, "_")}`;  // ✅ Remove spaces from file name
 
         // Get authenticated user
         const { data: user, error: userError } = await supabase.auth.getUser();
@@ -37,8 +38,8 @@ export default function ResumeUpload() {
         }
 
         const { data, error } = await supabase.storage
-            .from("resumes")
-            .upload(filePath, file);
+            .from(bucketName)  // ✅ Use correct bucket reference
+            .upload(filePath, file, { cacheControl: "3600", upsert: false });
 
         if (error) {
             setMessage("Upload failed.");
@@ -46,7 +47,7 @@ export default function ResumeUpload() {
             console.error(error);
         } else {
             const { data: urlData } = supabase.storage
-                .from("resumes")
+                .from(bucketName)
                 .getPublicUrl(filePath);
 
             const publicURL = urlData.publicUrl;
