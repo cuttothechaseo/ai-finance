@@ -29,15 +29,23 @@ export default function ResumeUpload() {
 
         // ✅ Fetch authenticated user
         const { data: user, error: userError } = await supabase.auth.getUser();
+        
+        console.log("User Data:", user);  // 🚀 Debugging: Check if user is retrieved
         if (userError || !user || !user.user) {
             setMessage("User authentication failed.");
             setMessageType("error");
+            console.error("User Error:", userError);
             setUploading(false);
             return;
         }
 
+        console.log("User ID:", user.user.id);  // 🚀 Debugging: Verify user ID is valid
+
         // ✅ Upload file to Supabase Storage
-        const { data, error } = await supabase.storage.from("resumes").upload(filePath, file);
+        const { data, error } = await supabase.storage.from("resumes").upload(filePath, file, {
+            cacheControl: "3600",
+            upsert: false
+        });
 
         if (error) {
             setMessage("Upload failed.");
@@ -47,26 +55,28 @@ export default function ResumeUpload() {
             const { data: urlData } = await supabase.storage.from("resumes").getPublicUrl(filePath);
             const publicURL = urlData.publicUrl;
 
+            console.log("Public URL:", publicURL);  // 🚀 Debugging: Confirm file is uploaded
+
             // ✅ Ensure user_id is included in database insert
-            const { error: dbError } = await supabase.from("resumes").insert([
-                { 
-                    user_id: user.user.id,  // ✅ Ensure user_id is correctly assigned
+            const { error: dbError } = await supabase.from("resumes")
+                .insert([{ 
+                    user_id: user.user.id,  // ✅ Explicitly set user_id
                     resume_url: publicURL,
                     file_name: file.name,
                     file_type: file.name.split(".").pop().toLowerCase(),
                     file_size: file.size
-                }
-            ]);
+                }], { 
+                    returning: "minimal"
+                });
 
             if (dbError) {
                 setMessage("Resume saved, but database insert failed.");
                 setMessageType("error");
-                console.error(dbError);
+                console.error("Database Insert Error:", dbError);
             } else {
                 setMessage("Resume uploaded successfully! Redirecting to dashboard...");
                 setMessageType("success");
                 
-                // ✅ Redirect to dashboard after successful upload
                 setTimeout(() => {
                     router.push("/dashboard");
                 }, 2000);
