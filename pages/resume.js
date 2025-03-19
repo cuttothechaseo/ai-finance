@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
-import { getUserWithDetails } from "../lib/auth";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
@@ -9,22 +8,7 @@ export default function ResumeUpload() {
     const [uploading, setUploading] = useState(false);
     const [message, setMessage] = useState("");
     const [messageType, setMessageType] = useState(""); // "success" or "error"
-    const [user, setUser] = useState(null);
     const router = useRouter();
-
-    // Check if user is authenticated
-    useEffect(() => {
-        async function fetchUser() {
-            try {
-                const userData = await getUserWithDetails();
-                setUser(userData);
-            } catch (error) {
-                console.error("Error fetching user:", error);
-                router.push("/login");
-            }
-        }
-        fetchUser();
-    }, [router]);
 
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
@@ -40,75 +24,60 @@ export default function ResumeUpload() {
             return;
         }
 
-        // Validate file type
-        const fileExt = file.name.split(".").pop().toLowerCase();
-        if (!["pdf", "docx", "doc"].includes(fileExt)) {
-            setMessage("Please upload a PDF or Word document.");
-            setMessageType("error");
-            return;
-        }
-
-        // Validate file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-            setMessage("File size should be less than 5MB.");
-            setMessageType("error");
-            return;
-        }
-
         setUploading(true);
-        setMessage("");
-        
-        try {
-            // Create a unique file path
-            const filePath = `resumes/${user.id}/${Date.now()}-${file.name}`;
+        const filePath = `resumes/${Date.now()}-${file.name}`;
 
-            // Upload file to Supabase Storage
-            const { data, error } = await supabase.storage
-                .from("resumes")
-                .upload(filePath, file);
+        // Get authenticated user
+        const { data: user, error: userError } = await supabase.auth.getUser();
+        if (userError || !user) {
+            setMessage("User authentication failed.");
+            setMessageType("error");
+            setUploading(false);
+            return;
+        }
 
-            if (error) {
-                throw error;
-            }
+        const { data, error } = await supabase.storage
+            .from("resumes")
+            .upload(filePath, file);
 
-            // Get the public URL for the uploaded file
+        if (error) {
+            setMessage("Upload failed.");
+            setMessageType("error");
+            console.error(error);
+        } else {
             const { data: urlData } = supabase.storage
                 .from("resumes")
                 .getPublicUrl(filePath);
 
             const publicURL = urlData.publicUrl;
 
-            // Store resume information in the database
+            // Store resume URL in the database with user_id
             const { error: dbError } = await supabase.from("resumes").insert([
                 { 
-                    user_id: user.id, 
+                    user_id: user.user.id, 
                     resume_url: publicURL,
                     file_name: file.name,
-                    file_type: fileExt,
-                    file_size: file.size,
-                    created_at: new Date()
+                    file_type: file.name.split(".").pop().toLowerCase(),
+                    file_size: file.size
                 }
             ]);
 
             if (dbError) {
-                throw dbError;
+                setMessage("Resume saved, but database insert failed.");
+                setMessageType("error");
+                console.error(dbError);
+            } else {
+                setMessage("Resume uploaded successfully! Redirecting to dashboard...");
+                setMessageType("success");
+                
+                // Redirect to dashboard after successful upload
+                setTimeout(() => {
+                    router.push("/dashboard");
+                }, 2000);
             }
-
-            setMessage("Resume uploaded successfully! Redirecting to dashboard...");
-            setMessageType("success");
-            
-            // Redirect to dashboard after successful upload
-            setTimeout(() => {
-                router.push("/dashboard");
-            }, 2000);
-            
-        } catch (error) {
-            console.error("Upload error:", error);
-            setMessage(`Upload failed: ${error.message}`);
-            setMessageType("error");
-        } finally {
-            setUploading(false);
         }
+
+        setUploading(false);
     };
 
     return (
