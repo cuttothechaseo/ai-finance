@@ -17,6 +17,7 @@ const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 // Metadata configuration
 export const metadata: Metadata = {
+  metadataBase: new URL('https://wallstreetai.app'),
   title: 'WallStreetAI - AI-Powered Finance Interview Prep',
   description: 'Ace your finance interviews with AI-powered mock interviews, resume analysis, and personalized coaching. Land your dream finance job with WallStreetAI.',
   keywords: 'finance interview, AI interview prep, Wall Street, investment banking, financial analyst, resume analysis, mock interviews',

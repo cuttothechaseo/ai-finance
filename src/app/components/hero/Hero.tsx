@@ -1,10 +1,15 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import ChatDemo from './ChatDemo';
-import AnimatedBackground from './AnimatedBackground';
+import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useRef, useContext } from 'react';
+import dynamic from 'next/dynamic';
 import { WaitlistContext } from '@/app/contexts/WaitlistContext';
+
+// Dynamically import components to avoid hydration issues
+const AnimatedBackground = dynamic(() => import('./AnimatedBackground'), { ssr: false });
+const ChatDemo = dynamic(() => import('./ChatDemo'), { ssr: false });
 
 export default function Hero() {
   const headingRef = useRef<HTMLHeadingElement>(null);

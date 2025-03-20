@@ -1,3 +1,5 @@
+'use client';
+
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -134,7 +136,10 @@ export default function Partners() {
   
   // This ensures hydration doesn't cause issues with SSR
   useEffect(() => {
-    setIsClient(true);
+    // Only run on client-side
+    if (typeof window !== 'undefined') {
+      setIsClient(true);
+    }
   }, []);
   
   return (
