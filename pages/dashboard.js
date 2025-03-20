@@ -14,6 +14,12 @@ export default function Dashboard() {
     const fetchUserData = async () => {
       try {
         const userData = await getUserWithDetails();
+        
+        // Update resumes count in the profile statistics section
+        if (userData.resumes) {
+          userData.resumeCount = userData.resumes.length;
+        }
+        
         setUser(userData);
       } catch (error) {
         console.error('Error fetching user:', error);
@@ -151,7 +157,7 @@ export default function Dashboard() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="bg-gray-800 p-4 rounded-lg">
                       <p className="text-gray-400 text-sm">Resumes</p>
-                      <p className="text-2xl font-bold text-primary">0</p>
+                      <p className="text-2xl font-bold text-primary">{user.resumeCount || 0}</p>
                     </div>
                     <div className="bg-gray-800 p-4 rounded-lg">
                       <p className="text-gray-400 text-sm">Network Connections</p>
@@ -250,8 +256,22 @@ export default function Dashboard() {
                         <div>
                           <h3 className="font-medium">{resume.file_name}</h3>
                           <p className="text-sm text-gray-400">
-                            Uploaded on {new Date(resume.created_at).toLocaleDateString()}
+                            {resume.created_at 
+                              ? `Uploaded on ${new Date(resume.created_at).toLocaleDateString('en-US', { 
+                                  year: 'numeric', 
+                                  month: 'short', 
+                                  day: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}`
+                              : 'Recently uploaded'
+                            }
                           </p>
+                          {resume.file_size && (
+                            <p className="text-xs text-gray-500 mt-1">
+                              {(resume.file_size / 1024 / 1024).toFixed(2)} MB • {resume.file_type?.toUpperCase() || 'Document'}
+                            </p>
+                          )}
                         </div>
                       </div>
                       <div className="flex space-x-2">
