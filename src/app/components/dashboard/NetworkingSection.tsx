@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface NetworkingSectionProps {
   user: any;
@@ -92,7 +93,7 @@ export default function NetworkingSection({ user }: NetworkingSectionProps) {
   
   const filteredContacts = filterStatus === 'all' 
     ? contacts 
-    : contacts.filter(contact => contact.status === filterStatus);
+    : contacts.filter((contact: any) => contact.status === filterStatus);
     
   const viewContactDetails = (contact: any) => {
     setContactDetails(contact);
@@ -206,9 +207,11 @@ export default function NetworkingSection({ user }: NetworkingSectionProps) {
                   <div className="relative h-20 bg-gradient-to-r from-primary/30 to-primary-dark/30">
                     <div className="absolute -bottom-10 left-4">
                       <div className="h-20 w-20 rounded-full border-4 border-gray-700 overflow-hidden shadow-xl">
-                        <img 
+                        <Image 
                           src={contact.avatar} 
                           alt={contact.name} 
+                          width={80}
+                          height={80}
                           className="h-full w-full object-cover"
                         />
                       </div>
@@ -341,9 +344,11 @@ export default function NetworkingSection({ user }: NetworkingSectionProps) {
               <div className="p-6">
                 <div className="flex items-center space-x-4 mb-6">
                   <div className="h-16 w-16 rounded-full overflow-hidden">
-                    <img 
+                    <Image 
                       src={contactDetails.avatar} 
                       alt={contactDetails.name} 
+                      width={64}
+                      height={64}
                       className="h-full w-full object-cover"
                     />
                   </div>
