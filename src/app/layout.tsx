@@ -1,14 +1,21 @@
-import './globals.css';
+// Core imports
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { WaitlistProvider } from './contexts/WaitlistContext';
 import Script from 'next/script';
 
+// Styles
+import './globals.css';
+
+// Contexts
+import { WaitlistProvider } from './contexts/WaitlistContext';
+
+// Font configuration
 const inter = Inter({ subsets: ['latin'] });
 
-// Google Analytics ID
+// Environment variables
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
+// Metadata configuration
 export const metadata: Metadata = {
   title: 'WallStreetAI - AI-Powered Finance Interview Prep',
   description: 'Ace your finance interviews with AI-powered mock interviews, resume analysis, and personalized coaching. Land your dream finance job with WallStreetAI.',
@@ -49,6 +56,7 @@ export const metadata: Metadata = {
   },
 };
 
+// Root layout component
 export default function RootLayout({
   children,
 }: {
@@ -57,6 +65,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Favicon and icons */}
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/assets/icons/icon.png" type="image/png" sizes="32x32" />
         <link rel="icon" href="/assets/logos/wallstreetai-logo.svg" type="image/svg+xml" />
@@ -65,20 +74,20 @@ export default function RootLayout({
         
         {/* Google Analytics */}
         {GA_ID && (
-          <Script
-            strategy="afterInteractive"
-            src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-          />
-        )}
-        {GA_ID && (
-          <Script id="google-analytics" strategy="afterInteractive">
-            {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${GA_ID}');
-            `}
-          </Script>
+          <>
+            <Script
+              strategy="afterInteractive"
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${GA_ID}');
+              `}
+            </Script>
+          </>
         )}
       </head>
       <body className={inter.className} suppressHydrationWarning>
