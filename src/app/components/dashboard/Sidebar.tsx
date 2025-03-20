@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 type NavItem = {
   name: string;
@@ -20,6 +20,7 @@ interface SidebarProps {
 export default function Sidebar({ isMobile, toggleSidebar, isOpen }: SidebarProps) {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
+  const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -100,13 +101,24 @@ export default function Sidebar({ isMobile, toggleSidebar, isOpen }: SidebarProp
   // Animation variants for sidebar
   const sidebarVariants = {
     open: { 
-      x: 0,
-      opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.2 }
+      width: "16rem",
+      transition: { 
+        type: "spring", 
+        stiffness: 300, 
+        damping: 30,
+        staggerChildren: 0.1, 
+        delayChildren: 0.2 
+      }
     },
     closed: { 
-      x: "-100%", 
-      opacity: 0,
+      width: "5rem",
+      transition: { 
+        type: "spring", 
+        stiffness: 300, 
+        damping: 30,
+        staggerChildren: 0.05, 
+        staggerDirection: -1 
+      }
     }
   };
 
@@ -116,41 +128,84 @@ export default function Sidebar({ isMobile, toggleSidebar, isOpen }: SidebarProp
       opacity: 1,
       transition: { type: "spring", stiffness: 300, damping: 24 }
     },
-    closed: { x: -20, opacity: 0 }
+    closed: { x: -10, opacity: 0 }
   };
 
-  if (!mounted) return null;
+  const logoTextVariants = {
+    open: { opacity: 1, width: "auto", display: "block" },
+    closed: { 
+      opacity: 0, 
+      width: 0,
+      transitionEnd: { display: "none" }
+    }
+  };
 
-  const container = isOpen ? "translate-x-0" : "-translate-x-full";
+  // Tooltip for collapsed sidebar
+  const Tooltip = ({ children, show }: { children: React.ReactNode, show: boolean }) => (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          className="absolute left-16 bg-gray-800 text-white text-sm px-2 py-1 rounded shadow z-50 whitespace-nowrap"
+        >
+          {children}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
+  if (!mounted) return null;
 
   return (
     <>
       {/* Mobile backdrop */}
-      {isMobile && isOpen && (
-        <div 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-20"
-          onClick={toggleSidebar}
-        ></div>
-      )}
+      <AnimatePresence>
+        {isMobile && isOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-20"
+            onClick={toggleSidebar}
+          ></motion.div>
+        )}
+      </AnimatePresence>
       
       {/* Sidebar */}
       <motion.aside
         variants={sidebarVariants}
-        initial="closed"
+        initial={false}
         animate={isOpen ? "open" : "closed"}
         className={`
           fixed top-0 left-0 h-full bg-gray-900 border-r border-gray-800
-          flex flex-col transition-all duration-300 ease-in-out
-          ${isMobile ? 'z-30 w-64 shadow-xl' : 'z-10 w-64'}
-          ${!isMobile && !isOpen ? 'w-20' : 'w-64'}
+          flex flex-col transition-all duration-300 ease-in-out overflow-hidden
+          ${isMobile ? 'z-30 shadow-xl' : 'z-10'}
         `}
       >
         {/* Logo section */}
         <div className="p-4 border-b border-gray-800 flex items-center justify-between">
           <Link href="/" className="flex items-center">
-            <span className={`text-xl font-bold text-primary transition-opacity duration-200 ${!isOpen && !isMobile ? 'opacity-0' : 'opacity-100'}`}>
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              className="w-8 h-8 text-primary"
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            </svg>
+            <motion.span 
+              variants={logoTextVariants}
+              className="ml-2 text-xl font-bold text-primary transition-all duration-200"
+            >
               AI Finance
-            </span>
+            </motion.span>
           </Link>
           {isMobile && (
             <button onClick={toggleSidebar} className="p-1 rounded-md hover:bg-gray-800">
@@ -166,7 +221,12 @@ export default function Sidebar({ isMobile, toggleSidebar, isOpen }: SidebarProp
           {navItems.map((item) => {
             const isActive = pathname === item.path;
             return (
-              <motion.div key={item.name} variants={itemVariants}>
+              <div 
+                key={item.name} 
+                className="relative"
+                onMouseEnter={() => !isOpen && !isMobile && setActiveTooltip(item.name)}
+                onMouseLeave={() => setActiveTooltip(null)}
+              >
                 <Link
                   href={item.path}
                   className={`
@@ -176,12 +236,20 @@ export default function Sidebar({ isMobile, toggleSidebar, isOpen }: SidebarProp
                       : 'text-gray-300 hover:bg-gray-800 hover:text-white'}
                   `}
                 >
-                  <span className="mr-3">{item.icon(isActive)}</span>
-                  <span className={`transition-opacity duration-200 ${!isOpen && !isMobile ? 'opacity-0 w-0' : 'opacity-100'}`}>
+                  <span className="flex-shrink-0">{item.icon(isActive)}</span>
+                  <motion.span 
+                    variants={logoTextVariants}
+                    className="ml-3 transition-all duration-200"
+                  >
                     {item.name}
-                  </span>
+                  </motion.span>
                 </Link>
-              </motion.div>
+                
+                {/* Tooltip for collapsed state */}
+                <Tooltip show={!isOpen && !isMobile && activeTooltip === item.name}>
+                  {item.name}
+                </Tooltip>
+              </div>
             );
           })}
         </nav>
@@ -193,17 +261,47 @@ export default function Sidebar({ isMobile, toggleSidebar, isOpen }: SidebarProp
               flex items-center w-full px-4 py-2 rounded-lg text-gray-300 
               hover:bg-gray-800 hover:text-white transition-all duration-200
             `}
+            onMouseEnter={() => !isOpen && !isMobile && setActiveTooltip('Logout')}
+            onMouseLeave={() => setActiveTooltip(null)}
           >
             <span className="p-1 mr-3 bg-primary/20 rounded-md">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>
             </span>
-            <span className={`transition-opacity duration-200 ${!isOpen && !isMobile ? 'opacity-0 w-0' : 'opacity-100'}`}>
+            <motion.span 
+              variants={logoTextVariants}
+              className="transition-all duration-200"
+            >
               Logout
-            </span>
+            </motion.span>
+            
+            {/* Tooltip for logout button */}
+            <Tooltip show={!isOpen && !isMobile && activeTooltip === 'Logout'}>
+              Logout
+            </Tooltip>
           </button>
         </div>
+        
+        {/* Collapse toggle button for desktop */}
+        {!isMobile && (
+          <div className="p-4 border-t border-gray-800 flex justify-center">
+            <button 
+              onClick={toggleSidebar} 
+              className="p-1 rounded-full hover:bg-gray-800 transition-colors"
+            >
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className={`h-5 w-5 text-gray-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isOpen ? "M15 19l-7-7 7-7" : "M9 5l7 7-7 7"} />
+              </svg>
+            </button>
+          </div>
+        )}
       </motion.aside>
     </>
   );
