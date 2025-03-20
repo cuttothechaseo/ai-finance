@@ -57,3 +57,5 @@ npm run build
 ## License
 
 MIT
+
+<!-- Redeploy trigger: $(date) -->
