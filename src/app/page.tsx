@@ -2,16 +2,16 @@
 
 import { useEffect } from 'react';
 import { motion, useAnimation } from 'framer-motion';
-import Navbar from '@/app/components/navbar/Navbar';
-import Hero from '@/app/components/hero/Hero';
-import Partners from '@/app/components/partners/Partners';
-import Features from '@/app/components/features/Features';
-import ExclusiveResources from '@/app/components/resources/ExclusiveResources';
-import HowItWorks from '@/app/components/how-it-works/HowItWorks';
 import dynamic from 'next/dynamic';
 import SectionDivider from '@/app/components/ui/SectionDivider';
 
 // Dynamically import components to avoid hydration issues
+const Navbar = dynamic(() => import('@/app/components/navbar/Navbar'), { ssr: false });
+const Hero = dynamic(() => import('@/app/components/hero/Hero'), { ssr: false });
+const Partners = dynamic(() => import('@/app/components/partners/Partners'), { ssr: false });
+const Features = dynamic(() => import('@/app/components/features/Features'), { ssr: false });
+const ExclusiveResources = dynamic(() => import('@/app/components/resources/ExclusiveResources'), { ssr: false });
+const HowItWorks = dynamic(() => import('@/app/components/how-it-works/HowItWorks'), { ssr: false });
 const JoinWaitlist = dynamic(() => import('@/app/components/waitlist/JoinWaitlist'), { ssr: false });
 const SuccessStories = dynamic(() => import('@/app/components/testimonials/SuccessStories'), { ssr: false });
 
