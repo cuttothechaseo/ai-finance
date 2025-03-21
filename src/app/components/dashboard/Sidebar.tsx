@@ -245,7 +245,7 @@ export default function Sidebar({
               variants={logoTextVariants}
               className="ml-2 text-xl font-bold text-white transition-all duration-200"
             >
-              WallStreetAI
+              Wall Street AI
             </motion.span>
           </Link>
           {isMobile && (

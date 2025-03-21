@@ -70,7 +70,7 @@ export default function Login() {
                 className="h-10 w-auto"
               />
               <span className="ml-2 text-xl font-semibold text-white">
-                WallStreetAI
+                Wall Street AI
               </span>
             </div>
           </Link>
