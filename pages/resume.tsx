@@ -61,10 +61,11 @@ export default function ResumeUpload() {
     const { error: dbError } = await supabase.from("resumes").insert([
       {
         user_id: user.user.id,
-        file_url: publicURL,
+        resume_url: publicURL,
         file_name: file.name,
-        file_path: filePath,
-        status: "uploaded",
+        file_type: file.type,
+        file_size: Math.round(file.size / 1024), // Convert to KB
+        uploaded_at: new Date().toISOString(),
       },
     ]);
 
