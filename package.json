@@ -4,6 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:no-refresh": "node scripts/dev-no-refresh.js",
+    "dev:simple": "FAST_REFRESH=false NODE_OPTIONS=--max-old-space-size=4096 next dev",
+    "dev:stable": "node scripts/simple-dev.js",
+    "dev:login-fix": "node scripts/login-fix.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -27,6 +31,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
+    "cross-spawn": "^7.0.3",
     "eslint": "^8",
     "eslint-config-next": "^15.2.1",
     "postcss": "^8",
