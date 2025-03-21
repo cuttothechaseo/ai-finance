@@ -57,7 +57,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#0F0F2D] bg-gradient-to-b from-[#0F0F2D] to-[#151538] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="flex justify-center mb-8">
           <Link href="/">
@@ -69,7 +69,7 @@ export default function Login() {
                 height={40}
                 className="h-10 w-auto"
               />
-              <span className="ml-2 text-xl font-semibold text-primary">
+              <span className="ml-2 text-xl font-semibold text-white">
                 WallStreetAI
               </span>
             </div>
@@ -77,21 +77,21 @@ export default function Login() {
         </div>
 
         <motion.div
-          className="bg-white rounded-md shadow-md overflow-hidden border border-gray-100"
+          className="bg-[#151538]/70 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden border border-[#2A2A4A]"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
           <div className="p-6">
             <div className="text-center mb-6">
-              <h5 className="text-gray-500 text-sm font-medium mb-1">
+              <h5 className="text-[#A3A3A3] text-sm font-medium mb-1">
                 Please enter your details
               </h5>
-              <h2 className="text-gray-900 text-2xl font-bold">Welcome back</h2>
+              <h2 className="text-white text-2xl font-bold">Welcome back</h2>
             </div>
 
             {error && (
-              <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+              <div className="mb-6 bg-red-900/30 border border-red-500/50 text-red-200 px-4 py-3 rounded-lg text-sm">
                 {error}
               </div>
             )}
@@ -106,7 +106,7 @@ export default function Login() {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                  className="appearance-none block w-full px-3 py-3 border border-[#3A3A5A] rounded-lg shadow-sm placeholder-[#6C6C8A] bg-[#1E1E3F]/50 text-white focus:outline-none focus:ring-2 focus:ring-[#6C63FF]/50 focus:border-[#6C63FF] transition-all duration-200"
                   placeholder="Email address"
                 />
               </div>
@@ -120,7 +120,7 @@ export default function Login() {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                  className="appearance-none block w-full px-3 py-3 border border-[#3A3A5A] rounded-lg shadow-sm placeholder-[#6C6C8A] bg-[#1E1E3F]/50 text-white focus:outline-none focus:ring-2 focus:ring-[#6C63FF]/50 focus:border-[#6C63FF] transition-all duration-200"
                   placeholder="Password"
                 />
               </div>
@@ -133,11 +133,11 @@ export default function Login() {
                     type="checkbox"
                     checked={rememberMe}
                     onChange={handleRememberMeChange}
-                    className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                    className="h-4 w-4 text-[#6C63FF] focus:ring-[#6C63FF] border-[#3A3A5A] rounded"
                   />
                   <label
                     htmlFor="remember_me"
-                    className="ml-2 block text-sm text-gray-700"
+                    className="ml-2 block text-sm text-[#A3A3A3]"
                   >
                     Remember for 30 days
                   </label>
@@ -146,7 +146,7 @@ export default function Login() {
                 <div className="text-sm">
                   <Link
                     href="#"
-                    className="font-medium text-primary hover:text-primary-dark transition-colors"
+                    className="font-medium text-[#6C63FF] hover:text-[#8A7FFF] transition-colors"
                   >
                     Forgot password
                   </Link>
@@ -157,17 +157,30 @@ export default function Login() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-primary-light hover:bg-primary transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-sm font-bold text-white bg-[#6C63FF] hover:bg-[#5A52D5] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6C63FF] transform transition-all duration-200 hover:translate-y-[-2px] active:translate-y-[0px] disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   {isLoading ? "Signing in..." : "Sign in"}
                 </button>
               </div>
             </form>
 
-            <div className="mt-4">
+            <div className="mt-6">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-[#2A2A4A]"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-[#151538] text-[#A3A3A3]">
+                    Or sign in with
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6">
               <button
                 type="button"
-                className="w-full flex items-center justify-center py-2 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                className="w-full inline-flex justify-center items-center py-3 px-4 border border-[#2A2A4A] rounded-lg shadow-sm bg-white/5 backdrop-blur-sm text-sm font-medium text-white hover:bg-white/10 transition-all duration-200 transform hover:translate-y-[-2px] active:translate-y-[0px]"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -196,11 +209,11 @@ export default function Login() {
             </div>
 
             <div className="mt-5 text-center text-sm">
-              <p className="text-gray-600">
+              <p className="text-[#A3A3A3]">
                 Don&apos;t have an account?{" "}
                 <Link
                   href="/signup"
-                  className="font-medium text-primary hover:text-primary-dark transition-colors"
+                  className="font-medium text-[#6C63FF] hover:text-[#8A7FFF] transition-colors"
                 >
                   Sign up
                 </Link>
