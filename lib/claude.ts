@@ -68,8 +68,8 @@ export async function analyzeResume(
   options?: Partial<ResumeAnalysisRequest>
 ): Promise<ResumeAnalysisResult> {
   try {
-    if (!process.env.CLAUDE_API_KEY) {
-      throw new Error("Claude API key is not configured");
+    if (!process.env.ANTHROPIC_API_KEY) {
+      throw new Error("Anthropic API key is not configured");
     }
 
     // Construct the prompt for Claude
@@ -80,21 +80,19 @@ export async function analyzeResume(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": process.env.CLAUDE_API_KEY,
+        "anthropic-api-key": process.env.ANTHROPIC_API_KEY,
         "anthropic-version": "2023-06-01"
       },
       body: JSON.stringify({
         model: defaultClaudeOptions.model,
         max_tokens: defaultClaudeOptions.max_tokens,
         temperature: defaultClaudeOptions.temperature,
-        system: "You are an expert resume reviewer for finance professionals. Provide detailed, constructive feedback to help improve resumes for finance industry positions.",
         messages: [
           {
             role: "user",
             content: prompt
           }
-        ],
-        response_format: { type: "json_object" }
+        ]
       })
     });
 
@@ -104,9 +102,23 @@ export async function analyzeResume(
     }
 
     const data = await response.json();
-    const analysisResult = JSON.parse(data.content[0].text);
     
-    return analysisResult;
+    // Parse the response content as JSON
+    try {
+      // The response is in the message content
+      const content = data.content[0].text;
+      const analysisResult = JSON.parse(content);
+      
+      // Validate the required fields
+      if (!analysisResult.overallScore || !analysisResult.summary) {
+        throw new Error("Invalid analysis result format");
+      }
+      
+      return analysisResult;
+    } catch (parseError) {
+      console.error("Failed to parse Claude response:", parseError);
+      throw new Error("Failed to parse analysis results");
+    }
   } catch (error) {
     console.error("Resume analysis failed:", error);
     throw error;

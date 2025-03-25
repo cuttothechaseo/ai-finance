@@ -4,12 +4,15 @@ import { useState, useEffect, ChangeEvent } from "react";
 import { supabase } from "../lib/supabase";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import ResumeAnalysis from "../src/app/components/resume/ResumeAnalysis";
 
 export default function ResumeUpload() {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [messageType, setMessageType] = useState<string>(""); // "success" or "error"
+  const [showAnalysis, setShowAnalysis] = useState<boolean>(false);
+  const [uploadedResumeId, setUploadedResumeId] = useState<string | null>(null);
   const router = useRouter();
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -58,16 +61,20 @@ export default function ResumeUpload() {
     const publicURL = urlData.publicUrl;
 
     // Save the resume information to the database
-    const { error: dbError } = await supabase.from("resumes").insert([
-      {
-        user_id: user.user.id,
-        resume_url: publicURL,
-        file_name: file.name,
-        file_type: file.type,
-        file_size: Math.round(file.size / 1024), // Convert to KB
-        uploaded_at: new Date().toISOString(),
-      },
-    ]);
+    const { data: resumeData, error: dbError } = await supabase
+      .from("resumes")
+      .insert([
+        {
+          user_id: user.user.id,
+          resume_url: publicURL,
+          file_name: file.name,
+          file_type: file.type,
+          file_size: Math.round(file.size / 1024), // Convert to KB
+          uploaded_at: new Date().toISOString(),
+        },
+      ])
+      .select()
+      .single();
 
     if (dbError) {
       setMessage("Failed to save resume information.");
@@ -78,6 +85,9 @@ export default function ResumeUpload() {
       setMessageType("success");
       // Reset file input after successful upload
       setFile(null);
+      // Start analysis
+      setUploadedResumeId(resumeData.id);
+      setShowAnalysis(true);
     }
 
     setUploading(false);
@@ -177,6 +187,17 @@ export default function ResumeUpload() {
           </ul>
         </div>
       </div>
+
+      {showAnalysis && uploadedResumeId && (
+        <ResumeAnalysis
+          resumeId={uploadedResumeId}
+          onClose={() => {
+            setShowAnalysis(false);
+            setUploadedResumeId(null);
+            router.push("/dashboard");
+          }}
+        />
+      )}
     </div>
   );
 }
