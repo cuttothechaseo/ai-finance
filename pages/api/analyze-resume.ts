@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { supabase } from '../../lib/supabase';
 import { analyzeResume, saveResumeAnalysis, ResumeAnalysisResult } from '../../lib/claude';
+import { parseFile } from '../../lib/fileParser';
 
 // Type definition for expected request body
 interface AnalyzeResumeRequest extends NextApiRequest {
@@ -59,37 +60,19 @@ export default async function handler(
       return res.status(500).json({ error: 'Failed to fetch resume file' });
     }
 
-    // Extract text content from the resume
-    // This is a simplified approach - in production, you would need to handle
-    // different file types (PDF, DOCX, etc.) with appropriate parsers
-    let resumeText;
-    
+    // Extract text content from the resume using our parser
+    let resumeText: string;
     const contentType = resumeData.file_type;
-    const fileBuffer = await fileResponse.arrayBuffer();
+    const fileBuffer = Buffer.from(await fileResponse.arrayBuffer());
 
-    if (contentType === 'application/pdf') {
-      // In a real implementation, use a PDF parser library like pdf-parse
-      // For now, we'll return an error as a placeholder
-      return res.status(501).json({ 
-        error: 'PDF parsing not implemented in this example',
-        message: 'For production use, integrate a PDF parser library like pdf-parse'
+    try {
+      resumeText = await parseFile(fileBuffer, contentType);
+    } catch (error) {
+      console.error('Error parsing file:', error);
+      return res.status(400).json({ 
+        error: 'Failed to parse resume file',
+        details: error instanceof Error ? error.message : String(error)
       });
-    } else if (contentType.includes('word') || contentType.includes('docx')) {
-      // In a real implementation, use a DOCX parser like mammoth.js
-      return res.status(501).json({ 
-        error: 'DOCX parsing not implemented in this example',
-        message: 'For production use, integrate a DOCX parser library like mammoth.js'
-      });
-    } else if (contentType === 'text/plain') {
-      // For text files, we can convert directly
-      resumeText = new TextDecoder().decode(fileBuffer);
-    } else {
-      return res.status(400).json({ error: 'Unsupported file format' });
-    }
-
-    // For development purposes, if we couldn't parse the file, use a placeholder
-    if (!resumeText) {
-      resumeText = "This is a placeholder resume text for development purposes.";
     }
 
     // Call Claude API to analyze the resume
