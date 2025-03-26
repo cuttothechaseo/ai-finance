@@ -33,54 +33,99 @@ export default async function handler(
   );
   
   try {
-    console.log('API: Authenticating user request');
-    // Authenticate the user
-    const authHeader = req.headers.authorization;
+    // Check if this is a request from our Edge Function
+    // Edge Function will include a special header with the service role key
+    const edgeSecretKey = req.headers['x-edge-secret'];
+    const isEdgeFunction = 
+      edgeSecretKey && 
+      process.env.SUPABASE_SERVICE_ROLE_KEY && 
+      edgeSecretKey === process.env.SUPABASE_SERVICE_ROLE_KEY;
+    
     let userId = null;
     
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      const token = authHeader.substring(7);
-      const { data, error } = await supabase.auth.getUser(token);
-      if (error) {
-        console.error('API: Authentication error:', error);
+    if (isEdgeFunction) {
+      console.log('API: Request authenticated as Edge Function');
+      // For Edge Function requests, we skip user authentication
+      // and trust that the Edge Function has already validated permissions
+      
+      // Just verify that the resume exists
+      const { data: resumeCheck, error: resumeCheckError } = await supabase
+        .from('resumes')
+        .select('id')
+        .eq('id', resumeId)
+        .single();
+        
+      if (resumeCheckError || !resumeCheck) {
+        console.error('API: Resume not found:', resumeCheckError);
         console.groupEnd();
-        return res.status(401).json({ error: 'Unauthorized', details: error.message });
+        return res.status(404).json({ error: 'Resume not found', details: resumeCheckError?.message });
       }
-      userId = data.user?.id;
+      
+    } else {
+      // For regular user requests, perform full authentication
+      console.log('API: Authenticating user request');
+      const authHeader = req.headers.authorization;
+      
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        const token = authHeader.substring(7);
+        const { data, error } = await supabase.auth.getUser(token);
+        if (error) {
+          console.error('API: Authentication error:', error);
+          console.groupEnd();
+          return res.status(401).json({ error: 'Unauthorized', details: error.message });
+        }
+        userId = data.user?.id;
+      }
+      
+      if (!userId) {
+        console.error('API: No user found after authentication');
+        console.groupEnd();
+        return res.status(401).json({ error: 'Unauthorized', details: 'No user found in session' });
+      }
+      
+      console.log(`API: User authenticated successfully. User ID: ${userId.slice(0, 8)}...`);
+      
+      // Verify the resume belongs to the user
+      console.log(`API: Verifying resume ownership for ID: ${resumeId}`);
+      const { data: resume, error: resumeError } = await supabase
+        .from('resumes')
+        .select('id, user_id, file_name, file_type')
+        .eq('id', resumeId)
+        .single();
+        
+      if (resumeError || !resume) {
+        console.error('API: Resume not found:', resumeError);
+        console.groupEnd();
+        return res.status(404).json({ error: 'Resume not found', details: resumeError?.message });
+      }
+      
+      if (resume.user_id !== userId) {
+        console.error('API: Resume belongs to different user', {
+          resumeUserId: resume.user_id,
+          requestUserId: userId
+        });
+        console.groupEnd();
+        return res.status(403).json({ error: 'Not authorized to access this resume' });
+      }
+      
+      console.log('API: Resume ownership verified');
     }
     
-    if (!userId) {
-      console.error('API: No user found after authentication');
-      console.groupEnd();
-      return res.status(401).json({ error: 'Unauthorized', details: 'No user found in session' });
-    }
-    
-    console.log(`API: User authenticated successfully. User ID: ${userId.slice(0, 8)}...`);
-    
-    // Verify the resume belongs to the user
-    console.log(`API: Verifying resume ownership for ID: ${resumeId}`);
-    const { data: resume, error: resumeError } = await supabase
+    // Get basic resume info for file type checking
+    const { data: resumeInfo, error: resumeInfoError } = await supabase
       .from('resumes')
-      .select('id, user_id, file_name, file_type')
+      .select('file_name, file_type')
       .eq('id', resumeId)
       .single();
       
-    if (resumeError || !resume) {
-      console.error('API: Resume not found:', resumeError);
+    if (resumeInfoError || !resumeInfo) {
+      console.error('API: Failed to get resume info:', resumeInfoError);
       console.groupEnd();
-      return res.status(404).json({ error: 'Resume not found', details: resumeError?.message });
-    }
-    
-    if (resume.user_id !== userId) {
-      console.error('API: Resume belongs to different user', {
-        resumeUserId: resume.user_id,
-        requestUserId: userId
+      return res.status(500).json({ 
+        error: 'Failed to get resume info', 
+        details: resumeInfoError?.message || 'Unknown error' 
       });
-      console.groupEnd();
-      return res.status(403).json({ error: 'Not authorized to access this resume' });
     }
-    
-    console.log('API: Resume ownership verified');
     
     // Download the resume file
     console.log(`API: Downloading resume from URL: ${resumeUrl.substring(0, 50)}...`);
@@ -100,8 +145,8 @@ export default async function handler(
     console.log(`API: File downloaded successfully, size: ${fileBuffer.byteLength} bytes`);
     
     // Check if it's a PDF
-    if (!resume.file_type?.includes('pdf')) {
-      console.error(`API: Unsupported file type: ${resume.file_type}`);
+    if (!resumeInfo.file_type?.includes('pdf')) {
+      console.error(`API: Unsupported file type: ${resumeInfo.file_type}`);
       console.groupEnd();
       return res.status(400).json({ 
         error: 'Unsupported file type', 
@@ -127,8 +172,8 @@ export default async function handler(
       return res.status(200).json({
         success: true,
         resumeId,
-        fileName: resume.file_name,
-        fileType: resume.file_type,
+        fileName: resumeInfo.file_name,
+        fileType: resumeInfo.file_type,
         textLength: extractedText.length,
         text: extractedText
       });

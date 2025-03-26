@@ -112,7 +112,7 @@ async function processJob(supabase, jobId) {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}` // Use service role key for auth
+            'X-Edge-Secret': SUPABASE_SERVICE_ROLE_KEY // Use special header for Edge Function authentication
           },
           body: JSON.stringify({
             resumeId: resume.id,
