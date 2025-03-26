@@ -51,7 +51,7 @@ export interface ResumeAnalysisResult {
 
 // Default Claude configuration for resume analysis
 const defaultClaudeOptions: ClaudeRequestOptions = {
-  model: "claude-3-5-sonnet", // Using Claude 3.5 Sonnet for better performance
+  model: "claude-3-5-sonnet-20240620", // Using Claude 3.5 Sonnet for better performance
   max_tokens: 4000,
   temperature: 0.7,
   top_p: 0.95,
@@ -72,15 +72,24 @@ export async function analyzeResume(
       throw new Error("Anthropic API key is not configured");
     }
 
+    // Log API key presence (not the actual key for security)
+    console.log("Claude API integration:", {
+      hasApiKey: Boolean(process.env.ANTHROPIC_API_KEY),
+      apiKeyLength: process.env.ANTHROPIC_API_KEY?.length,
+      model: defaultClaudeOptions.model
+    });
+
     // Construct the prompt for Claude
     const prompt = constructResumeAnalysisPrompt(resumeText, options);
+    console.log(`Prompt length: ${prompt.length} characters`);
 
     // Call Claude API
+    console.log("Making request to Claude API...");
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "anthropic-api-key": process.env.ANTHROPIC_API_KEY,
+        "x-api-key": process.env.ANTHROPIC_API_KEY,
         "anthropic-version": "2023-06-01"
       },
       body: JSON.stringify({
@@ -96,8 +105,11 @@ export async function analyzeResume(
       })
     });
 
+    console.log("Claude API response status:", response.status, response.statusText);
+
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorData = await response.json().catch(e => ({ error: { message: "Failed to parse error response" } }));
+      console.error("Claude API error details:", errorData);
       throw new Error(`Claude API error: ${errorData.error?.message || response.statusText}`);
     }
 
