@@ -24,7 +24,7 @@ console.log('Supabase initialization:', {
 });
 
 // Create a stable instance that won't change across hot module reloads
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
@@ -34,7 +34,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 });
 
 // Create a service role client for admin operations
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
+const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
   auth: {
     persistSession: false, // No need to persist for server-side operations
     autoRefreshToken: false,
@@ -42,7 +42,7 @@ export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
 });
 
 // Debug auth state - for troubleshooting
-export const debugAuthState = async () => {
+const debugAuthState = async () => {
   const { data, error } = await supabase.auth.getSession();
   
   if (error) {
@@ -76,7 +76,7 @@ export const debugAuthState = async () => {
 };
 
 // Helper function to check and refresh auth state
-export const refreshAuthState = async () => {
+const refreshAuthState = async () => {
   try {
     // Check current session
     const { data, error } = await supabase.auth.getSession();
@@ -107,4 +107,8 @@ export const refreshAuthState = async () => {
     console.error('Failed to refresh auth state:', err);
     return null;
   }
-}; 
+};
+
+// Export everything with both named exports and as default object
+export { supabase, supabaseAdmin, debugAuthState, refreshAuthState };
+export default supabase; 
