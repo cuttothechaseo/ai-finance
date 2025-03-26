@@ -58,10 +58,30 @@ export default function ResumeAnalysis({
   const [activeSection, setActiveSection] = useState<string>("overview");
   const [selectedEdit, setSelectedEdit] = useState<number | null>(null);
 
+  // New state for job tracking
+  const [jobId, setJobId] = useState<string | null>(null);
+  const [jobStatus, setJobStatus] = useState<string | null>(null);
+  const [pollInterval, setPollInterval] = useState<NodeJS.Timeout | null>(null);
+  const [processingTime, setProcessingTime] = useState<number>(0);
+
+  // Optional parameters for job creation
+  const [jobRole, setJobRole] = useState<string | undefined>(undefined);
+  const [industry, setIndustry] = useState<string | undefined>(undefined);
+  const [experienceLevel, setExperienceLevel] = useState<string | undefined>(
+    undefined
+  );
+
   useEffect(() => {
     if (!initialData && resumeId) {
-      fetchAnalysis();
+      createAnalysisJob();
     }
+
+    // Cleanup polling interval on unmount
+    return () => {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+      }
+    };
   }, [resumeId, initialData]);
 
   // Helper function to calculate similarity between two strings
@@ -77,169 +97,19 @@ export default function ResumeAnalysis({
     return matches / maxLen;
   }
 
-  const fetchAnalysis = async () => {
-    console.group("Resume Analysis API Request");
-    console.log(`Resume ID for analysis: ${resumeId}`);
+  const createAnalysisJob = async () => {
+    console.group("Resume Analysis - Create Job");
+    console.log(`Creating analysis job for resume ID: ${resumeId}`);
 
     try {
       setLoading(true);
       setError(null);
+      setJobId(null);
+      setJobStatus(null);
 
-      // Validate resumeId format
-      if (!resumeId || typeof resumeId !== "string") {
-        const error = "Invalid resume ID";
-        console.error(error, { resumeId, type: typeof resumeId });
-        throw new Error(error);
-      }
-
-      // Validate UUID format
-      const uuidRegex =
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-      if (!uuidRegex.test(resumeId)) {
-        const error = "Invalid resume ID format";
-        console.error(error, { resumeId });
-        throw new Error(error);
-      }
-
-      // Double check the resume ID against the database
-      console.log("Verifying resume ID in database...");
-      let { data: resumeData, error: resumeError } = await supabase
-        .from("resumes")
-        .select("id, file_name, resume_url, file_type")
-        .eq("id", resumeId)
-        .maybeSingle();
-
-      if (resumeError) {
-        console.error("Error verifying resume ID:", resumeError);
-      } else if (!resumeData) {
-        console.error("Resume ID not found in database:", resumeId);
-
-        // Try to find an exact match or a close match with similar ID
-        const { data: similarResumes, error: similarError } = await supabase
-          .from("resumes")
-          .select("id, file_name, resume_url, file_type")
-          .or(`id.ilike.${resumeId.split("-")[0]}%`);
-
-        if (similarError) {
-          console.error(
-            "Error searching for similar resume IDs:",
-            similarError
-          );
-        } else if (similarResumes && similarResumes.length > 0) {
-          // Log the found similar IDs for debugging
-          console.log(
-            "Found similar resume IDs:",
-            similarResumes.map((r) => ({
-              id: r.id,
-              fileName: r.file_name,
-              similarity: similarityScore(resumeId, r.id),
-            }))
-          );
-
-          // Find the most similar ID
-          const mostSimilar = similarResumes.reduce((prev, current) => {
-            const prevScore = similarityScore(resumeId, prev.id);
-            const currentScore = similarityScore(resumeId, current.id);
-            return currentScore > prevScore ? current : prev;
-          }, similarResumes[0]);
-
-          console.log("Most similar resume ID:", {
-            originalId: resumeId,
-            mostSimilarId: mostSimilar.id,
-            fileName: mostSimilar.file_name,
-          });
-
-          // Use the closest matching ID instead
-          if (similarityScore(resumeId, mostSimilar.id) > 0.8) {
-            console.log(
-              "Using similar resume ID instead due to high similarity"
-            );
-            const correctedId = mostSimilar.id;
-            setResumeId(correctedId);
-
-            // Update resumeData to use the similar resume
-            resumeData = mostSimilar;
-          }
-        }
-      } else {
-        console.log("Resume ID verified in database:", {
-          id: resumeData.id,
-          fileName: resumeData.file_name,
-        });
-      }
-
-      // Pre-verify that the file exists and is accessible
-      if (resumeData?.resume_url) {
-        console.log(
-          "Verifying resume file accessibility:",
-          resumeData.resume_url
-        );
-
-        // Try to fetch the file directly to check if it's accessible
-        try {
-          const fileCheckResponse = await fetch(resumeData.resume_url, {
-            method: "HEAD",
-          });
-
-          if (!fileCheckResponse.ok) {
-            console.error("Resume file is not accessible:", {
-              status: fileCheckResponse.status,
-              statusText: fileCheckResponse.statusText,
-              url: resumeData.resume_url,
-            });
-
-            // Try to check if the file exists in Supabase storage
-            const url = new URL(resumeData.resume_url);
-            const pathMatch = url.pathname.match(
-              /\/storage\/v1\/object\/public\/resumes\/(.*)/
-            );
-
-            if (pathMatch && pathMatch[1]) {
-              const storagePath = decodeURIComponent(pathMatch[1]);
-              console.log(
-                "Checking file existence in Supabase storage:",
-                storagePath
-              );
-
-              const { data: fileData, error: fileError } =
-                await supabase.storage
-                  .from("resumes")
-                  .createSignedUrl(storagePath, 60); // Create a signed URL that will work
-
-              if (fileError) {
-                console.error("File not accessible in storage:", fileError);
-                throw new Error(
-                  `The resume file cannot be accessed. It may have been deleted or is corrupted.`
-                );
-              } else if (fileData?.signedUrl) {
-                console.log(
-                  "File exists and signed URL created:",
-                  fileData.signedUrl.substring(0, 50) + "..."
-                );
-              }
-            }
-          } else {
-            console.log("Resume file is accessible via direct URL");
-          }
-        } catch (fileAccessError) {
-          console.error("Error checking file accessibility:", fileAccessError);
-          // Continue anyway, let the API handle the file retrieval
-        }
-      } else {
-        console.warn("No resume_url available to verify file accessibility");
-      }
-
-      // Get the current session token to ensure we're authenticated
-      console.log("Retrieving authentication session...");
+      // Get current session token
+      console.log("Getting current auth session");
       const { data: sessionData } = await supabase.auth.getSession();
-
-      console.log("Auth session retrieved:", {
-        hasSession: Boolean(sessionData?.session),
-        expiresAt: sessionData?.session?.expires_at
-          ? new Date(sessionData.session.expires_at * 1000).toLocaleString()
-          : "N/A",
-      });
-
       let accessToken = sessionData?.session?.access_token;
 
       if (!accessToken) {
@@ -274,125 +144,136 @@ export default function ResumeAnalysis({
         }
       }
 
-      // Log the exact request we're making to the API
-      console.log(
-        `Making API request to /api/analyze-resume with resume ID: ${resumeId}`
-      );
-      console.log("Request details:", {
+      // Create a new analysis job
+      console.log("Creating analysis job via API");
+      const response = await fetch("/api/create-analysis-job", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken.substring(0, 10)}...`, // Log only part of the token for security
+          Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ resumeId }),
+        body: JSON.stringify({
+          resumeId,
+          // Add optional parameters if provided
+          ...(jobRole && { jobRole }),
+          ...(industry && { industry }),
+          ...(experienceLevel && { experienceLevel }),
+        }),
       });
 
-      // ENHANCED: Make the request with improved error handling
-      try {
-        const response = await fetch("/api/analyze-resume", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({ resumeId }),
-          credentials: "include",
-        });
+      console.log("Received response:", {
+        status: response.status,
+        ok: response.ok,
+        statusText: response.statusText,
+      });
 
-        console.log("API response received:", {
-          status: response.status,
-          ok: response.ok,
-          statusText: response.statusText,
-        });
+      if (!response.ok) {
+        let errorMessage = "Failed to create analysis job";
 
-        // Check for auth error and attempt to refresh token and retry
-        if (response.status === 401) {
-          console.log(
-            "Authentication failed, attempting to refresh token and retry..."
-          );
-
-          try {
-            // Force token refresh
-            const { data: refreshData, error: refreshError } =
-              await supabase.auth.refreshSession();
-
-            if (refreshError || !refreshData?.session) {
-              console.error("Failed to refresh token on 401:", refreshError);
-              throw new Error("Authentication failed. Please log in again.");
-            }
-
-            // Retry with new token
-            console.log("Retrying request with fresh token...");
-            const retryResponse = await fetch("/api/analyze-resume", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${refreshData.session.access_token}`,
-              },
-              body: JSON.stringify({ resumeId }),
-              credentials: "include",
-            });
-
-            if (!retryResponse.ok) {
-              let errorMessage = "Failed to analyze resume after token refresh";
-              try {
-                const errorData = await retryResponse.json();
-                errorMessage = errorData.error || errorMessage;
-                const details = errorData.details
-                  ? `: ${errorData.details}`
-                  : "";
-                errorMessage = `${errorMessage}${details}`;
-                console.error("Retry failed, error details:", errorData);
-              } catch (parseError) {
-                console.error("Failed to parse error response:", parseError);
-                errorMessage = `${errorMessage} (Status: ${retryResponse.status})`;
-              }
-              throw new Error(errorMessage);
-            }
-
-            const data = await retryResponse.json();
-            console.log("Analysis completed successfully after token refresh");
-            setAnalysis(data);
-            return; // Exit since we've handled the response
-          } catch (refreshErr) {
-            console.error("Error during token refresh and retry:", refreshErr);
-            throw new Error("Authentication failed after refresh attempt");
-          }
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+          const details = errorData.details ? `: ${errorData.details}` : "";
+          errorMessage = `${errorMessage}${details}`;
+          console.error("Error details:", errorData);
+        } catch (parseError) {
+          console.error("Failed to parse error response");
         }
 
-        if (!response.ok) {
-          let errorMessage = "Failed to analyze resume";
-
-          try {
-            const errorData = await response.json();
-            errorMessage = errorData.error || errorMessage;
-            const details = errorData.details ? `: ${errorData.details}` : "";
-            errorMessage = `${errorMessage}${details}`;
-            console.error("Resume analysis error details:", errorData);
-          } catch (parseError) {
-            console.error("Failed to parse error response:", parseError);
-            errorMessage = `${errorMessage} (Status: ${response.status})`;
-          }
-
-          throw new Error(errorMessage);
-        }
-
-        const data = await response.json();
-        console.log("Analysis completed successfully");
-        setAnalysis(data);
-      } catch (fetchError) {
-        console.error("Error fetching analysis results:", fetchError);
-        throw fetchError; // Re-throw to be caught by the outer try/catch
+        throw new Error(errorMessage);
       }
+
+      const data = await response.json();
+      console.log("Job created successfully:", data);
+
+      // Set job info in state
+      setJobId(data.jobId);
+      setJobStatus(data.status);
+
+      // Start polling for job status
+      console.log("Starting to poll for job status");
+      const startTime = Date.now();
+      const interval = setInterval(() => {
+        const elapsedTime = Math.round((Date.now() - startTime) / 1000);
+        setProcessingTime(elapsedTime);
+        checkJobStatus(data.jobId, accessToken);
+      }, 2000); // Check every 2 seconds
+
+      setPollInterval(interval);
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "An unknown error occurred";
-      console.error("Error analyzing resume:", err);
+      console.error("Error creating job:", err);
       setError(errorMessage);
-    } finally {
       setLoading(false);
-      console.groupEnd();
     }
+
+    console.groupEnd();
+  };
+
+  const checkJobStatus = async (id: string, token: string) => {
+    try {
+      // Don't log every poll to avoid console spam
+      const response = await fetch(`/api/get-analysis-status?jobId=${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to check job status: ${response.status} ${response.statusText}`
+        );
+      }
+
+      const data = await response.json();
+      setJobStatus(data.status);
+
+      // If job is completed or failed, stop polling
+      if (data.status === "completed" || data.status === "failed") {
+        console.group("Resume Analysis - Job Completed");
+        console.log(`Job status: ${data.status}`);
+
+        if (pollInterval) {
+          clearInterval(pollInterval);
+          setPollInterval(null);
+          console.log("Polling stopped");
+        }
+
+        if (data.status === "completed") {
+          console.log("Setting analysis result from completed job");
+          setAnalysis(data.result);
+          setLoading(false);
+        } else {
+          console.error("Job failed:", data.error);
+          setError(data.error || "Analysis failed due to an unknown error");
+          setLoading(false);
+        }
+
+        console.groupEnd();
+      }
+    } catch (err) {
+      console.error("Error checking job status:", err);
+      // Don't set error here yet - keep polling
+      // Only set error if polling has been going on for too long (e.g., 2 minutes)
+      if (processingTime > 120) {
+        if (pollInterval) {
+          clearInterval(pollInterval);
+          setPollInterval(null);
+        }
+        setError(
+          "Analysis is taking longer than expected. Please try again later."
+        );
+        setLoading(false);
+      }
+    }
+  };
+
+  const fetchAnalysis = async () => {
+    // This method is kept for backward compatibility
+    // but we're now using createAnalysisJob instead
+    console.warn("fetchAnalysis is deprecated, use createAnalysisJob instead");
+    createAnalysisJob();
   };
 
   const renderScoreRing = (score: number) => {
@@ -453,11 +334,20 @@ export default function ResumeAnalysis({
         <div className="bg-gray-800 rounded-lg shadow-xl p-8 max-w-4xl w-full text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
           <h3 className="text-xl font-medium text-white mb-2">
-            Analyzing Resume
+            {jobStatus === "processing"
+              ? "Analyzing Resume"
+              : "Preparing Analysis"}
           </h3>
-          <p className="text-gray-300">
-            Claude is reviewing your resume. This may take a minute...
+          <p className="text-gray-300 mb-2">
+            {jobStatus === "processing"
+              ? `Claude is analyzing your resume. This may take a minute...`
+              : "Setting up the analysis job..."}
           </p>
+          {jobStatus && processingTime > 0 && (
+            <p className="text-gray-400 text-sm">
+              Status: {jobStatus} (Running for {processingTime} seconds)
+            </p>
+          )}
         </div>
       </div>
     );
