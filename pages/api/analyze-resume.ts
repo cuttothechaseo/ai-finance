@@ -3,6 +3,27 @@ import { createClient } from '@supabase/supabase-js';
 import { analyzeResume, saveResumeAnalysis, ResumeAnalysisResult } from '../../lib/claude';
 import { parseFile } from '../../lib/fileParser';
 
+// Validate environment variables are properly set
+function validateEnvironment() {
+  const variables = {
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
+  };
+  
+  const missingVars = Object.entries(variables)
+    .filter(([_, value]) => !value)
+    .map(([name]) => name);
+
+  if (missingVars.length > 0) {
+    console.error(`API: Missing required environment variables: ${missingVars.join(', ')}`);
+    return false;
+  }
+  
+  return true;
+}
+
 // Create direct admin client
 const directAdminClient = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY
   ? createClient(
@@ -48,6 +69,15 @@ export default async function handler(
   res: NextApiResponse
 ) {
   console.group('API: Resume analysis request received');
+  
+  // Validate environment variables first
+  if (!validateEnvironment()) {
+    console.error('API: Environment validation failed');
+    return res.status(500).json({ 
+      error: 'Server configuration error',
+      details: 'Missing required environment variables'
+    });
+  }
   
   // Make sure we have a valid admin client
   if (!directAdminClient) {
@@ -97,6 +127,25 @@ export default async function handler(
       referer: req.headers.referer,
     });
 
+    // ENHANCED DEBUGGING: Log the complete headers for troubleshooting
+    console.log('API: All request headers for debugging:', JSON.stringify({
+      ...req.headers,
+      // Mask sensitive values
+      authorization: req.headers.authorization ? '[REDACTED]' : undefined,
+      cookie: req.headers.cookie ? '[REDACTED]' : undefined
+    }, null, 2));
+
+    // ENHANCED DEBUGGING: Log environment variables availability
+    console.log('API: Environment variable check:', {
+      hasPublicUrl: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
+      publicUrlPrefix: process.env.NEXT_PUBLIC_SUPABASE_URL ? process.env.NEXT_PUBLIC_SUPABASE_URL.substring(0, 10) + '...' : 'missing',
+      hasAnonKey: Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
+      hasServiceKey: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY),
+      serviceKeyPrefix: process.env.SUPABASE_SERVICE_ROLE_KEY ? process.env.SUPABASE_SERVICE_ROLE_KEY.substring(0, 5) + '...' : 'missing',
+      nodeEnv: process.env.NODE_ENV,
+      vercelEnv: process.env.VERCEL_ENV || 'not set',
+    });
+
     // Authenticate the user
     if (authHeader && authHeader.startsWith('Bearer ')) {
       authMethod = 'bearer';
@@ -111,7 +160,38 @@ export default async function handler(
         parts: token.split('.').length,
       });
       
+      // ENHANCED DEBUGGING: Attempt to decode JWT parts (without verification)
+      if (token.includes('.') && token.split('.').length === 3) {
+        try {
+          const [header, payload, signature] = token.split('.');
+          // Decode and log header
+          const decodedHeader = JSON.parse(Buffer.from(header, 'base64').toString());
+          console.log('API: JWT header:', JSON.stringify(decodedHeader));
+          
+          // Decode and log payload (without showing sensitive data)
+          const decodedPayload = JSON.parse(Buffer.from(payload, 'base64').toString());
+          console.log('API: JWT payload info:', {
+            sub: decodedPayload.sub ? decodedPayload.sub.substring(0, 8) + '...' : 'missing',
+            exp: decodedPayload.exp,
+            iat: decodedPayload.iat,
+            hasAud: Boolean(decodedPayload.aud),
+            hasEmail: Boolean(decodedPayload.email),
+            expTime: decodedPayload.exp ? new Date(decodedPayload.exp * 1000).toISOString() : 'unknown',
+            nowTime: new Date().toISOString(),
+            isExpired: decodedPayload.exp ? (decodedPayload.exp * 1000 < Date.now()) : 'unknown',
+          });
+          
+          // Check token expiration
+          if (decodedPayload.exp && decodedPayload.exp * 1000 < Date.now()) {
+            console.warn('API: JWT token is expired!');
+          }
+        } catch (jwtParseError) {
+          console.error('API: Error decoding JWT for debug:', jwtParseError);
+        }
+      }
+      
       try {
+        console.log('API: Attempting getUser with directAdminClient');
         const { data, error } = await directAdminClient.auth.getUser(token);
         if (error) {
           console.error('API: Supabase auth.getUser error:', {

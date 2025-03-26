@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "../../../../lib/supabase";
 
 // Define type directly since we can't import from lib/claude.ts
 // This keeps the component independent from the API integration
@@ -44,10 +45,11 @@ interface ResumeAnalysisProps {
 }
 
 export default function ResumeAnalysis({
-  resumeId,
+  resumeId: initialResumeId,
   onClose,
   initialData,
 }: ResumeAnalysisProps) {
+  const [resumeId, setResumeId] = useState<string>(initialResumeId);
   const [analysis, setAnalysis] = useState<ResumeAnalysisResult | null>(
     initialData || null
   );
@@ -62,33 +64,334 @@ export default function ResumeAnalysis({
     }
   }, [resumeId, initialData]);
 
+  // Helper function to calculate similarity between two strings
+  function similarityScore(str1: string, str2: string): number {
+    let matches = 0;
+    const maxLen = Math.max(str1.length, str2.length);
+
+    // Count matching characters in the same positions
+    for (let i = 0; i < Math.min(str1.length, str2.length); i++) {
+      if (str1[i] === str2[i]) matches++;
+    }
+
+    return matches / maxLen;
+  }
+
   const fetchAnalysis = async () => {
+    console.group("Resume Analysis API Request");
+    console.log(`Resume ID for analysis: ${resumeId}`);
+
     try {
       setLoading(true);
       setError(null);
 
-      const response = await fetch("/api/analyze-resume", {
+      // Validate resumeId format
+      if (!resumeId || typeof resumeId !== "string") {
+        const error = "Invalid resume ID";
+        console.error(error, { resumeId, type: typeof resumeId });
+        throw new Error(error);
+      }
+
+      // Validate UUID format
+      const uuidRegex =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      if (!uuidRegex.test(resumeId)) {
+        const error = "Invalid resume ID format";
+        console.error(error, { resumeId });
+        throw new Error(error);
+      }
+
+      // Double check the resume ID against the database
+      console.log("Verifying resume ID in database...");
+      let { data: resumeData, error: resumeError } = await supabase
+        .from("resumes")
+        .select("id, file_name, resume_url, file_type")
+        .eq("id", resumeId)
+        .maybeSingle();
+
+      if (resumeError) {
+        console.error("Error verifying resume ID:", resumeError);
+      } else if (!resumeData) {
+        console.error("Resume ID not found in database:", resumeId);
+
+        // Try to find an exact match or a close match with similar ID
+        const { data: similarResumes, error: similarError } = await supabase
+          .from("resumes")
+          .select("id, file_name, resume_url, file_type")
+          .or(`id.ilike.${resumeId.split("-")[0]}%`);
+
+        if (similarError) {
+          console.error(
+            "Error searching for similar resume IDs:",
+            similarError
+          );
+        } else if (similarResumes && similarResumes.length > 0) {
+          // Log the found similar IDs for debugging
+          console.log(
+            "Found similar resume IDs:",
+            similarResumes.map((r) => ({
+              id: r.id,
+              fileName: r.file_name,
+              similarity: similarityScore(resumeId, r.id),
+            }))
+          );
+
+          // Find the most similar ID
+          const mostSimilar = similarResumes.reduce((prev, current) => {
+            const prevScore = similarityScore(resumeId, prev.id);
+            const currentScore = similarityScore(resumeId, current.id);
+            return currentScore > prevScore ? current : prev;
+          }, similarResumes[0]);
+
+          console.log("Most similar resume ID:", {
+            originalId: resumeId,
+            mostSimilarId: mostSimilar.id,
+            fileName: mostSimilar.file_name,
+          });
+
+          // Use the closest matching ID instead
+          if (similarityScore(resumeId, mostSimilar.id) > 0.8) {
+            console.log(
+              "Using similar resume ID instead due to high similarity"
+            );
+            const correctedId = mostSimilar.id;
+            setResumeId(correctedId);
+
+            // Update resumeData to use the similar resume
+            resumeData = mostSimilar;
+          }
+        }
+      } else {
+        console.log("Resume ID verified in database:", {
+          id: resumeData.id,
+          fileName: resumeData.file_name,
+        });
+      }
+
+      // Pre-verify that the file exists and is accessible
+      if (resumeData?.resume_url) {
+        console.log(
+          "Verifying resume file accessibility:",
+          resumeData.resume_url
+        );
+
+        // Try to fetch the file directly to check if it's accessible
+        try {
+          const fileCheckResponse = await fetch(resumeData.resume_url, {
+            method: "HEAD",
+          });
+
+          if (!fileCheckResponse.ok) {
+            console.error("Resume file is not accessible:", {
+              status: fileCheckResponse.status,
+              statusText: fileCheckResponse.statusText,
+              url: resumeData.resume_url,
+            });
+
+            // Try to check if the file exists in Supabase storage
+            const url = new URL(resumeData.resume_url);
+            const pathMatch = url.pathname.match(
+              /\/storage\/v1\/object\/public\/resumes\/(.*)/
+            );
+
+            if (pathMatch && pathMatch[1]) {
+              const storagePath = decodeURIComponent(pathMatch[1]);
+              console.log(
+                "Checking file existence in Supabase storage:",
+                storagePath
+              );
+
+              const { data: fileData, error: fileError } =
+                await supabase.storage
+                  .from("resumes")
+                  .createSignedUrl(storagePath, 60); // Create a signed URL that will work
+
+              if (fileError) {
+                console.error("File not accessible in storage:", fileError);
+                throw new Error(
+                  `The resume file cannot be accessed. It may have been deleted or is corrupted.`
+                );
+              } else if (fileData?.signedUrl) {
+                console.log(
+                  "File exists and signed URL created:",
+                  fileData.signedUrl.substring(0, 50) + "..."
+                );
+              }
+            }
+          } else {
+            console.log("Resume file is accessible via direct URL");
+          }
+        } catch (fileAccessError) {
+          console.error("Error checking file accessibility:", fileAccessError);
+          // Continue anyway, let the API handle the file retrieval
+        }
+      } else {
+        console.warn("No resume_url available to verify file accessibility");
+      }
+
+      // Get the current session token to ensure we're authenticated
+      console.log("Retrieving authentication session...");
+      const { data: sessionData } = await supabase.auth.getSession();
+
+      console.log("Auth session retrieved:", {
+        hasSession: Boolean(sessionData?.session),
+        expiresAt: sessionData?.session?.expires_at
+          ? new Date(sessionData.session.expires_at * 1000).toLocaleString()
+          : "N/A",
+      });
+
+      let accessToken = sessionData?.session?.access_token;
+
+      if (!accessToken) {
+        const error = "No active session found. Please log in again.";
+        console.error(error);
+        throw new Error(error);
+      }
+
+      // ENHANCED: Refresh token if it's close to expiration
+      if (sessionData?.session?.expires_at) {
+        const expiresAt = sessionData.session.expires_at * 1000; // convert to milliseconds
+        const now = Date.now();
+        const timeUntilExpiry = expiresAt - now;
+
+        // If token expires in less than 5 minutes, refresh it
+        if (timeUntilExpiry < 5 * 60 * 1000) {
+          console.log("Token is close to expiry, refreshing...");
+          try {
+            const { data: refreshData, error: refreshError } =
+              await supabase.auth.refreshSession();
+
+            if (refreshError) {
+              console.error("Failed to refresh token:", refreshError);
+            } else if (refreshData?.session) {
+              console.log("Token refreshed successfully");
+              // Use the new token
+              accessToken = refreshData.session.access_token;
+            }
+          } catch (refreshErr) {
+            console.error("Error refreshing token:", refreshErr);
+          }
+        }
+      }
+
+      // Log the exact request we're making to the API
+      console.log(
+        `Making API request to /api/analyze-resume with resume ID: ${resumeId}`
+      );
+      console.log("Request details:", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken.substring(0, 10)}...`, // Log only part of the token for security
         },
         body: JSON.stringify({ resumeId }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to analyze resume");
-      }
+      // ENHANCED: Make the request with improved error handling
+      try {
+        const response = await fetch("/api/analyze-resume", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({ resumeId }),
+          credentials: "include",
+        });
 
-      const data = await response.json();
-      setAnalysis(data);
+        console.log("API response received:", {
+          status: response.status,
+          ok: response.ok,
+          statusText: response.statusText,
+        });
+
+        // Check for auth error and attempt to refresh token and retry
+        if (response.status === 401) {
+          console.log(
+            "Authentication failed, attempting to refresh token and retry..."
+          );
+
+          try {
+            // Force token refresh
+            const { data: refreshData, error: refreshError } =
+              await supabase.auth.refreshSession();
+
+            if (refreshError || !refreshData?.session) {
+              console.error("Failed to refresh token on 401:", refreshError);
+              throw new Error("Authentication failed. Please log in again.");
+            }
+
+            // Retry with new token
+            console.log("Retrying request with fresh token...");
+            const retryResponse = await fetch("/api/analyze-resume", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${refreshData.session.access_token}`,
+              },
+              body: JSON.stringify({ resumeId }),
+              credentials: "include",
+            });
+
+            if (!retryResponse.ok) {
+              let errorMessage = "Failed to analyze resume after token refresh";
+              try {
+                const errorData = await retryResponse.json();
+                errorMessage = errorData.error || errorMessage;
+                const details = errorData.details
+                  ? `: ${errorData.details}`
+                  : "";
+                errorMessage = `${errorMessage}${details}`;
+                console.error("Retry failed, error details:", errorData);
+              } catch (parseError) {
+                console.error("Failed to parse error response:", parseError);
+                errorMessage = `${errorMessage} (Status: ${retryResponse.status})`;
+              }
+              throw new Error(errorMessage);
+            }
+
+            const data = await retryResponse.json();
+            console.log("Analysis completed successfully after token refresh");
+            setAnalysis(data);
+            return; // Exit since we've handled the response
+          } catch (refreshErr) {
+            console.error("Error during token refresh and retry:", refreshErr);
+            throw new Error("Authentication failed after refresh attempt");
+          }
+        }
+
+        if (!response.ok) {
+          let errorMessage = "Failed to analyze resume";
+
+          try {
+            const errorData = await response.json();
+            errorMessage = errorData.error || errorMessage;
+            const details = errorData.details ? `: ${errorData.details}` : "";
+            errorMessage = `${errorMessage}${details}`;
+            console.error("Resume analysis error details:", errorData);
+          } catch (parseError) {
+            console.error("Failed to parse error response:", parseError);
+            errorMessage = `${errorMessage} (Status: ${response.status})`;
+          }
+
+          throw new Error(errorMessage);
+        }
+
+        const data = await response.json();
+        console.log("Analysis completed successfully");
+        setAnalysis(data);
+      } catch (fetchError) {
+        console.error("Error fetching analysis results:", fetchError);
+        throw fetchError; // Re-throw to be caught by the outer try/catch
+      }
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "An unknown error occurred"
-      );
+      const errorMessage =
+        err instanceof Error ? err.message : "An unknown error occurred";
       console.error("Error analyzing resume:", err);
+      setError(errorMessage);
     } finally {
       setLoading(false);
+      console.groupEnd();
     }
   };
 
