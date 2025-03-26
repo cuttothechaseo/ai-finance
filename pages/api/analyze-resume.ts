@@ -1,20 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { supabase } from '../../lib/supabase';
-import { createClient } from '@supabase/supabase-js';
+import { supabase, supabaseAdmin } from '../../lib/supabase';
 import { analyzeResume, saveResumeAnalysis, ResumeAnalysisResult } from '../../lib/claude';
 import { parseFile } from '../../lib/fileParser';
-
-// Create a Supabase admin client with service role key for API routes
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || '',
-  {
-    auth: {
-      persistSession: false, // API routes don't need persistent sessions
-      autoRefreshToken: false,
-    }
-  }
-);
 
 // Type definition for expected request body
 interface AnalyzeResumeRequest extends NextApiRequest {
@@ -70,13 +57,49 @@ export default async function handler(
     // Track auth method for debugging
     let authMethod = 'none';
 
+    // Log all request headers for debugging
+    console.log('API: Request headers:', {
+      authHeader: authHeader ? `${authHeader.substring(0, 15)}...` : 'none',
+      cookie: req.headers.cookie ? 'present' : 'none',
+      host: req.headers.host,
+      origin: req.headers.origin,
+      referer: req.headers.referer,
+    });
+
     if (authHeader && authHeader.startsWith('Bearer ')) {
       // Use the token from Authorization header
       authMethod = 'bearer';
       const token = authHeader.substring(7);
       console.log('API: Using Bearer token authentication, token length:', token.length);
-      const { data, error } = await supabaseAdmin.auth.getUser(token);
-      userResponse = { data, error };
+      
+      // Add detailed token debugging (only log format, not actual token)
+      console.log('API: Token format check:', {
+        firstChars: token.substring(0, 8) + '...',
+        lastChars: '...' + token.substring(token.length - 8),
+        containsJwt: token.includes('.'),
+        parts: token.split('.').length,
+      });
+      
+      // Use try/catch around getUser to get more error details
+      try {
+        const { data, error } = await supabaseAdmin.auth.getUser(token);
+        if (error) {
+          console.error('API: Supabase auth.getUser error:', {
+            message: error.message,
+            status: error.status,
+            name: error.name,
+          });
+        } else {
+          console.log('API: Auth getUser success, has user:', Boolean(data?.user));
+        }
+        userResponse = { data, error };
+      } catch (authTryError) {
+        console.error('API: Exception during auth.getUser:', authTryError);
+        userResponse = { 
+          data: { user: null }, 
+          error: { message: 'Exception during token validation', name: 'AuthException' }
+        };
+      }
     } else {
       // Fallback to session cookie
       authMethod = 'cookie';

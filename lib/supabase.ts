@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 // Get environment variables
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY as string;
 
 // Validate environment variables
 if (!supabaseUrl || !supabaseAnonKey) {
@@ -11,6 +12,17 @@ if (!supabaseUrl || !supabaseAnonKey) {
   );
 }
 
+// Debug environment variables in a safe way
+console.log('Supabase initialization:', {
+  hasUrl: Boolean(supabaseUrl),
+  urlPrefix: supabaseUrl ? supabaseUrl.substring(0, 15) + '...' : 'missing',
+  hasAnonKey: Boolean(supabaseAnonKey),
+  anonKeyLength: supabaseAnonKey?.length || 0,
+  hasServiceKey: Boolean(supabaseServiceRoleKey),
+  serviceKeyLength: supabaseServiceRoleKey?.length || 0,
+  nodeEnv: process.env.NODE_ENV,
+});
+
 // Create a stable instance that won't change across hot module reloads
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
@@ -18,6 +30,14 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     autoRefreshToken: true,
     detectSessionInUrl: false, // Set to false to avoid URL parsing on each reload
     storageKey: 'supabase.auth.token',
+  },
+});
+
+// Create a service role client for admin operations
+export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
+  auth: {
+    persistSession: false, // No need to persist for server-side operations
+    autoRefreshToken: false,
   },
 });
 
