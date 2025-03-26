@@ -105,18 +105,8 @@ export default async function handler(
     
     console.log(`API: Job created successfully with ID: ${job.id}`);
     
-    // Trigger the background processing function
-    console.log('API: Invoking Edge Function for background processing');
-    const { error: functionError } = await supabase.functions.invoke('process-analysis-job', {
-      body: { jobId: job.id }
-    });
-    
-    if (functionError) {
-      console.error('API: Error invoking edge function:', functionError);
-      // Continue anyway - the job is created and can be processed later
-    } else {
-      console.log('API: Edge Function invoked successfully');
-    }
+    // Don't invoke the Edge Function directly - this causes timeouts
+    // The job will be processed by a scheduler or a webhook trigger
     
     console.log('API: Returning success response to client');
     console.groupEnd();
