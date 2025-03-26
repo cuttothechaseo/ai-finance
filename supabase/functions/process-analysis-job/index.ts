@@ -100,20 +100,44 @@ async function processJob(supabase, jobId) {
     try {
       if (resume.resume_url) {
         console.log(`Fetching file from URL: ${resume.resume_url.substring(0, 50)}...`);
-        const response = await fetch(resume.resume_url);
         
-        if (!response.ok) {
-          console.error(`Failed to download file: ${response.status} ${response.statusText}`);
-          await updateJobFailed(supabase, jobId, `Failed to download resume file: ${response.status} ${response.statusText}`);
-          return { error: 'Failed to download resume file' };
+        // Instead of trying to parse the PDF in the Edge Function,
+        // call our dedicated serverless function for PDF parsing
+        const baseUrl = Deno.env.get('NEXT_PUBLIC_BASE_URL') || 'https://wallstreetai.app';
+        const parseUrl = `${baseUrl}/api/parse-resume-pdf`;
+        
+        console.log(`Calling PDF parsing API at ${parseUrl}`);
+        
+        const parseResponse = await fetch(parseUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}` // Use service role key for auth
+          },
+          body: JSON.stringify({
+            resumeId: resume.id,
+            resumeUrl: resume.resume_url
+          })
+        });
+        
+        if (!parseResponse.ok) {
+          const errorText = await parseResponse.text();
+          console.error(`Failed to parse PDF: ${parseResponse.status} ${parseResponse.statusText}`);
+          console.error(`Error details: ${errorText}`);
+          await updateJobFailed(supabase, jobId, `Failed to parse resume: ${parseResponse.status} ${parseResponse.statusText}`);
+          return { error: 'Failed to parse resume file' };
         }
         
-        fileData = await response.arrayBuffer();
-        console.log(`File fetched, size: ${fileData.byteLength} bytes`);
+        const parseResult = await parseResponse.json();
         
-        // 5. Parse the file to extract text
-        resumeText = await parseFile(fileData, resume.file_type || 'application/pdf');
-        console.log(`File parsed, text length: ${resumeText.length} characters`);
+        if (!parseResult.success || !parseResult.text) {
+          console.error(`PDF parsing failed: ${JSON.stringify(parseResult.error || {})}`);
+          await updateJobFailed(supabase, jobId, `Failed to extract text from resume: ${parseResult.details || 'Unknown error'}`);
+          return { error: 'Failed to extract text from resume' };
+        }
+        
+        resumeText = parseResult.text;
+        console.log(`File parsed successfully via API, text length: ${resumeText.length} characters`);
       } else {
         console.error(`No resume URL found for resume: ${resume.id}`);
         await updateJobFailed(supabase, jobId, 'No resume URL found');
@@ -199,37 +223,6 @@ async function updateJobFailed(supabase, jobId, errorMessage) {
   }
 }
 
-// Helper function to parse file content
-async function parseFile(fileBuffer, contentType) {
-  // This is a simplified version - in a real implementation, we would
-  // need to properly parse different file types
-  
-  console.log(`Parsing file of type: ${contentType}`);
-  
-  // For PDF files, we would use a PDF parsing library
-  if (contentType.includes('pdf')) {
-    // Simplified implementation - in reality, we would use a proper PDF parser
-    const decoder = new TextDecoder('utf-8');
-    return decoder.decode(fileBuffer).substring(0, 500) + 
-      "\n[PDF CONTENT WOULD BE EXTRACTED HERE]\n" +
-      "This is a placeholder for the actual PDF content that would be extracted";
-  }
-  
-  // For plain text files
-  if (contentType.includes('text')) {
-    const decoder = new TextDecoder('utf-8');
-    return decoder.decode(fileBuffer);
-  }
-  
-  // For Word documents, we would use a DOCX parsing library
-  if (contentType.includes('word') || contentType.includes('docx')) {
-    return "[WORD DOCUMENT CONTENT WOULD BE EXTRACTED HERE]";
-  }
-  
-  // Default fallback
-  return "The resume content would be extracted here based on the file type.";
-}
-
 // Helper function to call Claude API
 async function analyzeResume(resumeText, options) {
   if (!ANTHROPIC_API_KEY) {
@@ -279,11 +272,76 @@ async function analyzeResume(resumeText, options) {
   
   try {
     const content = result.content[0].text;
-    return JSON.parse(content);
+    console.log(`Raw Claude response: ${content.substring(0, 200)}...`);
+    
+    // Try to extract JSON if it's wrapped in markdown code blocks or has extra text
+    let jsonContent = content;
+    
+    // Check if response contains markdown JSON code blocks
+    const jsonBlockMatch = content.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
+    if (jsonBlockMatch && jsonBlockMatch[1]) {
+      console.log("Found JSON in code block, extracting...");
+      jsonContent = jsonBlockMatch[1];
+    } else {
+      // Look for JSON object pattern if not in code blocks
+      const jsonObjectMatch = content.match(/(\{[\s\S]*\})/);
+      if (jsonObjectMatch && jsonObjectMatch[1]) {
+        console.log("Found JSON object pattern, extracting...");
+        jsonContent = jsonObjectMatch[1];
+      }
+    }
+    
+    try {
+      return JSON.parse(jsonContent);
+    } catch (innerParseError) {
+      console.error("Failed to parse extracted JSON, attempting fallback extraction");
+      
+      // Last resort: try to construct a valid response
+      return constructFallbackResponse(content);
+    }
   } catch (parseError) {
     console.error(`Error parsing Claude response:`, parseError);
     throw new Error(`Failed to parse Claude response: ${parseError.message}`);
   }
+}
+
+// Fallback function to extract meaningful content from a non-JSON response
+function constructFallbackResponse(text) {
+  console.log("Constructing fallback response from text");
+  
+  // Create a basic structure with default values
+  const fallback = {
+    overallScore: 50,
+    summary: "Analysis generated from non-structured response.",
+    strengths: [],
+    areasForImprovement: [],
+    contentQuality: {
+      score: 50,
+      feedback: "Please see summary for details.",
+      suggestions: []
+    },
+    formatting: {
+      score: 50,
+      feedback: "Please see summary for details.",
+      suggestions: []
+    },
+    industryRelevance: {
+      score: 50,
+      feedback: "Please see summary for details.",
+      suggestions: []
+    },
+    impactStatements: {
+      score: 50,
+      feedback: "Please see summary for details.",
+      suggestions: []
+    },
+    suggestedEdits: []
+  };
+  
+  // Add the full text as raw content
+  fallback.rawAnalysis = text;
+  
+  return fallback;
 }
 
 // Helper function to construct system prompt
@@ -293,9 +351,17 @@ function constructSystemPrompt(options) {
   const experienceLevel = options.experienceLevel || "not specified";
 
   return `
-I need you to analyze the following resume for a ${jobRole} position in the ${industry} industry with ${experienceLevel} experience level.
+You are a resume analysis system that MUST respond ONLY with valid JSON.
+Your task is to analyze the following resume for a ${jobRole} position in the ${industry} industry with ${experienceLevel} experience level.
 
-Please provide a comprehensive analysis in JSON format with the following structure:
+RESPONSE FORMAT INSTRUCTIONS:
+1. You MUST respond ONLY with a valid JSON object.
+2. Do NOT include any text outside the JSON object.
+3. Do NOT use markdown formatting, code blocks, or any explanatory text.
+4. Do NOT include phrases like "Here's the JSON:" or "Thank you for providing this resume".
+5. ONLY return the raw JSON object that matches the structure below.
+
+The JSON must match exactly this structure:
 {
   "overallScore": number between 0-100,
   "summary": "Brief overview of the resume's strengths and weaknesses",
@@ -332,5 +398,7 @@ Please provide a comprehensive analysis in JSON format with the following struct
 }
 
 Focus on finance-specific improvements like quantifying achievements, highlighting relevant skills, and using industry terminology appropriately.
+
+REMINDER: Your response MUST be ONLY the JSON object with no additional text before or after.
 `;
 } 
