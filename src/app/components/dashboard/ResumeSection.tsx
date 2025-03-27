@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import { supabase } from "../../../../lib/supabase";
 
 const ResumeAnalysis = dynamic(() => import("../resume/ResumeAnalysis"), {
   ssr: false,
@@ -63,9 +64,81 @@ export default function ResumeSection({ user }: ResumeSectionProps) {
     setShowPreview(false);
   };
 
-  const handleAnalyzeResume = (resume: any) => {
-    setAnalysisResumeId(resume.id);
-    setShowAnalysis(true);
+  const handleAnalyzeResume = async (resume: any) => {
+    console.group("Resume Analysis Start");
+    console.log("Resume data:", {
+      id: resume?.id,
+      file_name: resume?.file_name,
+      has_user_id: Boolean(resume?.user_id),
+    });
+
+    if (!resume || !resume.id) {
+      console.error("Invalid resume data:", resume);
+      console.groupEnd();
+      // Show an error toast or message to the user
+      return;
+    }
+
+    // Validate resume ID format (UUID)
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const isValidUuid =
+      typeof resume.id === "string" && uuidRegex.test(resume.id);
+
+    // Log the exact resume ID for debugging
+    console.log("Resume ID for analysis:", {
+      exactId: resume.id,
+      formattedForLog: `${resume.id.substring(0, 8)}-${resume.id.substring(
+        8,
+        12
+      )}-${resume.id.substring(12, 16)}-${resume.id.substring(
+        16,
+        20
+      )}-${resume.id.substring(20)}`,
+      isValid: isValidUuid,
+      idType: typeof resume.id,
+      idLength: resume.id.length,
+    });
+
+    if (!isValidUuid) {
+      console.error("Invalid resume ID format:", resume.id);
+      console.groupEnd();
+      // Show an error toast or message to the user
+      return;
+    }
+
+    try {
+      // Validate the resume ID exists in the database
+      const { data: resumeCheck, error: resumeCheckError } = await supabase
+        .from("resumes")
+        .select("id")
+        .eq("id", resume.id)
+        .maybeSingle();
+
+      if (resumeCheckError) {
+        console.error("Error verifying resume ID:", resumeCheckError);
+        console.groupEnd();
+        return;
+      }
+
+      if (!resumeCheck) {
+        console.error("Resume ID not found in database:", resume.id);
+        console.groupEnd();
+        // Show an error message to the user
+        return;
+      }
+
+      console.log("Resume ID verified in database:", resumeCheck.id);
+
+      console.log(`Preparing to analyze resume: ${resume.id}`);
+      setAnalysisResumeId(resume.id);
+      setShowAnalysis(true);
+      console.groupEnd();
+    } catch (error) {
+      console.error("Error preparing resume analysis:", error);
+      console.groupEnd();
+      // Show an error toast or message to the user
+    }
   };
 
   const closeAnalysis = () => {
