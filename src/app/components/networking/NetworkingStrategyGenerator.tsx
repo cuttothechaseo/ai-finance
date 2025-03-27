@@ -31,77 +31,36 @@ export default function NetworkingStrategyGenerator({
     e.preventDefault();
     setIsGenerating(true);
     setError("");
-    setGeneratedMessage("");
 
     try {
-      // Add short timeout to avoid API overloading
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-      try {
-        // Send a trimmed version of the resume text to reduce payload size
-        const trimmedFormData = {
-          ...formData,
-          resumeText: formData.resumeText.substring(0, 500), // Limit to 500 chars
-        };
-
-        const response = await fetch("/api/networking/generate", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(trimmedFormData),
-          signal: controller.signal,
-        });
-
-        // Check for timeout or network error first
-        if (!response) {
-          throw new Error(
-            "Network error. Please check your connection and try again."
-          );
-        }
-
-        // Get response text first to handle non-JSON responses
-        const responseText = await response.text();
-
-        // Early check for empty response
-        if (!responseText || responseText.trim() === "") {
-          throw new Error(
-            "Server returned an empty response. Please try again."
-          );
-        }
-
-        // Try to parse as JSON
-        let data;
-        try {
-          data = JSON.parse(responseText);
-        } catch (parseError) {
-          console.error("Failed to parse response as JSON:", responseText);
-          throw new Error(
-            "Server returned invalid JSON. This may indicate a server error."
-          );
-        }
-
-        if (!response.ok || !data.success) {
-          throw new Error(
-            data.error || `Error ${response.status}: Failed to generate message`
-          );
-        }
-
-        setGeneratedMessage(data.message);
-      } catch (fetchError: any) {
-        if (fetchError.name === "AbortError") {
-          throw new Error("Request timed out. Please try again.");
-        }
-        throw fetchError;
-      } finally {
-        clearTimeout(timeoutId);
+      if (!session) {
+        throw new Error("Not authenticated");
       }
+
+      const response = await fetch("/api/networking/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to generate message");
+      }
+
+      setGeneratedMessage(data.message);
     } catch (error: any) {
       console.error("Error generating message:", error);
       setError(
-        error.message ||
-          "An error occurred while generating the message. Please try again."
+        error.message || "An error occurred while generating the message"
       );
     } finally {
       setIsGenerating(false);
