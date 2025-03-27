@@ -29,11 +29,24 @@ async function callClaudeAPI(prompt: string) {
   });
 
   if (!response.ok) {
+    const errorText = await response.text();
+    console.error('Claude API error response:', errorText);
     throw new Error(`Claude API error: ${response.status} ${response.statusText}`);
   }
 
-  const result = await response.json();
-  return result.content[0].text;
+  try {
+    const result = await response.json();
+    
+    if (!result.content || !result.content.length || result.content[0].type !== 'text') {
+      console.error('Unexpected Claude API response format:', result);
+      throw new Error('Invalid response format from Claude API');
+    }
+    
+    return result.content[0].text;
+  } catch (parseError) {
+    console.error('Error parsing Claude API response:', parseError);
+    throw new Error('Failed to parse Claude API response');
+  }
 }
 
 export async function POST(request: Request) {

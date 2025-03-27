@@ -29,38 +29,52 @@ export default function NetworkingStrategyGenerator({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsGenerating(true);
+    setGeneratedMessage("");
     setError("");
+    setIsGenerating(true);
 
     try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
 
-      if (!session) {
-        throw new Error("Not authenticated");
+      if (!token) {
+        setError("You must be logged in to generate messages");
+        setIsGenerating(false);
+        return;
       }
 
       const response = await fetch("/api/networking/generate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.error || "Failed to generate message");
+        let errorMessage = "Failed to generate message";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch (parseError) {
+          const errorText = await response.text();
+          errorMessage = errorText || errorMessage;
+        }
+        throw new Error(errorMessage);
       }
 
-      setGeneratedMessage(data.message);
+      try {
+        const data = await response.json();
+        setGeneratedMessage(data.message);
+      } catch (parseError) {
+        console.error("Error parsing API response:", parseError);
+        throw new Error("Failed to parse response from server");
+      }
     } catch (error: any) {
       console.error("Error generating message:", error);
       setError(
-        error.message || "An error occurred while generating the message"
+        error.message || "An error occurred while generating your message"
       );
     } finally {
       setIsGenerating(false);
