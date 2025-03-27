@@ -1,66 +1,66 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import Anthropic from '@anthropic-ai/sdk';
 
 // Initialize Supabase client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-// Initialize Anthropic client
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY!,
-});
+// Helper function to initialize Anthropic client
+async function getAnthropicClient() {
+  // Dynamically import the Anthropic SDK
+  const { default: Anthropic } = await import('@anthropic-ai/sdk');
+  return new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY!,
+  });
+}
 
 export async function POST(request: Request) {
   try {
-    // Get auth token from request
-    const authHeader = request.headers.get('Authorization');
-    if (!authHeader) {
-      return NextResponse.json({ error: 'No authorization header' }, { status: 401 });
+    // Extract authorization header
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
     }
 
-    // Get authenticated user
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser(authHeader.replace('Bearer ', ''));
-
-    if (userError || !user) {
-      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+    // Verify token with Supabase
+    const token = authHeader.split(' ')[1];
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: 'Invalid token' },
+        { status: 401 }
+      );
     }
 
     // Parse request body
-    const { companyName, role, contactName, contactRole, resumeText, messageType } = await request.json();
+    const body = await request.json();
+    const { companyName, role, contactName, contactRole, resumeText, messageType } = body;
 
     // Validate required fields
     if (!companyName || !role || !resumeText || !messageType) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
     }
 
-    // Generate prompt based on message type
-    let prompt = `You are a professional career coach helping someone write a ${
-      messageType === 'linkedin_message'
-        ? 'LinkedIn message'
-        : messageType === 'intro_email'
-        ? 'introduction email'
-        : 'cover letter'
-    } for a ${role} position at ${companyName}.`;
-
-    if (contactName) {
-      prompt += ` The message will be sent to ${contactName}${
-        contactRole ? `, who is a ${contactRole}` : ''
-      }.`;
+    // Create prompt based on message type
+    let prompt = '';
+    if (messageType === 'linkedin_message') {
+      prompt = `Write a professional LinkedIn message to connect with someone at ${companyName} for a ${role} position. ${contactName ? `The contact's name is ${contactName}${contactRole ? ` and they are a ${contactRole}` : ''}.` : ''} Here's my resume information: ${resumeText}`;
+    } else if (messageType === 'intro_email') {
+      prompt = `Write a professional introduction email to someone at ${companyName} for a ${role} position. ${contactName ? `The email is addressed to ${contactName}${contactRole ? ` who is a ${contactRole}` : ''}.` : ''} Here's my background: ${resumeText}`;
+    } else if (messageType === 'cover_letter') {
+      prompt = `Write a professional cover letter for a ${role} position at ${companyName}. ${contactName ? `The letter is addressed to ${contactName}${contactRole ? ` who is a ${contactRole}` : ''}.` : ''} Here's my resume information: ${resumeText}`;
     }
 
-    prompt += `\n\nHere is the person's resume:\n${resumeText}\n\n`;
-
-    prompt += messageType === 'linkedin_message'
-      ? 'Write a concise, professional LinkedIn message (max 300 characters) that expresses interest in the role and company. Focus on key relevant experience.'
-      : messageType === 'intro_email'
-      ? 'Write a professional introduction email that highlights relevant experience and expresses interest in learning more about the role.'
-      : 'Write a compelling cover letter that demonstrates understanding of the company and role while highlighting relevant experience and achievements.';
+    // Get Anthropic client
+    const anthropic = await getAnthropicClient();
 
     // Call Claude API
     const completion = await anthropic.messages.create({
@@ -83,29 +83,28 @@ export async function POST(request: Request) {
     // Store in database
     const { data: messageData, error: insertError } = await supabase
       .from('networking_messages')
-      .insert([
-        {
-          user_id: user.id,
-          company_name: companyName,
-          role,
-          contact_name: contactName,
-          contact_role: contactRole,
-          resume_text: resumeText,
-          message_type: messageType,
-          generated_message: generatedMessage,
-        },
-      ])
-      .select()
+      .insert({
+        user_id: user.id,
+        company_name: companyName,
+        role: role,
+        contact_name: contactName || null,
+        contact_role: contactRole || null,
+        resume_text: resumeText,
+        message_type: messageType,
+        generated_message: generatedMessage,
+      })
+      .select('id')
       .single();
 
     if (insertError) {
-      console.error('Error storing message:', insertError);
+      console.error('Database error:', insertError);
       return NextResponse.json(
-        { error: 'Error storing message in database' },
+        { error: 'Failed to save message' },
         { status: 500 }
       );
     }
 
+    // Return the generated message
     return NextResponse.json({
       message: generatedMessage,
       id: messageData.id,
@@ -113,18 +112,19 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error('Error generating message:', error);
     return NextResponse.json(
-      { error: error.message || 'Internal server error' },
+      { error: error.message || 'Failed to generate message' },
       { status: 500 }
     );
   }
 }
 
-// Handle CORS preflight requests
+// Handle OPTIONS requests for CORS
 export async function OPTIONS() {
-  return NextResponse.json({}, {
+  return new NextResponse(null, {
+    status: 204,
     headers: {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },
   });
