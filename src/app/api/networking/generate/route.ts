@@ -6,13 +6,34 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-// Helper function to initialize Anthropic client
-async function getAnthropicClient() {
-  // Dynamically import the Anthropic SDK
-  const { default: Anthropic } = await import('@anthropic-ai/sdk');
-  return new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY!,
+// Direct API call function as fallback
+async function callClaudeAPI(prompt: string) {
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': process.env.ANTHROPIC_API_KEY!,
+      'anthropic-version': '2023-06-01'
+    },
+    body: JSON.stringify({
+      model: 'claude-3-opus-20240229',
+      max_tokens: 1500,
+      temperature: 0.7,
+      messages: [
+        {
+          role: 'user',
+          content: prompt
+        }
+      ]
+    })
   });
+
+  if (!response.ok) {
+    throw new Error(`Claude API error: ${response.status} ${response.statusText}`);
+  }
+
+  const result = await response.json();
+  return result.content[0].text;
 }
 
 export async function POST(request: Request) {
@@ -59,26 +80,17 @@ export async function POST(request: Request) {
       prompt = `Write a professional cover letter for a ${role} position at ${companyName}. ${contactName ? `The letter is addressed to ${contactName}${contactRole ? ` who is a ${contactRole}` : ''}.` : ''} Here's my resume information: ${resumeText}`;
     }
 
-    // Get Anthropic client
-    const anthropic = await getAnthropicClient();
-
-    // Call Claude API
-    const completion = await anthropic.messages.create({
-      model: 'claude-3-opus-20240229',
-      max_tokens: 1500,
-      temperature: 0.7,
-      messages: [
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
-    });
-
-    // Extract the message content
-    const generatedMessage = completion.content[0].type === 'text' 
-      ? completion.content[0].text 
-      : '';
+    // Generate the message using direct API call
+    let generatedMessage = '';
+    try {
+      generatedMessage = await callClaudeAPI(prompt);
+    } catch (apiError: any) {
+      console.error('Error calling Claude API:', apiError);
+      return NextResponse.json(
+        { error: apiError.message || 'Failed to generate message' },
+        { status: 500 }
+      );
+    }
 
     // Store in database
     const { data: messageData, error: insertError } = await supabase
