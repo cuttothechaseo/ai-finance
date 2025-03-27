@@ -34,30 +34,21 @@ export default function NetworkingStrategyGenerator({
     setGeneratedMessage("");
 
     try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (!session) {
-        throw new Error("Not authenticated. Please log in again.");
-      }
-
-      // Add timeout to the fetch request - shorter timeout to avoid server timeout
+      // Add short timeout to avoid API overloading
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
       try {
         // Send a trimmed version of the resume text to reduce payload size
         const trimmedFormData = {
           ...formData,
-          resumeText: formData.resumeText.substring(0, 1000), // Limit to 1000 chars
+          resumeText: formData.resumeText.substring(0, 500), // Limit to 500 chars
         };
 
         const response = await fetch("/api/networking/generate", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${session.access_token}`,
           },
           body: JSON.stringify(trimmedFormData),
           signal: controller.signal,
@@ -87,11 +78,11 @@ export default function NetworkingStrategyGenerator({
         } catch (parseError) {
           console.error("Failed to parse response as JSON:", responseText);
           throw new Error(
-            "Server returned invalid JSON. This may indicate a server timeout or error."
+            "Server returned invalid JSON. This may indicate a server error."
           );
         }
 
-        if (!response.ok) {
+        if (!response.ok || !data.success) {
           throw new Error(
             data.error || `Error ${response.status}: Failed to generate message`
           );
@@ -100,9 +91,7 @@ export default function NetworkingStrategyGenerator({
         setGeneratedMessage(data.message);
       } catch (fetchError: any) {
         if (fetchError.name === "AbortError") {
-          throw new Error(
-            "Request timed out. The server took too long to respond. Try with a shorter resume text."
-          );
+          throw new Error("Request timed out. Please try again.");
         }
         throw fetchError;
       } finally {

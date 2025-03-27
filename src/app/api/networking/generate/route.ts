@@ -1,72 +1,51 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 
-// Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+// Basic prompt templates
+const templates = {
+  linkedin_message: `
+Hi {contactName},
 
-// Simplified Claude API call with shorter timeout
-async function callClaudeAPI(prompt: string) {
-  console.log('API: Making Claude API request...');
-  
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
-  
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY!,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-3-sonnet-20240229', // Using a faster model with less complexity
-        max_tokens: 800, // Reduced token count for faster response
-        temperature: 0.7,
-        messages: [
-          {
-            role: 'user',
-            content: prompt
-          }
-        ]
-      }),
-      signal: controller.signal
-    });
-    
-    if (!response.ok) {
-      throw new Error(`Claude API error: ${response.status}`);
-    }
+I noticed your role at {companyName} and I'm interested in the {role} position. My background includes {skills}.
 
-    const result = await response.json();
-    return result.content[0].text;
-  } catch (error: any) {
-    if (error.name === 'AbortError') {
-      throw new Error('Request timed out');
-    }
-    throw error;
-  } finally {
-    clearTimeout(timeoutId);
-  }
-}
+Would you be open to a quick conversation about the team and opportunities at {companyName}?
+
+Thank you for your time,
+[Your Name]
+  `,
+  intro_email: `
+Subject: {role} Position Inquiry
+
+Dear {contactName},
+
+I hope this email finds you well. I'm writing to express my interest in the {role} position at {companyName}.
+
+My skills include {skills}, which I believe align well with what you're looking for.
+
+I'd appreciate the opportunity to discuss how my background might be a good fit for your team.
+
+Thank you for your consideration.
+
+Best regards,
+[Your Name]
+  `,
+  cover_letter: `
+Dear {contactName},
+
+I am writing to express my interest in the {role} position at {companyName}. With my background in {skills}, I believe I would be a valuable addition to your team.
+
+Throughout my career, I have developed strong skills in these areas, allowing me to deliver results effectively and efficiently.
+
+I am excited about the opportunity to bring my unique skills and experiences to {companyName} and would welcome the chance to discuss how I can contribute to your organization.
+
+Thank you for considering my application.
+
+Sincerely,
+[Your Name]
+  `
+};
 
 export async function POST(request: Request) {
   try {
-    // Extract auth token
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // Validate user
-    const token = authHeader.split(' ')[1];
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-    
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
-    }
-
     // Parse request body
     const body = await request.json();
     const { companyName, role, contactName, contactRole, resumeText, messageType } = body;
@@ -76,43 +55,29 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Create simplified prompt (shorter for faster processing)
-    let prompt = '';
-    if (messageType === 'linkedin_message') {
-      prompt = `Write a brief LinkedIn message to connect with someone at ${companyName} for a ${role} position.`;
-    } else if (messageType === 'intro_email') {
-      prompt = `Write a short introduction email for a ${role} position at ${companyName}.`;
-    } else if (messageType === 'cover_letter') {
-      prompt = `Write a cover letter for a ${role} position at ${companyName}.`;
-    }
+    // Get the appropriate template
+    const template = templates[messageType as keyof typeof templates] || templates.intro_email;
     
-    // Add minimal context to keep prompt short
-    prompt += ` Skills: ${resumeText.substring(0, 150)}${resumeText.length > 150 ? '...' : ''}`;
-    if (contactName) {
-      prompt += ` Addressed to: ${contactName}${contactRole ? ` (${contactRole})` : ''}.`;
-    }
+    // Extract skills from resume text (first 100 chars)
+    const skills = resumeText.substring(0, 100) + (resumeText.length > 100 ? '...' : '');
 
-    // Generate message
-    try {
-      const generatedMessage = await callClaudeAPI(prompt);
-      
-      // First return the response before saving to database to avoid timeout
-      return NextResponse.json({ message: generatedMessage });
-      
-      // Note: In a more robust implementation, we would save to the database
-      // in a separate background process or webhook to avoid timeout issues
-      
-    } catch (apiError: any) {
-      console.error('API error:', apiError.message);
-      return NextResponse.json(
-        { error: 'Failed to generate message. Please try again.' },
-        { status: 500 }
-      );
-    }
+    // Fill in the template
+    let message = template
+      .replace('{companyName}', companyName)
+      .replace('{role}', role)
+      .replace('{skills}', skills)
+      .replace('{contactName}', contactName || 'Hiring Manager');
+
+    // Return the generated message
+    return NextResponse.json({ 
+      message,
+      success: true 
+    });
+    
   } catch (error: any) {
     console.error('Error:', error.message);
     return NextResponse.json(
-      { error: 'An unexpected error occurred' },
+      { error: 'An unexpected error occurred', success: false },
       { status: 500 }
     );
   }
