@@ -31,6 +31,7 @@ export default function NetworkingStrategyGenerator({
     e.preventDefault();
     setIsGenerating(true);
     setError("");
+    setGeneratedMessage("");
 
     try {
       const {
@@ -38,29 +39,60 @@ export default function NetworkingStrategyGenerator({
       } = await supabase.auth.getSession();
 
       if (!session) {
-        throw new Error("Not authenticated");
+        throw new Error("Not authenticated. Please log in again.");
       }
 
-      const response = await fetch("/api/networking/generate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify(formData),
-      });
+      // Add timeout to the fetch request
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
-      const data = await response.json();
+      try {
+        const response = await fetch("/api/networking/generate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify(formData),
+          signal: controller.signal,
+        });
 
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to generate message");
+        // Get response text first to handle non-JSON responses
+        const responseText = await response.text();
+
+        // Try to parse as JSON
+        let data;
+        try {
+          data = JSON.parse(responseText);
+        } catch (parseError) {
+          console.error("Failed to parse response as JSON:", responseText);
+          throw new Error(
+            `Server returned invalid JSON. This may indicate a server timeout or error.`
+          );
+        }
+
+        if (!response.ok) {
+          throw new Error(
+            data.error || `Error ${response.status}: Failed to generate message`
+          );
+        }
+
+        setGeneratedMessage(data.message);
+      } catch (fetchError: any) {
+        if (fetchError.name === "AbortError") {
+          throw new Error(
+            "Request timed out. The server took too long to respond."
+          );
+        }
+        throw fetchError;
+      } finally {
+        clearTimeout(timeoutId);
       }
-
-      setGeneratedMessage(data.message);
     } catch (error: any) {
       console.error("Error generating message:", error);
       setError(
-        error.message || "An error occurred while generating the message"
+        error.message ||
+          "An error occurred while generating the message. Please try again."
       );
     } finally {
       setIsGenerating(false);
