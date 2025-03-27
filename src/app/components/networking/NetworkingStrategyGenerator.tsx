@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { supabase } from "../../../lib/supabase";
 
 export interface NetworkingStrategyGeneratorProps {
   onClose: () => void;
@@ -16,20 +17,51 @@ export default function NetworkingStrategyGenerator({
     contactName: "",
     contactRole: "",
     resumeText: "",
-    messageType: "linkedin_message",
+    messageType: "linkedin_message" as
+      | "linkedin_message"
+      | "intro_email"
+      | "cover_letter",
   });
 
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedMessage, setGeneratedMessage] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsGenerating(true);
+    setError("");
 
     try {
-      // API call will be implemented here
-      console.log("Generating message with:", formData);
-    } catch (error) {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        throw new Error("Not authenticated");
+      }
+
+      const response = await fetch("/api/networking/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to generate message");
+      }
+
+      setGeneratedMessage(data.message);
+    } catch (error: any) {
       console.error("Error generating message:", error);
+      setError(
+        error.message || "An error occurred while generating the message"
+      );
     } finally {
       setIsGenerating(false);
     }
@@ -60,16 +92,16 @@ export default function NetworkingStrategyGenerator({
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full overflow-hidden"
+        className="bg-[#151538] rounded-lg shadow-xl max-w-2xl w-full overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="px-6 py-4 border-b border-gray-700 flex justify-between items-center">
+        <div className="px-6 py-4 border-b border-[#2A2A4A] flex justify-between items-center">
           <h3 className="text-xl font-medium text-white">
             Generate Networking Message
           </h3>
           <button
             onClick={onClose}
-            className="p-1 rounded-md hover:bg-gray-700 transition-colors"
+            className="p-1 rounded-md hover:bg-[#2A2A4A] transition-colors"
           >
             <svg
               className="w-6 h-6 text-gray-400"
@@ -103,7 +135,8 @@ export default function NetworkingStrategyGenerator({
                 value={formData.companyName}
                 onChange={handleInputChange}
                 required
-                className="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                className="appearance-none block w-full px-3 py-3 border border-[#3A3A5A] rounded-lg shadow-sm placeholder-[#6C6C8A] bg-[#1E1E3F]/50 text-white focus:outline-none focus:ring-2 focus:ring-[#6C63FF]/50 focus:border-[#6C63FF] transition-all duration-200 sm:text-sm"
+                placeholder="Company name"
               />
             </div>
 
@@ -121,7 +154,8 @@ export default function NetworkingStrategyGenerator({
                 value={formData.role}
                 onChange={handleInputChange}
                 required
-                className="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                className="appearance-none block w-full px-3 py-3 border border-[#3A3A5A] rounded-lg shadow-sm placeholder-[#6C6C8A] bg-[#1E1E3F]/50 text-white focus:outline-none focus:ring-2 focus:ring-[#6C63FF]/50 focus:border-[#6C63FF] transition-all duration-200 sm:text-sm"
+                placeholder="Position or role"
               />
             </div>
 
@@ -138,7 +172,8 @@ export default function NetworkingStrategyGenerator({
                 name="contactName"
                 value={formData.contactName}
                 onChange={handleInputChange}
-                className="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                className="appearance-none block w-full px-3 py-3 border border-[#3A3A5A] rounded-lg shadow-sm placeholder-[#6C6C8A] bg-[#1E1E3F]/50 text-white focus:outline-none focus:ring-2 focus:ring-[#6C63FF]/50 focus:border-[#6C63FF] transition-all duration-200 sm:text-sm"
+                placeholder="Contact person's name"
               />
             </div>
 
@@ -155,7 +190,8 @@ export default function NetworkingStrategyGenerator({
                 name="contactRole"
                 value={formData.contactRole}
                 onChange={handleInputChange}
-                className="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                className="appearance-none block w-full px-3 py-3 border border-[#3A3A5A] rounded-lg shadow-sm placeholder-[#6C6C8A] bg-[#1E1E3F]/50 text-white focus:outline-none focus:ring-2 focus:ring-[#6C63FF]/50 focus:border-[#6C63FF] transition-all duration-200 sm:text-sm"
+                placeholder="Contact's role or position"
               />
             </div>
 
@@ -173,7 +209,8 @@ export default function NetworkingStrategyGenerator({
                 onChange={handleInputChange}
                 required
                 rows={4}
-                className="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                className="appearance-none block w-full px-3 py-3 border border-[#3A3A5A] rounded-lg shadow-sm placeholder-[#6C6C8A] bg-[#1E1E3F]/50 text-white focus:outline-none focus:ring-2 focus:ring-[#6C63FF]/50 focus:border-[#6C63FF] transition-all duration-200 sm:text-sm custom-scrollbar"
+                placeholder="Paste your resume text here"
               />
             </div>
 
@@ -190,27 +227,43 @@ export default function NetworkingStrategyGenerator({
                 value={formData.messageType}
                 onChange={handleInputChange}
                 required
-                className="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                className="appearance-none block w-full px-3 py-3 border border-[#3A3A5A] rounded-lg shadow-sm bg-[#1E1E3F]/50 text-white focus:outline-none focus:ring-2 focus:ring-[#6C63FF]/50 focus:border-[#6C63FF] transition-all duration-200 sm:text-sm"
               >
                 <option value="linkedin_message">LinkedIn Message</option>
                 <option value="intro_email">Introduction Email</option>
                 <option value="cover_letter">Cover Letter</option>
               </select>
             </div>
+
+            {error && <div className="text-red-400 text-sm mt-2">{error}</div>}
+
+            {/* Generated Message Display */}
+            {generatedMessage && (
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-white mb-2">
+                  Generated Message
+                </label>
+                <div className="bg-gray-800 rounded-lg p-4 max-h-[300px] overflow-y-auto custom-scrollbar">
+                  <pre className="text-gray-300 whitespace-pre-wrap font-sans">
+                    {generatedMessage}
+                  </pre>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="mt-6 flex justify-end space-x-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-md bg-gray-700 text-white hover:bg-gray-600 transition-colors"
+              className="px-4 py-2 rounded-md bg-[#2A2A4A] text-white hover:bg-[#3A3A5A] transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isGenerating}
-              className="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 rounded-md bg-[#6C63FF] text-white hover:bg-[#5A52D5] transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isGenerating ? (
                 <>
