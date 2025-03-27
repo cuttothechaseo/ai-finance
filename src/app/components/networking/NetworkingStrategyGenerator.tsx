@@ -42,23 +42,43 @@ export default function NetworkingStrategyGenerator({
         throw new Error("Not authenticated. Please log in again.");
       }
 
-      // Add timeout to the fetch request
+      // Add timeout to the fetch request - shorter timeout to avoid server timeout
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout
 
       try {
+        // Send a trimmed version of the resume text to reduce payload size
+        const trimmedFormData = {
+          ...formData,
+          resumeText: formData.resumeText.substring(0, 1000), // Limit to 1000 chars
+        };
+
         const response = await fetch("/api/networking/generate", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${session.access_token}`,
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(trimmedFormData),
           signal: controller.signal,
         });
 
+        // Check for timeout or network error first
+        if (!response) {
+          throw new Error(
+            "Network error. Please check your connection and try again."
+          );
+        }
+
         // Get response text first to handle non-JSON responses
         const responseText = await response.text();
+
+        // Early check for empty response
+        if (!responseText || responseText.trim() === "") {
+          throw new Error(
+            "Server returned an empty response. Please try again."
+          );
+        }
 
         // Try to parse as JSON
         let data;
@@ -67,7 +87,7 @@ export default function NetworkingStrategyGenerator({
         } catch (parseError) {
           console.error("Failed to parse response as JSON:", responseText);
           throw new Error(
-            `Server returned invalid JSON. This may indicate a server timeout or error.`
+            "Server returned invalid JSON. This may indicate a server timeout or error."
           );
         }
 
@@ -81,7 +101,7 @@ export default function NetworkingStrategyGenerator({
       } catch (fetchError: any) {
         if (fetchError.name === "AbortError") {
           throw new Error(
-            "Request timed out. The server took too long to respond."
+            "Request timed out. The server took too long to respond. Try with a shorter resume text."
           );
         }
         throw fetchError;
