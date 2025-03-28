@@ -99,29 +99,47 @@ export default function NetworkingStrategyGenerator({
               const data = JSON.parse(event.slice(6));
 
               if (data.status === "processing") {
-                switch (data.step) {
-                  case "starting":
-                    setProcessingStep("Initializing...");
-                    setProgress(10);
-                    break;
-                  case "authenticating":
-                    setProcessingStep("Authenticating...");
-                    setProgress(20);
-                    break;
-                  case "parsing_request":
-                    setProcessingStep("Processing request...");
-                    setProgress(30);
-                    break;
-                  case "generating_message":
+                if (data.progress !== undefined) {
+                  setProgress(data.progress);
+                } else {
+                  switch (data.step) {
+                    case "starting":
+                      setProcessingStep("Initializing...");
+                      setProgress(10);
+                      break;
+                    case "authenticating":
+                      setProcessingStep("Authenticating...");
+                      setProgress(20);
+                      break;
+                    case "parsing_request":
+                      setProcessingStep("Processing request...");
+                      setProgress(30);
+                      break;
+                    case "generating_message":
+                      setProcessingStep("Generating message with Claude...");
+                      if (data.progress === undefined) {
+                        setProgress(50);
+                      }
+                      break;
+                    case "saving_message":
+                      setProcessingStep("Saving generated message...");
+                      if (data.progress === undefined) {
+                        setProgress(80);
+                      }
+                      break;
+                    default:
+                      setProcessingStep(`Processing: ${data.step}`);
+                  }
+                }
+
+                if (data.step === "generating_message") {
+                  if (data.elapsed !== undefined) {
+                    setProcessingStep(
+                      `Generating message with Claude... (${data.elapsed}s)`
+                    );
+                  } else {
                     setProcessingStep("Generating message with Claude...");
-                    setProgress(50);
-                    break;
-                  case "saving_message":
-                    setProcessingStep("Saving generated message...");
-                    setProgress(80);
-                    break;
-                  default:
-                    setProcessingStep(`Processing: ${data.step}`);
+                  }
                 }
               } else if (data.status === "completed") {
                 setProcessingStep("Complete!");
@@ -161,18 +179,30 @@ export default function NetworkingStrategyGenerator({
   const renderProgressBar = () => {
     if (!isGenerating) return null;
 
+    // Determine if we're in the Claude generation phase
+    const isGeneratingPhase = processingStep.includes(
+      "Generating message with Claude"
+    );
+
     return (
       <div className="mt-4">
         <div className="flex items-center justify-between mb-1">
           <p className="text-sm text-gray-300">{processingStep}</p>
           <p className="text-sm text-gray-300">{progress}%</p>
         </div>
-        <div className="w-full bg-gray-700 rounded-full h-2.5">
+        <div className="w-full bg-gray-700 rounded-full h-2.5 overflow-hidden">
           <div
-            className="bg-primary h-2.5 rounded-full transition-all duration-500"
+            className={`h-2.5 rounded-full transition-all duration-500 ${
+              isGeneratingPhase ? "bg-primary animate-pulse" : "bg-primary"
+            }`}
             style={{ width: `${progress}%` }}
           ></div>
         </div>
+        {isGeneratingPhase && (
+          <p className="text-xs text-gray-400 mt-1">
+            This may take a moment. Claude is crafting your message...
+          </p>
+        )}
       </div>
     );
   };

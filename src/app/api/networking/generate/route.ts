@@ -91,6 +91,9 @@ export async function POST(request: Request) {
 
   // Process in the background
   (async () => {
+    // Variable to store interval for heartbeat
+    let heartbeatInterval: NodeJS.Timeout | null = null;
+
     try {
       // Send initial status
       await writer.write(encoder.encode(`data: ${JSON.stringify({ status: 'processing', step: 'starting' })}\n\n`));
@@ -137,14 +140,65 @@ export async function POST(request: Request) {
       }
 
       // Generate the message using direct API call
-      await writer.write(encoder.encode(`data: ${JSON.stringify({ status: 'processing', step: 'generating_message' })}\n\n`));
+      await writer.write(encoder.encode(`data: ${JSON.stringify({ status: 'processing', step: 'generating_message', progress: 50 })}\n\n`));
+      
+      // Set up a heartbeat to keep the connection alive
+      let progressPercentage = 50;
+      const apiCallStartTime = Date.now();
+      
+      heartbeatInterval = setInterval(async () => {
+        // Calculate elapsed time in seconds
+        const elapsedSeconds = Math.floor((Date.now() - apiCallStartTime) / 1000);
+        
+        // Gradually increase progress between 50% and 75% based on time
+        // This gives the impression of progress while Claude is generating
+        progressPercentage = Math.min(75, 50 + Math.floor(elapsedSeconds / 2));
+        
+        try {
+          // Send heartbeat with updated progress
+          await writer.write(encoder.encode(`data: ${JSON.stringify({ 
+            status: 'processing', 
+            step: 'generating_message', 
+            progress: progressPercentage,
+            elapsed: elapsedSeconds 
+          })}\n\n`));
+          
+          console.log(`Heartbeat sent: ${progressPercentage}% (${elapsedSeconds}s elapsed)`);
+        } catch (heartbeatError) {
+          console.error('Error sending heartbeat:', heartbeatError);
+          // If we can't send a heartbeat, don't crash, just log the error
+        }
+      }, 2000); // Send heartbeat every 2 seconds
+      
       let generatedMessage = '';
       try {
+        // Call Claude API with the prompt
         generatedMessage = await callClaudeAPI(prompt);
-        await writer.write(encoder.encode(`data: ${JSON.stringify({ status: 'processing', step: 'saving_message' })}\n\n`));
+        
+        // Clear the heartbeat interval when done
+        if (heartbeatInterval) {
+          clearInterval(heartbeatInterval);
+          heartbeatInterval = null;
+        }
+        
+        // Send progress update for saving message step
+        await writer.write(encoder.encode(`data: ${JSON.stringify({ 
+          status: 'processing', 
+          step: 'saving_message',
+          progress: 80 
+        })}\n\n`));
       } catch (apiError: any) {
+        // Clear the heartbeat interval if there's an error
+        if (heartbeatInterval) {
+          clearInterval(heartbeatInterval);
+          heartbeatInterval = null;
+        }
+        
         console.error('Error calling Claude API:', apiError);
-        await writer.write(encoder.encode(`data: ${JSON.stringify({ status: 'error', error: apiError.message || 'Failed to generate message' })}\n\n`));
+        await writer.write(encoder.encode(`data: ${JSON.stringify({ 
+          status: 'error', 
+          error: apiError.message || 'Failed to generate message'
+        })}\n\n`));
         await writer.close();
         return;
       }
@@ -173,11 +227,12 @@ export async function POST(request: Request) {
           return;
         }
         
-        // Send the final success response
+        // Send the final success response with progress at 100%
         await writer.write(encoder.encode(`data: ${JSON.stringify({ 
           status: 'completed', 
           message: generatedMessage,
-          id: messageData.id 
+          id: messageData.id,
+          progress: 100
         })}\n\n`));
       } catch (dbError: any) {
         console.error('Database operation error:', dbError);
@@ -187,6 +242,12 @@ export async function POST(request: Request) {
       console.error('Error in networking/generate streaming API route:', error);
       await writer.write(encoder.encode(`data: ${JSON.stringify({ status: 'error', error: error.message || 'An unexpected error occurred' })}\n\n`));
     } finally {
+      // Clean up the heartbeat interval if it exists
+      if (heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+        heartbeatInterval = null;
+      }
+      
       await writer.close();
     }
   })();
