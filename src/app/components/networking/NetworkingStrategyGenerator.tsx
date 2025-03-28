@@ -54,22 +54,50 @@ export default function NetworkingStrategyGenerator({
 
       if (!response.ok) {
         let errorMessage = "Failed to generate message";
+
+        const responseClone = response.clone();
+
         try {
           const errorData = await response.json();
           errorMessage = errorData.error || errorMessage;
-        } catch (parseError) {
-          const errorText = await response.text();
-          errorMessage = errorText || errorMessage;
+        } catch (jsonError) {
+          console.error("Failed to parse error response as JSON:", jsonError);
+
+          try {
+            const errorText = await responseClone.text();
+            errorMessage = errorText || errorMessage;
+          } catch (textError) {
+            console.error("Failed to parse error response as text:", textError);
+          }
         }
+
         throw new Error(errorMessage);
       }
+
+      const successResponseClone = response.clone();
 
       try {
         const data = await response.json();
         setGeneratedMessage(data.message);
-      } catch (parseError) {
-        console.error("Error parsing API response:", parseError);
-        throw new Error("Failed to parse response from server");
+      } catch (jsonParseError) {
+        console.error(
+          "Error parsing successful API response as JSON:",
+          jsonParseError
+        );
+
+        try {
+          const textData = await successResponseClone.text();
+          console.log("Received text response:", textData);
+
+          if (textData && textData.length < 5000) {
+            setGeneratedMessage(textData);
+          } else {
+            throw new Error("Received unexpected response format");
+          }
+        } catch (textParseError) {
+          console.error("Failed to parse response as text:", textParseError);
+          throw new Error("Failed to parse response from server");
+        }
       }
     } catch (error: any) {
       console.error("Error generating message:", error);
