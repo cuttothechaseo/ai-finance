@@ -26,16 +26,12 @@ export default function NetworkingStrategyGenerator({
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedMessage, setGeneratedMessage] = useState("");
   const [error, setError] = useState("");
-  const [processingStep, setProcessingStep] = useState<string>("");
-  const [progress, setProgress] = useState<number>(0);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setGeneratedMessage("");
     setError("");
     setIsGenerating(true);
-    setProcessingStep("Starting...");
-    setProgress(10);
 
     try {
       const { data: sessionData } = await supabase.auth.getSession();
@@ -78,80 +74,29 @@ export default function NetworkingStrategyGenerator({
         throw new Error(errorMessage);
       }
 
-      const reader = response.body?.getReader();
-      if (!reader) {
-        throw new Error("Failed to get response stream");
-      }
+      const successResponseClone = response.clone();
 
-      const decoder = new TextDecoder();
-      let receivedMessage = "";
+      try {
+        const data = await response.json();
+        setGeneratedMessage(data.message);
+      } catch (jsonParseError) {
+        console.error(
+          "Error parsing successful API response as JSON:",
+          jsonParseError
+        );
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+        try {
+          const textData = await successResponseClone.text();
+          console.log("Received text response:", textData);
 
-        const chunk = decoder.decode(value, { stream: true });
-
-        const events = chunk.split("\n\n");
-        for (const event of events) {
-          if (event.startsWith("data: ")) {
-            try {
-              const data = JSON.parse(event.slice(6));
-
-              if (data.status === "processing") {
-                if (data.progress !== undefined) {
-                  setProgress(data.progress);
-                } else {
-                  switch (data.step) {
-                    case "starting":
-                      setProcessingStep("Initializing...");
-                      setProgress(10);
-                      break;
-                    case "authenticating":
-                      setProcessingStep("Authenticating...");
-                      setProgress(20);
-                      break;
-                    case "parsing_request":
-                      setProcessingStep("Processing request...");
-                      setProgress(30);
-                      break;
-                    case "generating_message":
-                      setProcessingStep("Generating message with Claude...");
-                      if (data.progress === undefined) {
-                        setProgress(50);
-                      }
-                      break;
-                    case "saving_message":
-                      setProcessingStep("Saving generated message...");
-                      if (data.progress === undefined) {
-                        setProgress(80);
-                      }
-                      break;
-                    default:
-                      setProcessingStep(`Processing: ${data.step}`);
-                  }
-                }
-
-                if (data.step === "generating_message") {
-                  if (data.elapsed !== undefined) {
-                    setProcessingStep(
-                      `Generating message with Claude... (${data.elapsed}s)`
-                    );
-                  } else {
-                    setProcessingStep("Generating message with Claude...");
-                  }
-                }
-              } else if (data.status === "completed") {
-                setProcessingStep("Complete!");
-                setProgress(100);
-                setGeneratedMessage(data.message);
-              } else if (data.status === "error") {
-                throw new Error(data.error || "An error occurred");
-              }
-            } catch (parseError) {
-              console.error("Error parsing stream event:", parseError, event);
-            }
+          if (textData && textData.length < 5000) {
+            setGeneratedMessage(textData);
+          } else {
+            throw new Error("Received unexpected response format");
           }
+        } catch (textParseError) {
+          console.error("Failed to parse response as text:", textParseError);
+          throw new Error("Failed to parse response from server");
         }
       }
     } catch (error: any) {
@@ -174,37 +119,6 @@ export default function NetworkingStrategyGenerator({
       ...prev,
       [name]: value,
     }));
-  };
-
-  const renderProgressBar = () => {
-    if (!isGenerating) return null;
-
-    // Determine if we're in the Claude generation phase
-    const isGeneratingPhase = processingStep.includes(
-      "Generating message with Claude"
-    );
-
-    return (
-      <div className="mt-4">
-        <div className="flex items-center justify-between mb-1">
-          <p className="text-sm text-gray-300">{processingStep}</p>
-          <p className="text-sm text-gray-300">{progress}%</p>
-        </div>
-        <div className="w-full bg-gray-700 rounded-full h-2.5 overflow-hidden">
-          <div
-            className={`h-2.5 rounded-full transition-all duration-500 ${
-              isGeneratingPhase ? "bg-primary animate-pulse" : "bg-primary"
-            }`}
-            style={{ width: `${progress}%` }}
-          ></div>
-        </div>
-        {isGeneratingPhase && (
-          <p className="text-xs text-gray-400 mt-1">
-            This may take a moment. Claude is crafting your message...
-          </p>
-        )}
-      </div>
-    );
   };
 
   return (
@@ -362,8 +276,6 @@ export default function NetworkingStrategyGenerator({
                 <option value="cover_letter">Cover Letter</option>
               </select>
             </div>
-
-            {renderProgressBar()}
 
             {error && <div className="text-red-400 text-sm mt-2">{error}</div>}
 

@@ -9,10 +9,6 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 // Direct API call function as fallback
 async function callClaudeAPI(prompt: string) {
   try {
-    // Create an AbortController to handle timeouts
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 9000); // 9-second timeout (Vercel has a 10s limit)
-    
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -22,7 +18,7 @@ async function callClaudeAPI(prompt: string) {
       },
       body: JSON.stringify({
         model: 'claude-3-opus-20240229',
-        max_tokens: 1000, // Reduced from 1500 to speed up response
+        max_tokens: 1500,
         temperature: 0.7,
         messages: [
           {
@@ -30,12 +26,8 @@ async function callClaudeAPI(prompt: string) {
             content: prompt
           }
         ]
-      }),
-      signal: controller.signal
+      })
     });
-    
-    // Clear timeout since we got a response
-    clearTimeout(timeoutId);
 
     if (!response.ok) {
       // Clone before reading to avoid "body stream already read" errors
@@ -87,14 +79,8 @@ async function callClaudeAPI(prompt: string) {
         throw new Error('Failed to parse Claude API response');
       }
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error in callClaudeAPI:', error);
-    
-    // Handle timeout/abort errors specifically
-    if (error.name === 'AbortError') {
-      throw new Error('Request to Claude API timed out. Please try with a shorter prompt or try again later.');
-    }
-    
     throw error;
   }
 }
@@ -133,14 +119,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create shorter, more concise prompt to avoid timeouts
+    // Create prompt based on message type
     let prompt = '';
     if (messageType === 'linkedin_message') {
-      prompt = `Short LinkedIn message to ${companyName} for ${role} position. ${contactName ? `To: ${contactName}${contactRole ? ` (${contactRole})` : ''}.` : ''} Resume: ${resumeText.substring(0, 500)}`;
+      prompt = `Write a professional LinkedIn message to connect with someone at ${companyName} for a ${role} position. ${contactName ? `The contact's name is ${contactName}${contactRole ? ` and they are a ${contactRole}` : ''}.` : ''} Here's my resume information: ${resumeText}`;
     } else if (messageType === 'intro_email') {
-      prompt = `Brief introduction email to ${companyName} for ${role} position. ${contactName ? `To: ${contactName}${contactRole ? ` (${contactRole})` : ''}.` : ''} Background: ${resumeText.substring(0, 500)}`;
+      prompt = `Write a professional introduction email to someone at ${companyName} for a ${role} position. ${contactName ? `The email is addressed to ${contactName}${contactRole ? ` who is a ${contactRole}` : ''}.` : ''} Here's my background: ${resumeText}`;
     } else if (messageType === 'cover_letter') {
-      prompt = `Concise cover letter for ${role} at ${companyName}. ${contactName ? `To: ${contactName}${contactRole ? ` (${contactRole})` : ''}.` : ''} Resume: ${resumeText.substring(0, 500)}`;
+      prompt = `Write a professional cover letter for a ${role} position at ${companyName}. ${contactName ? `The letter is addressed to ${contactName}${contactRole ? ` who is a ${contactRole}` : ''}.` : ''} Here's my resume information: ${resumeText}`;
     }
 
     // Generate the message using direct API call
