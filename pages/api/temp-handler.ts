@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createClient } from '@supabase/supabase-js';
-import { analyzeResume, saveResumeAnalysis } from '../lib/claude';
-import { parseFile } from '../lib/fileParser';
+import { analyzeResume, saveResumeAnalysis } from '../../lib/claude';
+import { parseFile } from '../../lib/fileParser';
 
 // Create direct admin client
 const directAdminClient = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -143,8 +143,9 @@ export default async function handler(
           .from('resumes')
           .download(fileName);
           
-        if (!error) {
-          fileData = data;
+        if (!error && data) {
+          const arrayBuffer = await data.arrayBuffer();
+          fileData = Buffer.from(arrayBuffer);
         }
       } catch (e) {
         console.error('Error downloading from storage:', e);
