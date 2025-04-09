@@ -53,51 +53,39 @@ export default function NetworkingStrategyGenerator({
       });
 
       if (!response.ok) {
-        let errorMessage = "Failed to generate message";
-
+        // Clone the response for potential text reading
         const responseClone = response.clone();
+        let errorMessage = "Failed to generate message";
 
         try {
           const errorData = await response.json();
           errorMessage = errorData.error || errorMessage;
         } catch (jsonError) {
-          console.error("Failed to parse error response as JSON:", jsonError);
-
+          // If JSON parsing fails, try reading as text from the cloned response
           try {
             const errorText = await responseClone.text();
             errorMessage = errorText || errorMessage;
           } catch (textError) {
-            console.error("Failed to parse error response as text:", textError);
+            console.error("Failed to read error response as text:", textError);
           }
         }
-
         throw new Error(errorMessage);
       }
 
-      const successResponseClone = response.clone();
-
+      // Clone response for safe parsing
+      const responseForParsing = response.clone();
       try {
         const data = await response.json();
         setGeneratedMessage(data.message);
-      } catch (jsonParseError) {
-        console.error(
-          "Error parsing successful API response as JSON:",
-          jsonParseError
-        );
-
+      } catch (parseError) {
+        console.error("Error parsing success response as JSON:", parseError);
         try {
-          const textData = await successResponseClone.text();
-          console.log("Received text response:", textData);
-
-          if (textData && textData.length < 5000) {
-            setGeneratedMessage(textData);
-          } else {
-            throw new Error("Received unexpected response format");
-          }
-        } catch (textParseError) {
-          console.error("Failed to parse response as text:", textParseError);
-          throw new Error("Failed to parse response from server");
+          const text = await responseForParsing.text();
+          console.error("Raw response content:", text);
+        } catch (textError) {
+          console.error("Failed to read response as text:", textError);
         }
+        throw new Error("Failed to parse response from server");
       }
     } catch (error: any) {
       console.error("Error generating message:", error);

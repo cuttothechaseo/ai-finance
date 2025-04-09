@@ -8,80 +8,44 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 // Direct API call function as fallback
 async function callClaudeAPI(prompt: string) {
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY!,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-3-opus-20240229',
-        max_tokens: 1500,
-        temperature: 0.7,
-        messages: [
-          {
-            role: 'user',
-            content: prompt
-          }
-        ]
-      })
-    });
-
-    if (!response.ok) {
-      // Clone before reading to avoid "body stream already read" errors
-      const errorResponseClone = response.clone();
-      
-      let errorInfo = '';
-      try {
-        const errorText = await response.text();
-        errorInfo = errorText;
-        console.error('Claude API error response:', errorText);
-      } catch (textError) {
-        console.error('Failed to read Claude API error response as text:', textError);
-        try {
-          const errorJson = await errorResponseClone.json();
-          errorInfo = JSON.stringify(errorJson);
-          console.error('Claude API error response (JSON):', errorJson);
-        } catch (jsonError) {
-          console.error('Failed to read Claude API error response as JSON:', jsonError);
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': process.env.ANTHROPIC_API_KEY!,
+      'anthropic-version': '2023-06-01'
+    },
+    body: JSON.stringify({
+      model: 'claude-3-opus-20240229',
+      max_tokens: 1500,
+      temperature: 0.7,
+      messages: [
+        {
+          role: 'user',
+          content: prompt
         }
-      }
-      
-      throw new Error(`Claude API error: ${response.status} ${response.statusText}${errorInfo ? ` - ${errorInfo}` : ''}`);
-    }
+      ]
+    })
+  });
 
-    // Clone before reading the success response
-    const jsonResponseClone = response.clone();
-    const textResponseClone = response.clone();
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error('Claude API error response:', errorText);
+    throw new Error(`Claude API error: ${response.status} ${response.statusText}`);
+  }
+
+  try {
+    const result = await response.json();
     
-    try {
-      // First try to parse as JSON
-      const result = await jsonResponseClone.json();
-      
-      if (!result.content || !result.content.length || result.content[0].type !== 'text') {
-        console.error('Unexpected Claude API response format:', result);
-        throw new Error('Invalid response format from Claude API');
-      }
-      
-      return result.content[0].text;
-    } catch (jsonError) {
-      console.error('Error parsing Claude API response as JSON:', jsonError);
-      
-      // Fall back to text if JSON parsing fails
-      try {
-        const textResult = await textResponseClone.text();
-        console.warn('Received text response instead of JSON:', textResult);
-        return textResult;
-      } catch (textError) {
-        console.error('Error parsing Claude API response as text:', textError);
-        throw new Error('Failed to parse Claude API response');
-      }
+    if (!result.content || !result.content.length || result.content[0].type !== 'text') {
+      console.error('Unexpected Claude API response format:', result);
+      throw new Error('Invalid response format from Claude API');
     }
-  } catch (error) {
-    console.error('Error in callClaudeAPI:', error);
-    throw error;
+    
+    return result.content[0].text;
+  } catch (parseError) {
+    console.error('Error parsing Claude API response:', parseError);
+    throw new Error('Failed to parse Claude API response');
   }
 }
 
@@ -108,7 +72,16 @@ export async function POST(request: Request) {
     }
 
     // Parse request body
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch (parseError) {
+      return NextResponse.json(
+        { error: 'Invalid request body' },
+        { status: 400 }
+      );
+    }
+
     const { companyName, role, contactName, contactRole, resumeText, messageType } = body;
 
     // Validate required fields
@@ -142,36 +115,40 @@ export async function POST(request: Request) {
     }
 
     // Store in database
-    const { data: messageData, error: insertError } = await supabase
-      .from('networking_messages')
-      .insert({
-        user_id: user.id,
-        company_name: companyName,
-        role: role,
-        contact_name: contactName || null,
-        contact_role: contactRole || null,
-        resume_text: resumeText,
-        message_type: messageType,
-        generated_message: generatedMessage,
-      })
-      .select('id')
-      .single();
+    try {
+      const { data: messageData, error: insertError } = await supabase
+        .from('networking_messages')
+        .insert({
+          user_id: user.id,
+          company_name: companyName,
+          role: role,
+          contact_name: contactName || null,
+          contact_role: contactRole || null,
+          resume_text: resumeText,
+          message_type: messageType,
+          generated_message: generatedMessage,
+        })
+        .select('id')
+        .single();
 
-    if (insertError) {
-      console.error('Database error:', insertError);
+      if (insertError) {
+        throw insertError;
+      }
+
+      // Return the generated message
+      return NextResponse.json({
+        message: generatedMessage,
+        id: messageData.id,
+      });
+    } catch (dbError: any) {
+      console.error('Database error:', dbError);
       return NextResponse.json(
         { error: 'Failed to save message' },
         { status: 500 }
       );
     }
-
-    // Return the generated message
-    return NextResponse.json({
-      message: generatedMessage,
-      id: messageData.id,
-    });
   } catch (error: any) {
-    console.error('Error in networking/generate API route:', error);
+    console.error('Error generating message:', error);
     return NextResponse.json(
       { error: error.message || 'Failed to generate message' },
       { status: 500 }
