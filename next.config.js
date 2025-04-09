@@ -3,15 +3,6 @@ const nextConfig = {
   // Enable strict mode for better development experience
   reactStrictMode: true,
   
-  // Explicitly enable Fast Refresh (it's on by default, but we're being explicit)
-  webpackDevMiddleware: (config) => {
-    config.watchOptions = {
-      poll: 1000,
-      aggregateTimeout: 300,
-    };
-    return config;
-  },
-  
   // Enable Fast Refresh by not modifying the webpack config
   webpack: (config, { dev, isServer }) => {
     if (dev && !isServer) {
