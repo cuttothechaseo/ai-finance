@@ -1,11 +1,27 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Disable strict mode to prevent double-rendering in development
-  reactStrictMode: false,
+  // Enable strict mode for better development experience
+  reactStrictMode: true,
   
-  // Simply disable Fast Refresh with env var instead of webpack modification
+  // Explicitly enable Fast Refresh (it's on by default, but we're being explicit)
+  webpackDevMiddleware: (config) => {
+    config.watchOptions = {
+      poll: 1000,
+      aggregateTimeout: 300,
+    };
+    return config;
+  },
+  
+  // Enable Fast Refresh by not modifying the webpack config
   webpack: (config, { dev, isServer }) => {
-    // We'll still return the config but without manually removing plugins
+    if (dev && !isServer) {
+      // Ensure Fast Refresh is enabled and preserved
+      const entries = config.entry;
+      config.entry = async () => {
+        const entryObj = await entries();
+        return entryObj;
+      };
+    }
     return config;
   },
   
@@ -25,10 +41,10 @@ const nextConfig = {
   },
   
   experimental: {
-    // Keep optimizeCss but disable other experimental features that might affect HMR
-    optimizeCss: true,
+    // Disable all experimental features to avoid HMR issues
+    optimizeCss: false,
     scrollRestoration: false,
-    optimizePackageImports: ['react-icons', 'framer-motion', '@headlessui/react'],
+    optimizePackageImports: [],
   },
   
   compiler: {

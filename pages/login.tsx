@@ -11,8 +11,6 @@ interface FormData {
 }
 
 export default function Login() {
-  console.log("Login component rendering");
-
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>({
     email: "",
