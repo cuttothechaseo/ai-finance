@@ -71,6 +71,18 @@ export async function analyzeResume(
     experienceLevel?: string;
   } = {}
 ): Promise<ResumeAnalysisResult> {
+  // Validate environment variables
+  const envVars = {
+    ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
+    NODE_ENV: process.env.NODE_ENV
+  };
+  
+  console.log('API: Environment check:', {
+    ANTHROPIC_API_KEY_SET: !!envVars.ANTHROPIC_API_KEY,
+    ANTHROPIC_API_KEY_LENGTH: envVars.ANTHROPIC_API_KEY?.length,
+    NODE_ENV: envVars.NODE_ENV
+  });
+
   // Check for API key
   if (!process.env.ANTHROPIC_API_KEY) {
     console.error('Anthropic API key is missing');
@@ -89,6 +101,14 @@ export async function analyzeResume(
   
   // Log that we're making the request
   console.log('API: Making Claude API request...');
+  console.log('API: Using Claude API key length:', process.env.ANTHROPIC_API_KEY?.length);
+  console.log('API: Request payload:', {
+    model: "claude-3-opus-20240229",
+    max_tokens: 4000,
+    temperature: 0,
+    systemPromptLength: systemPrompt.length,
+    userPromptLength: userPrompt.length
+  });
 
   // Call the Claude API
   const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -110,6 +130,9 @@ export async function analyzeResume(
         }
       ]
     })
+  }).catch(error => {
+    console.error('API: Network error calling Claude API:', error);
+    throw new Error(`Network error calling Claude API: ${error.message}`);
   });
 
   // Log the response status

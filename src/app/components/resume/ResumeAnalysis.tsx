@@ -193,25 +193,18 @@ export default function ResumeAnalysis({
       // Trigger job processing immediately after job creation
       try {
         console.log("Triggering job processing...");
-        // We'll use direct Edge Function invocation since we're already authenticated
-        // This is more reliable than setting up a separate API key
-        const processingResponse = await fetch(
-          `https://ybfbbmzztjuvpdlosfic.supabase.co/functions/v1/job-scheduler`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const { data: processingData, error: processingError } =
+          await supabase.functions.invoke("job-scheduler", {
+            body: { triggered_at: new Date().toISOString() },
+          });
 
-        if (processingResponse.ok) {
-          console.log("Job processing triggered successfully");
-        } else {
+        if (processingError) {
           console.warn(
             "Failed to trigger job processing, relying on polling",
-            await processingResponse.text()
+            processingError
           );
+        } else {
+          console.log("Job processing triggered successfully", processingData);
         }
       } catch (triggerErr) {
         console.warn("Error triggering job processing:", triggerErr);

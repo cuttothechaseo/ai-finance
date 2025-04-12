@@ -8,9 +8,9 @@ const corsHeaders = {
 };
 
 // Environment variables
-const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || '';
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
-const ANTHROPIC_API_KEY = Deno.env.get('ANTHROPIC_API_KEY') || '';
+const SUPABASE_URL = Deno.env.get("PROJECT_URL") || "";
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SERVICE_KEY") || "";
+const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY") || "";
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -103,7 +103,7 @@ async function processJob(supabase, jobId) {
         
         // Instead of trying to parse the PDF in the Edge Function,
         // call our dedicated serverless function for PDF parsing
-        const baseUrl = Deno.env.get('NEXT_PUBLIC_BASE_URL') || 'https://wallstreetai.app';
+        const baseUrl = Deno.env.get('NEXT_PUBLIC_BASE_URL') || 'http://localhost:3000';
         const parseUrl = `${baseUrl}/api/parse-resume-pdf`;
         
         console.log(`Calling PDF parsing API at ${parseUrl}`);

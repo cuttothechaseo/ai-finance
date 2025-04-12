@@ -8,8 +8,8 @@ const corsHeaders = {
 };
 
 // Environment variables
-const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || '';
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
+const SUPABASE_URL = Deno.env.get("PROJECT_URL") || "";
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SERVICE_KEY") || "";
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -29,7 +29,7 @@ serve(async (req) => {
       .select('id')
       .eq('status', 'pending')
       .order('created_at', { ascending: true })
-      .limit(5); // Process up to 5 jobs at a time
+      .limit(2); // Reduced from 5 to 2 jobs at a time to avoid rate limits
     
     if (queryError) {
       console.error('Scheduler: Error querying pending jobs:', queryError);
@@ -46,30 +46,42 @@ serve(async (req) => {
       );
     }
     
-    // Process each pending job
-    const results = await Promise.all(
-      pendingJobs.map(async (job) => {
-        try {
-          console.log(`Scheduler: Processing job: ${job.id}`);
-          
-          // Invoke the job processor function
-          const { data, error } = await supabase.functions.invoke('process-analysis-job', {
-            body: { jobId: job.id }
-          });
-          
-          if (error) {
-            console.error(`Scheduler: Error processing job ${job.id}:`, error);
-            return { jobId: job.id, success: false, error: error.message };
-          }
-          
+    // Process each pending job with a delay between jobs
+    const results = [];
+    for (const job of pendingJobs) {
+      try {
+        console.log(`Scheduler: Processing job: ${job.id}`);
+        
+        // Call the process-analysis-job function directly via HTTP
+        const response = await fetch(`${SUPABASE_URL}/functions/v1/process-analysis-job`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`
+          },
+          body: JSON.stringify({ jobId: job.id })
+        });
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`Scheduler: Error response from job processor for ${job.id}:`, errorText);
+          results.push({ jobId: job.id, success: false, error: `HTTP ${response.status}: ${errorText}` });
+        } else {
+          const result = await response.json();
           console.log(`Scheduler: Job ${job.id} processing initiated successfully`);
-          return { jobId: job.id, success: true };
-        } catch (err) {
-          console.error(`Scheduler: Unexpected error processing job ${job.id}:`, err);
-          return { jobId: job.id, success: false, error: err instanceof Error ? err.message : String(err) };
+          results.push({ jobId: job.id, success: true, result });
         }
-      })
-    );
+        
+        // Add a delay between jobs to respect rate limits
+        if (pendingJobs.indexOf(job) < pendingJobs.length - 1) {
+          console.log('Scheduler: Waiting 30 seconds before processing next job...');
+          await new Promise(resolve => setTimeout(resolve, 30000));
+        }
+      } catch (err) {
+        console.error(`Scheduler: Unexpected error processing job ${job.id}:`, err);
+        results.push({ jobId: job.id, success: false, error: err instanceof Error ? err.message : String(err) });
+      }
+    }
     
     return new Response(
       JSON.stringify({
