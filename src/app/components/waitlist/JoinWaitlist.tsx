@@ -447,31 +447,28 @@ export default function JoinWaitlist() {
         <svg
           className="absolute top-10 right-[10%] w-64 h-64 opacity-10"
           viewBox="0 0 200 200"
-          fill="white"
         >
-          <circle cx="60" cy="60" r="50" />
-          <circle cx="100" cy="70" r="60" />
-          <circle cx="140" cy="60" r="50" />
+          <circle cx="60" cy="60" r="50" fill="white" />
+          <circle cx="100" cy="70" r="60" fill="white" />
+          <circle cx="140" cy="60" r="50" fill="white" />
         </svg>
 
         <svg
           className="absolute bottom-0 left-[20%] w-72 h-72 opacity-5"
           viewBox="0 0 200 200"
-          fill="white"
         >
-          <circle cx="60" cy="60" r="50" />
-          <circle cx="100" cy="70" r="60" />
-          <circle cx="140" cy="60" r="50" />
+          <circle cx="60" cy="60" r="50" fill="white" />
+          <circle cx="100" cy="70" r="60" fill="white" />
+          <circle cx="140" cy="60" r="50" fill="white" />
         </svg>
 
         <svg
           className="absolute top-[40%] left-0 w-48 h-48 opacity-15"
           viewBox="0 0 200 200"
-          fill="white"
         >
-          <circle cx="60" cy="60" r="50" />
-          <circle cx="100" cy="70" r="60" />
-          <circle cx="140" cy="60" r="50" />
+          <circle cx="60" cy="60" r="50" fill="white" />
+          <circle cx="100" cy="70" r="60" fill="white" />
+          <circle cx="140" cy="60" r="50" fill="white" />
         </svg>
       </div>
 

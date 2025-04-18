@@ -87,20 +87,18 @@ export default function Hero() {
         <motion.svg
           className="absolute top-0 right-0 w-64 h-64 opacity-20"
           viewBox="0 0 200 200"
-          fill="white"
           animate={{ y: [0, -8, 0], x: [0, 5, 0] }}
           transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
         >
-          <circle cx="60" cy="60" r="50" />
-          <circle cx="100" cy="70" r="60" />
-          <circle cx="140" cy="60" r="50" />
+          <circle cx="60" cy="60" r="50" fill="white" />
+          <circle cx="100" cy="70" r="60" fill="white" />
+          <circle cx="140" cy="60" r="50" fill="white" />
         </motion.svg>
 
         {/* Middle Left Cloud */}
         <motion.svg
           className="absolute top-[30%] left-0 w-56 h-56 opacity-15"
           viewBox="0 0 200 200"
-          fill="white"
           animate={{ y: [0, 10, 0], x: [0, 8, 0] }}
           transition={{
             duration: 20,
@@ -109,16 +107,15 @@ export default function Hero() {
             delay: 1,
           }}
         >
-          <circle cx="60" cy="60" r="50" />
-          <circle cx="100" cy="70" r="60" />
-          <circle cx="140" cy="60" r="50" />
+          <circle cx="60" cy="60" r="50" fill="white" />
+          <circle cx="100" cy="70" r="60" fill="white" />
+          <circle cx="140" cy="60" r="50" fill="white" />
         </motion.svg>
 
         {/* Bottom Left Cloud */}
         <motion.svg
           className="absolute bottom-0 left-0 w-72 h-72 opacity-20"
           viewBox="0 0 200 200"
-          fill="white"
           animate={{ y: [0, -12, 0], x: [0, 10, 0] }}
           transition={{
             duration: 22,
@@ -127,16 +124,15 @@ export default function Hero() {
             delay: 2,
           }}
         >
-          <circle cx="60" cy="60" r="50" />
-          <circle cx="100" cy="70" r="60" />
-          <circle cx="140" cy="60" r="50" />
+          <circle cx="60" cy="60" r="50" fill="white" />
+          <circle cx="100" cy="70" r="60" fill="white" />
+          <circle cx="140" cy="60" r="50" fill="white" />
         </motion.svg>
 
         {/* Small Bottom Right Cloud */}
         <motion.svg
           className="absolute bottom-[20%] right-[10%] w-40 h-40 opacity-15"
           viewBox="0 0 200 200"
-          fill="white"
           animate={{ y: [0, 8, 0], x: [0, -5, 0] }}
           transition={{
             duration: 15,
@@ -145,16 +141,15 @@ export default function Hero() {
             delay: 1.5,
           }}
         >
-          <circle cx="60" cy="60" r="50" />
-          <circle cx="100" cy="70" r="60" />
-          <circle cx="140" cy="60" r="50" />
+          <circle cx="60" cy="60" r="50" fill="white" />
+          <circle cx="100" cy="70" r="60" fill="white" />
+          <circle cx="140" cy="60" r="50" fill="white" />
         </motion.svg>
 
         {/* Small Top Left Cloud */}
         <motion.svg
           className="absolute top-[15%] left-[20%] w-32 h-32 opacity-10"
           viewBox="0 0 200 200"
-          fill="white"
           animate={{ y: [0, 6, 0], x: [0, 6, 0] }}
           transition={{
             duration: 16,
@@ -163,9 +158,9 @@ export default function Hero() {
             delay: 0.5,
           }}
         >
-          <circle cx="60" cy="60" r="50" />
-          <circle cx="100" cy="70" r="60" />
-          <circle cx="140" cy="60" r="50" />
+          <circle cx="60" cy="60" r="50" fill="white" />
+          <circle cx="100" cy="70" r="60" fill="white" />
+          <circle cx="140" cy="60" r="50" fill="white" />
         </motion.svg>
       </div>
 

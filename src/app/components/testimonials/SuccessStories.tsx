@@ -107,21 +107,19 @@ export default function SuccessStories() {
         <svg
           className="absolute top-5 left-[5%] w-56 h-56 opacity-15"
           viewBox="0 0 200 200"
-          fill="white"
         >
-          <circle cx="60" cy="60" r="50" />
-          <circle cx="100" cy="70" r="60" />
-          <circle cx="140" cy="60" r="50" />
+          <circle cx="60" cy="60" r="50" fill="white" />
+          <circle cx="100" cy="70" r="60" fill="white" />
+          <circle cx="140" cy="60" r="50" fill="white" />
         </svg>
 
         <svg
           className="absolute bottom-10 right-[10%] w-64 h-64 opacity-5"
           viewBox="0 0 200 200"
-          fill="white"
         >
-          <circle cx="60" cy="60" r="50" />
-          <circle cx="100" cy="70" r="60" />
-          <circle cx="140" cy="60" r="50" />
+          <circle cx="60" cy="60" r="50" fill="white" />
+          <circle cx="100" cy="70" r="60" fill="white" />
+          <circle cx="140" cy="60" r="50" fill="white" />
         </svg>
       </div>
 
