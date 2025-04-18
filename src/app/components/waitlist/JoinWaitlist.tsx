@@ -442,34 +442,66 @@ export default function JoinWaitlist() {
       id="join-waitlist"
       className="py-16 relative overflow-hidden bg-[#59B7F2]"
     >
-      {/* Cloud elements */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <svg
-          className="absolute top-10 right-[10%] w-64 h-64 opacity-10"
-          viewBox="0 0 200 200"
-        >
-          <circle cx="60" cy="60" r="50" fill="white" />
-          <circle cx="100" cy="70" r="60" fill="white" />
-          <circle cx="140" cy="60" r="50" fill="white" />
-        </svg>
+      {/* Cloud elements using CSS */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        {/* Top Right Cloud */}
+        <div className="absolute top-10 right-[10%] w-64 h-64">
+          <div className="cloud-shape opacity-10">
+            <div className="cloud-circle cloud-circle-1"></div>
+            <div className="cloud-circle cloud-circle-2"></div>
+            <div className="cloud-circle cloud-circle-3"></div>
+          </div>
+        </div>
 
-        <svg
-          className="absolute bottom-0 left-[20%] w-72 h-72 opacity-5"
-          viewBox="0 0 200 200"
-        >
-          <circle cx="60" cy="60" r="50" fill="white" />
-          <circle cx="100" cy="70" r="60" fill="white" />
-          <circle cx="140" cy="60" r="50" fill="white" />
-        </svg>
+        {/* Bottom Left Cloud */}
+        <div className="absolute bottom-0 left-[20%] w-72 h-72">
+          <div className="cloud-shape opacity-5">
+            <div className="cloud-circle cloud-circle-1"></div>
+            <div className="cloud-circle cloud-circle-2"></div>
+            <div className="cloud-circle cloud-circle-3"></div>
+          </div>
+        </div>
 
-        <svg
-          className="absolute top-[40%] left-0 w-48 h-48 opacity-15"
-          viewBox="0 0 200 200"
-        >
-          <circle cx="60" cy="60" r="50" fill="white" />
-          <circle cx="100" cy="70" r="60" fill="white" />
-          <circle cx="140" cy="60" r="50" fill="white" />
-        </svg>
+        {/* Middle Left Cloud */}
+        <div className="absolute top-[40%] left-0 w-48 h-48">
+          <div className="cloud-shape opacity-15">
+            <div className="cloud-circle cloud-circle-1"></div>
+            <div className="cloud-circle cloud-circle-2"></div>
+            <div className="cloud-circle cloud-circle-3"></div>
+          </div>
+        </div>
+
+        {/* Cloud Styling */}
+        <style jsx>{`
+          .cloud-shape {
+            position: relative;
+            width: 100%;
+            height: 100%;
+          }
+          .cloud-circle {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+          }
+          .cloud-circle-1 {
+            width: 50%;
+            height: 50%;
+            top: 25%;
+            left: 10%;
+          }
+          .cloud-circle-2 {
+            width: 60%;
+            height: 60%;
+            top: 30%;
+            left: 30%;
+          }
+          .cloud-circle-3 {
+            width: 50%;
+            height: 50%;
+            top: 25%;
+            left: 50%;
+          }
+        `}</style>
       </div>
 
       {/* Background gradient glow */}

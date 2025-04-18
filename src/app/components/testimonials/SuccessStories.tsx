@@ -102,25 +102,57 @@ export default function SuccessStories() {
       id="success-stories"
       className="py-16 relative bg-[#59B7F2] overflow-hidden"
     >
-      {/* Cloud elements */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <svg
-          className="absolute top-5 left-[5%] w-56 h-56 opacity-15"
-          viewBox="0 0 200 200"
-        >
-          <circle cx="60" cy="60" r="50" fill="white" />
-          <circle cx="100" cy="70" r="60" fill="white" />
-          <circle cx="140" cy="60" r="50" fill="white" />
-        </svg>
+      {/* Cloud elements using CSS */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        {/* Top Left Cloud */}
+        <div className="absolute top-5 left-[5%] w-56 h-56">
+          <div className="cloud-shape opacity-15">
+            <div className="cloud-circle cloud-circle-1"></div>
+            <div className="cloud-circle cloud-circle-2"></div>
+            <div className="cloud-circle cloud-circle-3"></div>
+          </div>
+        </div>
 
-        <svg
-          className="absolute bottom-10 right-[10%] w-64 h-64 opacity-5"
-          viewBox="0 0 200 200"
-        >
-          <circle cx="60" cy="60" r="50" fill="white" />
-          <circle cx="100" cy="70" r="60" fill="white" />
-          <circle cx="140" cy="60" r="50" fill="white" />
-        </svg>
+        {/* Bottom Right Cloud */}
+        <div className="absolute bottom-10 right-[10%] w-64 h-64">
+          <div className="cloud-shape opacity-5">
+            <div className="cloud-circle cloud-circle-1"></div>
+            <div className="cloud-circle cloud-circle-2"></div>
+            <div className="cloud-circle cloud-circle-3"></div>
+          </div>
+        </div>
+
+        {/* Cloud Styling */}
+        <style jsx>{`
+          .cloud-shape {
+            position: relative;
+            width: 100%;
+            height: 100%;
+          }
+          .cloud-circle {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+          }
+          .cloud-circle-1 {
+            width: 50%;
+            height: 50%;
+            top: 25%;
+            left: 10%;
+          }
+          .cloud-circle-2 {
+            width: 60%;
+            height: 60%;
+            top: 30%;
+            left: 30%;
+          }
+          .cloud-circle-3 {
+            width: 50%;
+            height: 50%;
+            top: 25%;
+            left: 50%;
+          }
+        `}</style>
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
