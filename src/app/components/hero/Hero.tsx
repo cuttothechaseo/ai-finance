@@ -11,7 +11,6 @@ import { WaitlistContext } from "@/app/contexts/WaitlistContext";
 const AnimatedBackground = dynamic(() => import("./AnimatedBackground"), {
   ssr: false,
 });
-const ChatDemo = dynamic(() => import("./ChatDemo"), { ssr: false });
 
 export default function Hero() {
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -218,7 +217,7 @@ export default function Hero() {
 
         {/* Urgency indicators */}
         <motion.div
-          className="max-w-xs mx-auto mb-12"
+          className="max-w-xs mx-auto"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.7 }}
@@ -248,18 +247,6 @@ export default function Hero() {
             </motion.span>{" "}
             of early access spots are now filled
           </p>
-        </motion.div>
-
-        <motion.div
-          className="mt-8 relative"
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          id="demo"
-        >
-          <div className="w-full max-w-4xl mx-auto rounded-xl overflow-hidden">
-            <ChatDemo />
-          </div>
         </motion.div>
       </div>
     </section>
