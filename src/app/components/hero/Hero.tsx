@@ -1,15 +1,17 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useEffect, useRef, useContext } from 'react';
-import dynamic from 'next/dynamic';
-import { WaitlistContext } from '@/app/contexts/WaitlistContext';
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useRef, useContext } from "react";
+import dynamic from "next/dynamic";
+import { WaitlistContext } from "@/app/contexts/WaitlistContext";
 
 // Dynamically import components to avoid hydration issues
-const AnimatedBackground = dynamic(() => import('./AnimatedBackground'), { ssr: false });
-const ChatDemo = dynamic(() => import('./ChatDemo'), { ssr: false });
+const AnimatedBackground = dynamic(() => import("./AnimatedBackground"), {
+  ssr: false,
+});
+const ChatDemo = dynamic(() => import("./ChatDemo"), { ssr: false });
 
 export default function Hero() {
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -43,12 +45,18 @@ export default function Hero() {
           if (index < firstLine.length) {
             heading.textContent = currentText; // First line
           } else if (index === firstLine.length) {
-            heading.innerHTML = firstLine + '<br>'; // Add line break
+            heading.innerHTML = firstLine + "<br>"; // Add line break
           } else {
-            const secondLineText = fullText.slice(firstLine.length + 1, index + 1);
+            const secondLineText = fullText.slice(
+              firstLine.length + 1,
+              index + 1
+            );
             if (index >= fullText.length - 2) {
               // Reached "AI", apply styling
-              heading.innerHTML = `${firstLine}<br>${secondLine.slice(0, -2)}<span class="text-primary-light">AI</span>`;
+              heading.innerHTML = `${firstLine}<br>${secondLine.slice(
+                0,
+                -2
+              )}<span class="text-[#B3E5FC]">AI</span>`;
             } else {
               heading.innerHTML = `${firstLine}<br>${secondLineText}`;
             }
@@ -57,7 +65,10 @@ export default function Hero() {
           lastTimestamp = timestamp;
         } else {
           // Finish with the period
-          heading.innerHTML = `${firstLine}<br>${secondLine.slice(0, -2)}<span class="text-primary-light">AI.</span>`;
+          heading.innerHTML = `${firstLine}<br>${secondLine.slice(
+            0,
+            -2
+          )}<span class="text-[#B3E5FC]">AI.</span>`;
           return; // Stop animation
         }
       }
@@ -70,41 +81,121 @@ export default function Hero() {
   }, []); // Runs only once on mount
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center gradient-bg overflow-hidden pt-20">
-      <AnimatedBackground />
-      
-      <div className="container mx-auto px-4 py-16 text-center relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="inline-flex items-center bg-primary/20 rounded-full px-3 py-1 mb-6 border border-primary/30"
+    <section className="relative min-h-screen flex items-center justify-center bg-[#59B7F2] overflow-hidden pt-20">
+      {/* Cloud elements */}
+      <div className="absolute inset-0 z-0">
+        {/* Top Right Cloud */}
+        <motion.svg
+          className="absolute top-0 right-0 w-64 h-64 opacity-20"
+          viewBox="0 0 200 200"
+          fill="white"
+          animate={{ y: [0, -8, 0], x: [0, 5, 0] }}
+          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
         >
-          <span className="text-xs font-medium text-primary-light mr-2">NEW</span>
-          <span className="text-xs text-gray-300">Latest integration just arrived</span>
-        </motion.div>
-        
-        <motion.h1 
+          <circle cx="60" cy="60" r="50" />
+          <circle cx="100" cy="70" r="60" />
+          <circle cx="140" cy="60" r="50" />
+        </motion.svg>
+
+        {/* Middle Left Cloud */}
+        <motion.svg
+          className="absolute top-[30%] left-0 w-56 h-56 opacity-15"
+          viewBox="0 0 200 200"
+          fill="white"
+          animate={{ y: [0, 10, 0], x: [0, 8, 0] }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1,
+          }}
+        >
+          <circle cx="60" cy="60" r="50" />
+          <circle cx="100" cy="70" r="60" />
+          <circle cx="140" cy="60" r="50" />
+        </motion.svg>
+
+        {/* Bottom Left Cloud */}
+        <motion.svg
+          className="absolute bottom-0 left-0 w-72 h-72 opacity-20"
+          viewBox="0 0 200 200"
+          fill="white"
+          animate={{ y: [0, -12, 0], x: [0, 10, 0] }}
+          transition={{
+            duration: 22,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2,
+          }}
+        >
+          <circle cx="60" cy="60" r="50" />
+          <circle cx="100" cy="70" r="60" />
+          <circle cx="140" cy="60" r="50" />
+        </motion.svg>
+
+        {/* Small Bottom Right Cloud */}
+        <motion.svg
+          className="absolute bottom-[20%] right-[10%] w-40 h-40 opacity-15"
+          viewBox="0 0 200 200"
+          fill="white"
+          animate={{ y: [0, 8, 0], x: [0, -5, 0] }}
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1.5,
+          }}
+        >
+          <circle cx="60" cy="60" r="50" />
+          <circle cx="100" cy="70" r="60" />
+          <circle cx="140" cy="60" r="50" />
+        </motion.svg>
+
+        {/* Small Top Left Cloud */}
+        <motion.svg
+          className="absolute top-[15%] left-[20%] w-32 h-32 opacity-10"
+          viewBox="0 0 200 200"
+          fill="white"
+          animate={{ y: [0, 6, 0], x: [0, 6, 0] }}
+          transition={{
+            duration: 16,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 0.5,
+          }}
+        >
+          <circle cx="60" cy="60" r="50" />
+          <circle cx="100" cy="70" r="60" />
+          <circle cx="140" cy="60" r="50" />
+        </motion.svg>
+      </div>
+
+      <AnimatedBackground />
+
+      <div className="container mx-auto px-4 py-16 text-center relative z-10">
+        <motion.h1
           ref={headingRef} // Attach ref to manipulate content
-          className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400"
+          className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-white"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           {/* Initial content will be cleared and animated */}
-          Ace your Finance<br />
-          Interviews with <span className="text-primary-light">AI.</span>
+          Ace your Finance
+          <br />
+          Interviews with <span className="text-[#B3E5FC]">AI.</span>
         </motion.h1>
-        
-        <motion.p 
-          className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-10"
+
+        <motion.p
+          className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-10"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          Get instant feedback on your answers, improve technical & behavioral skills, and land your dream finance job.
+          Get instant feedback on your answers, improve technical & behavioral
+          skills, and land your dream finance job.
         </motion.p>
-        
+
         <motion.div
           className="flex justify-center mb-6 sm:mb-8 md:mb-10"
           initial={{ opacity: 0, y: 20 }}
@@ -112,31 +203,19 @@ export default function Hero() {
           transition={{ duration: 0.5, delay: 0.5 }}
         >
           <motion.button
-            whileHover={{ 
-              scale: 1.05,
-              boxShadow: "0 0 20px rgba(168, 85, 247, 0.5)"
+            whileHover={{
+              scale: 1.02,
+              filter: "brightness(1.05)",
+              boxShadow: "0 4px 15px rgba(255, 255, 255, 0.25)",
             }}
-            whileTap={{ scale: 0.95 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => setIsModalOpen(true)}
-            className="py-5 px-10 bg-gradient-to-r from-primary to-primary-light text-white text-lg font-bold rounded-xl shadow-lg hover:shadow-primary/30 transition-all duration-300 flex items-center justify-center group relative overflow-hidden pulse-animation"
+            className="py-4 px-8 bg-white text-[#1E3A8A] text-lg font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center"
           >
-            <span className="relative z-10">🚀 Secure Your Spot Now ➡</span>
-            
-            {/* Subtle pulsing glow effect */}
-            <motion.div 
-              className="absolute inset-0 bg-primary-light/20"
-              animate={{
-                opacity: [0.2, 0.4, 0.2],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
+            <span className="relative z-10">🚀 Secure Your Spot Now</span>
           </motion.button>
         </motion.div>
-        
+
         {/* Urgency indicators */}
         <motion.div
           className="max-w-xs mx-auto mb-12"
@@ -145,31 +224,33 @@ export default function Hero() {
           transition={{ duration: 0.5, delay: 0.7 }}
         >
           {/* Live counter */}
-          <p className="text-gray-300 text-xs sm:text-sm mb-3">
-            <span className="font-semibold text-white">142</span> students have joined this week
+          <p className="text-white/80 text-xs sm:text-sm mb-3">
+            <span className="font-semibold text-white">142</span> students have
+            joined this week
           </p>
-          
+
           {/* Progress bar */}
-          <div className="w-full mx-auto mb-2 bg-gray-700 rounded-full h-2.5 overflow-hidden">
-            <motion.div 
-              className="bg-primary-light h-2.5 rounded-full"
+          <div className="w-full mx-auto mb-2 bg-[#1E3A8A]/30 rounded-full h-2.5 overflow-hidden">
+            <motion.div
+              className="bg-white h-2.5 rounded-full"
               initial={{ width: 0 }}
-              animate={{ width: '84%' }}
+              animate={{ width: "84%" }}
               transition={{ duration: 1, delay: 0.8 }}
             />
           </div>
-          <p className="text-gray-400 text-xs font-medium">
-            <motion.span 
-              className="font-bold text-primary-light"
+          <p className="text-white/80 text-xs font-medium">
+            <motion.span
+              className="font-semibold text-white"
               animate={{ opacity: [0.8, 1, 0.8] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
               84%
-            </motion.span> of early access spots are now filled
+            </motion.span>{" "}
+            of early access spots are now filled
           </p>
         </motion.div>
-        
-        <motion.div 
+
+        <motion.div
           className="mt-8 relative"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -183,4 +264,4 @@ export default function Hero() {
       </div>
     </section>
   );
-} 
+}

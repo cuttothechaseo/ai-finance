@@ -301,12 +301,19 @@ export default function ResumeAnalysis({
     const circumference = 2 * Math.PI * 45; // r = 45
     const offset = circumference - (score / 100) * circumference;
 
+    const scoreColorClass =
+      score >= 85
+        ? "text-[#4ADE80]"
+        : score >= 60
+        ? "text-[#FACC15]"
+        : "text-[#F87171]"; // Green-400, Yellow-400, Red-400
+
     return (
       <div className="relative h-28 w-28">
         <svg className="h-full w-full" viewBox="0 0 100 100">
           {/* Background circle */}
           <circle
-            className="text-gray-700"
+            className="text-[#E6E8F0]" // Slate-200
             strokeWidth="8"
             stroke="currentColor"
             fill="transparent"
@@ -316,7 +323,7 @@ export default function ResumeAnalysis({
           />
           {/* Progress circle */}
           <circle
-            className="text-primary transition-all duration-1000 ease-out"
+            className={`transition-all duration-1000 ease-out ${scoreColorClass}`} // Use dynamic score color
             strokeWidth="8"
             strokeDasharray={circumference}
             strokeDashoffset={offset}
@@ -329,7 +336,10 @@ export default function ResumeAnalysis({
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-2xl font-bold text-white">{score}</span>
+          <span className={`text-2xl font-bold ${scoreColorClass}`}>
+            {score}
+          </span>{" "}
+          {/* Use dynamic score color */}
         </div>
       </div>
     );
@@ -351,21 +361,21 @@ export default function ResumeAnalysis({
 
   if (loading) {
     return (
-      <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div className="bg-gray-800 rounded-lg shadow-xl p-8 max-w-4xl w-full text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
-          <h3 className="text-xl font-medium text-white mb-2">
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="bg-white p-8 rounded-xl border border-white/10 shadow-sm max-w-4xl w-full text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#59B7F2] mx-auto mb-4"></div>
+          <h3 className="text-xl font-bold text-[#1E3A8A] mb-2">
             {jobStatus === "processing"
               ? "Analyzing Resume"
               : "Preparing Analysis"}
           </h3>
-          <p className="text-gray-300 mb-2">
+          <p className="text-slate-700 mb-2">
             {jobStatus === "processing"
               ? `Claude is analyzing your resume. This may take a minute...`
               : "Setting up the analysis job..."}
           </p>
           {jobStatus && processingTime > 0 && (
-            <p className="text-gray-400 text-sm">
+            <p className="text-slate-600 text-sm">
               Status: {jobStatus} (Running for {processingTime} seconds)
             </p>
           )}
@@ -376,18 +386,18 @@ export default function ResumeAnalysis({
 
   if (error) {
     return (
-      <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div className="bg-gray-800 rounded-lg shadow-xl p-8 max-w-4xl w-full">
-          <h3 className="text-xl font-medium text-white mb-4">
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="bg-white p-8 rounded-xl border border-white/10 shadow-sm max-w-4xl w-full">
+          <h3 className="text-xl font-bold text-[#1E3A8A] mb-4">
             Analysis Error
           </h3>
-          <div className="bg-red-900/30 border border-red-500/50 text-red-200 p-4 rounded-lg mb-6">
+          <div className="bg-red-100 border border-red-300 text-red-700 p-4 rounded-lg mb-6">
             {error}
           </div>
           <div className="flex justify-end">
             <button
               onClick={onClose}
-              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+              className="px-4 py-2 bg-[#1E3A8A]/10 hover:bg-[#B3E5FC] text-[#1E3A8A] rounded-lg transition-colors"
             >
               Close
             </button>
@@ -411,22 +421,22 @@ export default function ResumeAnalysis({
   ];
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-hidden">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-hidden">
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="bg-gray-800 rounded-lg shadow-xl max-w-5xl w-full max-h-[90vh] overflow-hidden flex flex-col"
+        className="bg-white rounded-xl border border-white/10 shadow-sm max-w-5xl w-full max-h-[90vh] overflow-hidden flex flex-col"
       >
-        <div className="px-6 py-4 border-b border-gray-700 flex justify-between items-center">
-          <h3 className="text-xl font-medium text-white">Resume Analysis</h3>
+        <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+          <h3 className="text-xl font-bold text-[#1E3A8A]">Resume Analysis</h3>
           <button
             onClick={onClose}
-            className="p-1 rounded-md hover:bg-gray-700 transition-colors"
+            className="p-1 rounded-md hover:bg-[#1E3A8A]/10 transition-colors"
           >
             <svg
-              className="w-6 h-6 text-gray-400"
+              className="w-6 h-6 text-slate-600"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -443,7 +453,7 @@ export default function ResumeAnalysis({
 
         <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
           {/* Sidebar */}
-          <div className="bg-gray-900 w-full md:w-64 p-4 border-r border-gray-700 flex-shrink-0">
+          <div className="bg-[#1E3A8A]/5 w-full md:w-64 p-4 border-r border-slate-200 flex-shrink-0">
             <nav className="space-y-1">
               {sections.map((section) => (
                 <button
@@ -451,24 +461,24 @@ export default function ResumeAnalysis({
                   onClick={() => setActiveSection(section.id)}
                   className={`w-full text-left px-4 py-2 rounded-lg flex items-center transition-colors ${
                     activeSection === section.id
-                      ? "bg-primary text-white"
-                      : "text-gray-300 hover:bg-gray-800"
+                      ? "bg-[#59B7F2] text-white"
+                      : "text-[#1E3A8A] hover:bg-[#1E3A8A]/10"
                   }`}
                 >
                   {section.label}
                 </button>
               ))}
             </nav>
-
-            <div className="mt-8 pt-6 border-t border-gray-700">
+            <div className="mt-8 pt-6 border-t border-slate-200">
               <div className="flex items-center justify-center mb-4">
                 {renderScoreRing(analysis.overallScore)}
               </div>
-              <p className="text-center text-sm text-gray-400">Overall Score</p>
+              <p className="text-center text-sm text-slate-600">
+                Overall Score
+              </p>
             </div>
-
             <div className="mt-6">
-              <h4 className="text-sm font-medium text-gray-300 mb-2">
+              <h4 className="text-sm font-medium text-[#1E3A8A] mb-2">
                 Key Strengths
               </h4>
               <ul className="space-y-1">
@@ -477,10 +487,10 @@ export default function ResumeAnalysis({
                   .map((strength: string, index: number) => (
                     <li
                       key={index}
-                      className="text-sm text-gray-400 flex items-start"
+                      className="text-sm text-slate-700 flex items-start"
                     >
-                      <span className="text-green-400 mr-2">•</span>
-                      <span className="text-gray-300">{strength}</span>
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>{strength}</span>
                     </li>
                   ))}
               </ul>
@@ -499,40 +509,40 @@ export default function ResumeAnalysis({
                   exit="exit"
                   className="space-y-6"
                 >
-                  <div className="bg-gray-750 p-6 rounded-lg border border-gray-700">
-                    <h3 className="text-lg font-medium text-white mb-3">
+                  <div className="bg-white p-6 rounded-lg border border-slate-200">
+                    <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                       Summary
                     </h3>
-                    <p className="text-gray-300">{analysis.summary}</p>
+                    <p className="text-slate-700">{analysis.summary}</p>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-gray-750 p-6 rounded-lg border border-gray-700">
-                      <h3 className="text-lg font-medium text-white mb-3">
+                    <div className="bg-white p-6 rounded-lg border border-slate-200">
+                      <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                         Strengths
                       </h3>
                       <ul className="space-y-2">
                         {analysis.strengths.map(
                           (strength: string, index: number) => (
                             <li key={index} className="flex items-start">
-                              <span className="text-green-400 mr-2">•</span>
-                              <span className="text-gray-300">{strength}</span>
+                              <span className="text-[#59B7F2] mr-2">•</span>
+                              <span className="text-slate-700">{strength}</span>
                             </li>
                           )
                         )}
                       </ul>
                     </div>
 
-                    <div className="bg-gray-750 p-6 rounded-lg border border-gray-700">
-                      <h3 className="text-lg font-medium text-white mb-3">
+                    <div className="bg-white p-6 rounded-lg border border-slate-200">
+                      <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                         Areas for Improvement
                       </h3>
                       <ul className="space-y-2">
                         {analysis.areasForImprovement.map(
                           (area: string, index: number) => (
                             <li key={index} className="flex items-start">
-                              <span className="text-amber-400 mr-2">•</span>
-                              <span className="text-gray-300">{area}</span>
+                              <span className="text-[#59B7F2] mr-2">•</span>
+                              <span className="text-slate-700">{area}</span>
                             </li>
                           )
                         )}
@@ -540,38 +550,38 @@ export default function ResumeAnalysis({
                     </div>
                   </div>
 
-                  <div className="bg-gray-750 p-6 rounded-lg border border-gray-700">
-                    <h3 className="text-lg font-medium text-white mb-4">
+                  <div className="bg-white p-6 rounded-lg border border-slate-200">
+                    <h3 className="text-lg font-bold text-[#1E3A8A] mb-4">
                       Section Scores
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="bg-gray-800 p-4 rounded-lg text-center">
-                        <div className="text-2xl font-bold text-white mb-1">
+                      <div className="bg-[#1E3A8A]/5 p-4 rounded-lg text-center">
+                        <div className="text-2xl font-bold text-[#1E3A8A] mb-1">
                           {analysis.contentQuality.score}
                         </div>
-                        <div className="text-sm text-gray-400">
+                        <div className="text-sm text-slate-600">
                           Content Quality
                         </div>
                       </div>
-                      <div className="bg-gray-800 p-4 rounded-lg text-center">
-                        <div className="text-2xl font-bold text-white mb-1">
+                      <div className="bg-[#1E3A8A]/5 p-4 rounded-lg text-center">
+                        <div className="text-2xl font-bold text-[#1E3A8A] mb-1">
                           {analysis.formatting.score}
                         </div>
-                        <div className="text-sm text-gray-400">Formatting</div>
+                        <div className="text-sm text-slate-600">Formatting</div>
                       </div>
-                      <div className="bg-gray-800 p-4 rounded-lg text-center">
-                        <div className="text-2xl font-bold text-white mb-1">
+                      <div className="bg-[#1E3A8A]/5 p-4 rounded-lg text-center">
+                        <div className="text-2xl font-bold text-[#1E3A8A] mb-1">
                           {analysis.industryRelevance.score}
                         </div>
-                        <div className="text-sm text-gray-400">
+                        <div className="text-sm text-slate-600">
                           Industry Relevance
                         </div>
                       </div>
-                      <div className="bg-gray-800 p-4 rounded-lg text-center">
-                        <div className="text-2xl font-bold text-white mb-1">
+                      <div className="bg-[#1E3A8A]/5 p-4 rounded-lg text-center">
+                        <div className="text-2xl font-bold text-[#1E3A8A] mb-1">
                           {analysis.impactStatements.score}
                         </div>
-                        <div className="text-sm text-gray-400">
+                        <div className="text-sm text-slate-600">
                           Impact Statements
                         </div>
                       </div>
@@ -590,35 +600,35 @@ export default function ResumeAnalysis({
                   className="space-y-6"
                 >
                   <div className="flex items-center mb-4">
-                    <div className="bg-gray-800 rounded-full h-16 w-16 flex items-center justify-center mr-4">
-                      <span className="text-2xl font-bold text-white">
+                    <div className="bg-[#1E3A8A]/10 rounded-full h-16 w-16 flex items-center justify-center mr-4">
+                      <span className="text-2xl font-bold text-[#1E3A8A]">
                         {analysis.contentQuality.score}
                       </span>
                     </div>
-                    <h2 className="text-xl font-medium text-white">
+                    <h2 className="text-xl font-bold text-[#1E3A8A]">
                       Content Quality
                     </h2>
                   </div>
 
-                  <div className="bg-gray-750 p-6 rounded-lg border border-gray-700">
-                    <h3 className="text-lg font-medium text-white mb-3">
+                  <div className="bg-white p-6 rounded-lg border border-slate-200">
+                    <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                       Feedback
                     </h3>
-                    <p className="text-gray-300">
+                    <p className="text-slate-700">
                       {analysis.contentQuality.feedback}
                     </p>
                   </div>
 
-                  <div className="bg-gray-750 p-6 rounded-lg border border-gray-700">
-                    <h3 className="text-lg font-medium text-white mb-3">
+                  <div className="bg-white p-6 rounded-lg border border-slate-200">
+                    <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                       Improvement Suggestions
                     </h3>
                     <ul className="space-y-2">
                       {analysis.contentQuality.suggestions.map(
                         (suggestion: string, index: number) => (
                           <li key={index} className="flex items-start">
-                            <span className="text-primary mr-2">•</span>
-                            <span className="text-gray-300">{suggestion}</span>
+                            <span className="text-[#59B7F2] mr-2">•</span>
+                            <span className="text-slate-700">{suggestion}</span>
                           </li>
                         )
                       )}
@@ -637,35 +647,35 @@ export default function ResumeAnalysis({
                   className="space-y-6"
                 >
                   <div className="flex items-center mb-4">
-                    <div className="bg-gray-800 rounded-full h-16 w-16 flex items-center justify-center mr-4">
-                      <span className="text-2xl font-bold text-white">
+                    <div className="bg-[#1E3A8A]/10 rounded-full h-16 w-16 flex items-center justify-center mr-4">
+                      <span className="text-2xl font-bold text-[#1E3A8A]">
                         {analysis.formatting.score}
                       </span>
                     </div>
-                    <h2 className="text-xl font-medium text-white">
+                    <h2 className="text-xl font-bold text-[#1E3A8A]">
                       Formatting & Structure
                     </h2>
                   </div>
 
-                  <div className="bg-gray-750 p-6 rounded-lg border border-gray-700">
-                    <h3 className="text-lg font-medium text-white mb-3">
+                  <div className="bg-white p-6 rounded-lg border border-slate-200">
+                    <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                       Feedback
                     </h3>
-                    <p className="text-gray-300">
+                    <p className="text-slate-700">
                       {analysis.formatting.feedback}
                     </p>
                   </div>
 
-                  <div className="bg-gray-750 p-6 rounded-lg border border-gray-700">
-                    <h3 className="text-lg font-medium text-white mb-3">
+                  <div className="bg-white p-6 rounded-lg border border-slate-200">
+                    <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                       Improvement Suggestions
                     </h3>
                     <ul className="space-y-2">
                       {analysis.formatting.suggestions.map(
                         (suggestion: string, index: number) => (
                           <li key={index} className="flex items-start">
-                            <span className="text-primary mr-2">•</span>
-                            <span className="text-gray-300">{suggestion}</span>
+                            <span className="text-[#59B7F2] mr-2">•</span>
+                            <span className="text-slate-700">{suggestion}</span>
                           </li>
                         )
                       )}
@@ -684,35 +694,35 @@ export default function ResumeAnalysis({
                   className="space-y-6"
                 >
                   <div className="flex items-center mb-4">
-                    <div className="bg-gray-800 rounded-full h-16 w-16 flex items-center justify-center mr-4">
-                      <span className="text-2xl font-bold text-white">
+                    <div className="bg-[#1E3A8A]/10 rounded-full h-16 w-16 flex items-center justify-center mr-4">
+                      <span className="text-2xl font-bold text-[#1E3A8A]">
                         {analysis.industryRelevance.score}
                       </span>
                     </div>
-                    <h2 className="text-xl font-medium text-white">
+                    <h2 className="text-xl font-bold text-[#1E3A8A]">
                       Industry Relevance
                     </h2>
                   </div>
 
-                  <div className="bg-gray-750 p-6 rounded-lg border border-gray-700">
-                    <h3 className="text-lg font-medium text-white mb-3">
+                  <div className="bg-white p-6 rounded-lg border border-slate-200">
+                    <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                       Feedback
                     </h3>
-                    <p className="text-gray-300">
+                    <p className="text-slate-700">
                       {analysis.industryRelevance.feedback}
                     </p>
                   </div>
 
-                  <div className="bg-gray-750 p-6 rounded-lg border border-gray-700">
-                    <h3 className="text-lg font-medium text-white mb-3">
+                  <div className="bg-white p-6 rounded-lg border border-slate-200">
+                    <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                       Improvement Suggestions
                     </h3>
                     <ul className="space-y-2">
                       {analysis.industryRelevance.suggestions.map(
                         (suggestion: string, index: number) => (
                           <li key={index} className="flex items-start">
-                            <span className="text-primary mr-2">•</span>
-                            <span className="text-gray-300">{suggestion}</span>
+                            <span className="text-[#59B7F2] mr-2">•</span>
+                            <span className="text-slate-700">{suggestion}</span>
                           </li>
                         )
                       )}
@@ -731,35 +741,35 @@ export default function ResumeAnalysis({
                   className="space-y-6"
                 >
                   <div className="flex items-center mb-4">
-                    <div className="bg-gray-800 rounded-full h-16 w-16 flex items-center justify-center mr-4">
-                      <span className="text-2xl font-bold text-white">
+                    <div className="bg-[#1E3A8A]/10 rounded-full h-16 w-16 flex items-center justify-center mr-4">
+                      <span className="text-2xl font-bold text-[#1E3A8A]">
                         {analysis.impactStatements.score}
                       </span>
                     </div>
-                    <h2 className="text-xl font-medium text-white">
+                    <h2 className="text-xl font-bold text-[#1E3A8A]">
                       Impact Statements
                     </h2>
                   </div>
 
-                  <div className="bg-gray-750 p-6 rounded-lg border border-gray-700">
-                    <h3 className="text-lg font-medium text-white mb-3">
+                  <div className="bg-white p-6 rounded-lg border border-slate-200">
+                    <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                       Feedback
                     </h3>
-                    <p className="text-gray-300">
+                    <p className="text-slate-700">
                       {analysis.impactStatements.feedback}
                     </p>
                   </div>
 
-                  <div className="bg-gray-750 p-6 rounded-lg border border-gray-700">
-                    <h3 className="text-lg font-medium text-white mb-3">
+                  <div className="bg-white p-6 rounded-lg border border-slate-200">
+                    <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                       Improvement Suggestions
                     </h3>
                     <ul className="space-y-2">
                       {analysis.impactStatements.suggestions.map(
                         (suggestion: string, index: number) => (
                           <li key={index} className="flex items-start">
-                            <span className="text-primary mr-2">•</span>
-                            <span className="text-gray-300">{suggestion}</span>
+                            <span className="text-[#59B7F2] mr-2">•</span>
+                            <span className="text-slate-700">{suggestion}</span>
                           </li>
                         )
                       )}
@@ -777,13 +787,13 @@ export default function ResumeAnalysis({
                   exit="exit"
                   className="space-y-6"
                 >
-                  <h2 className="text-xl font-medium text-white mb-4">
+                  <h2 className="text-xl font-bold text-[#1E3A8A] mb-4">
                     Suggested Edits
                   </h2>
 
                   {analysis.suggestedEdits.length === 0 ? (
-                    <div className="bg-gray-750 p-6 rounded-lg border border-gray-700 text-center">
-                      <p className="text-gray-300">
+                    <div className="bg-white p-6 rounded-lg border border-slate-200 text-center">
+                      <p className="text-slate-600">
                         No specific text edits suggested.
                       </p>
                     </div>
@@ -792,7 +802,7 @@ export default function ResumeAnalysis({
                       {analysis.suggestedEdits.map((edit, index) => (
                         <div
                           key={index}
-                          className="bg-gray-750 p-4 rounded-lg border border-gray-700 overflow-hidden"
+                          className="bg-white p-4 rounded-lg border border-slate-200 overflow-hidden"
                         >
                           <button
                             onClick={() =>
@@ -801,13 +811,14 @@ export default function ResumeAnalysis({
                               )
                             }
                             className="w-full text-left"
+                            aria-expanded={selectedEdit === index}
                           >
                             <div className="flex justify-between items-center mb-2">
-                              <h4 className="font-medium text-white">
+                              <h4 className="font-bold text-[#1E3A8A]">
                                 Edit Suggestion {index + 1}
                               </h4>
                               <svg
-                                className={`w-5 h-5 text-gray-400 transition-transform ${
+                                className={`w-5 h-5 text-slate-600 transition-transform ${
                                   selectedEdit === index ? "rotate-180" : ""
                                 }`}
                                 fill="none"
@@ -832,30 +843,30 @@ export default function ResumeAnalysis({
                                 exit={{ height: 0, opacity: 0 }}
                                 transition={{ duration: 0.3 }}
                               >
-                                <div className="pt-2 border-t border-gray-700 mt-2">
+                                <div className="pt-2 border-t border-slate-200 mt-2">
                                   <div className="mb-4">
-                                    <h5 className="text-sm text-gray-400 mb-1">
+                                    <h5 className="text-sm text-slate-600 mb-1">
                                       Original Text:
                                     </h5>
-                                    <div className="bg-gray-800 p-3 rounded text-gray-300 text-sm">
+                                    <div className="bg-[#1E3A8A]/5 p-3 rounded text-slate-700 text-sm">
                                       {edit.original}
                                     </div>
                                   </div>
 
                                   <div className="mb-4">
-                                    <h5 className="text-sm text-gray-400 mb-1">
+                                    <h5 className="text-sm text-slate-600 mb-1">
                                       Improved Text:
                                     </h5>
-                                    <div className="bg-primary/10 p-3 rounded text-white text-sm">
+                                    <div className="bg-[#59B7F2]/10 border border-[#B3E5FC] p-3 rounded text-[#1E3A8A] text-sm">
                                       {edit.improved}
                                     </div>
                                   </div>
 
                                   <div>
-                                    <h5 className="text-sm text-gray-400 mb-1">
+                                    <h5 className="text-sm text-slate-600 mb-1">
                                       Explanation:
                                     </h5>
-                                    <p className="text-gray-300 text-sm">
+                                    <p className="text-slate-700 text-sm">
                                       {edit.explanation}
                                     </p>
                                   </div>
@@ -873,16 +884,16 @@ export default function ResumeAnalysis({
           </div>
         </div>
 
-        <div className="px-6 py-4 border-t border-gray-700 flex justify-between">
+        <div className="px-6 py-4 border-t border-slate-200 flex justify-between">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+            className="px-4 py-2 bg-[#1E3A8A]/10 hover:bg-[#B3E5FC] text-[#1E3A8A] rounded-lg transition-colors"
           >
             Close
           </button>
-          <button className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors flex items-center">
+          <button className="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#1E3A8A] hover:bg-[#59B7F2] focus:outline-none focus:ring-2 focus:ring-[#B3E5FC] transition-all duration-200 flex items-center">
             <svg
-              className="w-5 h-5 mr-2"
+              className="w-5 h-5 mr-2 text-current"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"

@@ -61,7 +61,7 @@ export default function Navbar() {
 
   return (
     <motion.nav
-      className="fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-secondary/80 backdrop-blur-md"
+      className="fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-[#59B7F2]/90 backdrop-blur-md border-b border-white/10"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -73,15 +73,30 @@ export default function Navbar() {
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 400, damping: 10 }}
         >
-          <Image
-            src="/assets/logos/wallstreetai-logo.png"
-            alt="WallStreetAI Logo"
-            width={160}
-            height={50}
-            className="object-contain h-auto w-auto max-h-12"
-            priority
-            style={{ backgroundColor: "transparent" }}
-          />
+          {/* Logo with bank icon and text */}
+          <div className="flex items-center">
+            <div className="bg-[#1E3A8A] p-2 rounded-lg mr-2">
+              <div className="text-[#B3E5FC] text-xl">
+                <span className="flex justify-center">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M3 21H21M5 21V5C5 4.44772 5.44772 4 6 4H18C18.5523 4 19 4.44772 19 5V21M9 21V17M12 21V14M15 21V17"
+                      stroke="#B3E5FC"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </span>
+              </div>
+            </div>
+            <span className="text-white text-xl font-bold">WallStreetAI</span>
+          </div>
         </motion.div>
 
         <div className="hidden md:flex items-center space-x-6">
@@ -89,7 +104,7 @@ export default function Navbar() {
             <button
               key={link.name}
               onClick={() => scrollToSection(link.id)}
-              className="nav-link text-sm font-medium cursor-pointer"
+              className="text-sm font-medium text-white hover:text-[#B3E5FC] transition-colors duration-150 cursor-pointer"
             >
               {link.name}
             </button>
@@ -103,7 +118,7 @@ export default function Navbar() {
           >
             <button
               onClick={toggleDropdown}
-              className="secondary-button group relative overflow-hidden"
+              className="px-4 py-2 bg-white text-[#1E3A8A] text-sm font-medium rounded-lg shadow-sm hover:bg-white/90 hover:shadow-md transition-all duration-200 flex items-center"
             >
               <span className="relative z-10 flex items-center">
                 🚀 Get Early Access
@@ -122,19 +137,13 @@ export default function Navbar() {
                   />
                 </svg>
               </span>
-
-              {/* Subtle highlight effect on hover */}
-              <motion.div
-                className="absolute inset-0 bg-primary-light/0 group-hover:bg-primary-light/10 transition-colors duration-300"
-                initial={false}
-              />
             </button>
           </motion.div>
 
           {/* Dropdown Menu */}
           {isDropdownOpen && (
             <motion.div
-              className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5 z-50"
+              className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white border border-white/20 z-50"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
@@ -143,21 +152,21 @@ export default function Navbar() {
               <div className="py-1" role="menu" aria-orientation="vertical">
                 <Link
                   href="/login"
-                  className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-150"
+                  className="block px-4 py-2 text-sm text-[#1E3A8A] hover:bg-[#E0F7FA] hover:text-[#1E3A8A] transition-colors duration-150"
                   onClick={() => setIsDropdownOpen(false)}
                 >
                   🔑 Sign In
                 </Link>
                 <Link
                   href="/signup"
-                  className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-150"
+                  className="block px-4 py-2 text-sm text-[#1E3A8A] hover:bg-[#E0F7FA] hover:text-[#1E3A8A] transition-colors duration-150"
                   onClick={() => setIsDropdownOpen(false)}
                 >
                   ✨ Create Account
                 </Link>
                 <button
                   onClick={openWaitlistModal}
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-150"
+                  className="block w-full text-left px-4 py-2 text-sm text-[#1E3A8A] hover:bg-[#E0F7FA] hover:text-[#1E3A8A] transition-colors duration-150"
                 >
                   🚀 Join Waitlist
                 </button>

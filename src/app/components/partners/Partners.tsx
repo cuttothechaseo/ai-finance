@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
+import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import Image from "next/image";
 
 // Define partner types
 type PartnerWithLogo = {
@@ -26,158 +26,169 @@ type Partner = PartnerWithLogo | PartnerWithoutLogo;
 
 // Finance partners array with logo information
 const financePartners: Partner[] = [
-  { 
-    name: 'Goldman Sachs', 
+  {
+    name: "Goldman Sachs",
     hasLogo: true,
-    logoPath: '/assets/logos/partners/Goldman-Sachs-Logo.png', 
+    logoPath: "/assets/logos/partners/Goldman-Sachs-Logo.png",
     width: 150,
     height: 50,
-    logo: 'GS', 
-    shortName: 'Goldman Sachs' 
+    logo: "GS",
+    shortName: "Goldman Sachs",
   },
-  { 
-    name: 'Morgan Stanley', 
+  {
+    name: "Morgan Stanley",
     hasLogo: true,
-    logoPath: '/assets/logos/partners/Morgan-Stanley-Logo.png', 
+    logoPath: "/assets/logos/partners/Morgan-Stanley-Logo.png",
     width: 150,
     height: 50,
-    logo: 'MS', 
-    shortName: 'Morgan Stanley' 
+    logo: "MS",
+    shortName: "Morgan Stanley",
   },
-  { 
-    name: 'JP Morgan', 
+  {
+    name: "JP Morgan",
     hasLogo: true,
-    logoPath: '/assets/logos/partners/jpmorgan-logo.png', 
+    logoPath: "/assets/logos/partners/jpmorgan-logo.png",
     width: 150,
     height: 50,
-    logo: 'JPM', 
-    shortName: 'JP Morgan' 
+    logo: "JPM",
+    shortName: "JP Morgan",
   },
-  { 
-    name: 'Blackstone', 
+  {
+    name: "Blackstone",
     hasLogo: true,
-    logoPath: '/assets/logos/partners/Blackstone-Logo.png', 
+    logoPath: "/assets/logos/partners/Blackstone-Logo.png",
     width: 150,
     height: 50,
-    logo: 'BX', 
-    shortName: 'Blackstone' 
+    logo: "BX",
+    shortName: "Blackstone",
   },
-  { 
-    name: 'BlackRock', 
+  {
+    name: "BlackRock",
     hasLogo: true,
-    logoPath: '/assets/logos/partners/blackrock-logo.svg', 
+    logoPath: "/assets/logos/partners/blackrock-logo.svg",
     width: 150,
     height: 50,
-    logo: 'BLK', 
-    shortName: 'BlackRock' 
+    logo: "BLK",
+    shortName: "BlackRock",
   },
-  { 
-    name: 'Evercore', 
+  {
+    name: "Evercore",
     hasLogo: true,
-    logoPath: '/assets/logos/partners/evercore-logo.png', 
+    logoPath: "/assets/logos/partners/evercore-logo.png",
     width: 150,
     height: 50,
-    logo: 'EVR', 
-    shortName: 'Evercore' 
+    logo: "EVR",
+    shortName: "Evercore",
   },
-  { 
-    name: 'UBS', 
+  {
+    name: "UBS",
     hasLogo: true,
-    logoPath: '/assets/logos/partners/UBS_Logo.png', 
+    logoPath: "/assets/logos/partners/UBS_Logo.png",
     width: 150,
     height: 50,
-    logo: 'UBS', 
-    shortName: 'UBS' 
+    logo: "UBS",
+    shortName: "UBS",
   },
-  { 
-    name: 'Credit Suisse', 
+  {
+    name: "Credit Suisse",
     hasLogo: true,
-    logoPath: '/assets/logos/partners/Credit-Suisse-logo.png', 
+    logoPath: "/assets/logos/partners/Credit-Suisse-logo.png",
     width: 150,
     height: 50,
-    logo: 'CS', 
-    shortName: 'Credit Suisse' 
+    logo: "CS",
+    shortName: "Credit Suisse",
   },
-  { 
-    name: 'Deutsche Bank', 
+  {
+    name: "Deutsche Bank",
     hasLogo: true,
-    logoPath: '/assets/logos/partners/deutsche-bank-logo.png', 
+    logoPath: "/assets/logos/partners/deutsche-bank-logo.png",
     width: 150,
     height: 50,
-    logo: 'DB', 
-    shortName: 'Deutsche Bank' 
+    logo: "DB",
+    shortName: "Deutsche Bank",
   },
-  { 
-    name: 'Barclays', 
+  {
+    name: "Barclays",
     hasLogo: true,
-    logoPath: '/assets/logos/partners/barclays-logo.png', 
+    logoPath: "/assets/logos/partners/barclays-logo.png",
     width: 150,
     height: 50,
-    logo: 'BCS', 
-    shortName: 'Barclays' 
+    logo: "BCS",
+    shortName: "Barclays",
   },
-  { 
-    name: 'Bank of America', 
+  {
+    name: "Bank of America",
     hasLogo: true,
-    logoPath: '/assets/logos/partners/Bank-of-America-Logo.png', 
+    logoPath: "/assets/logos/partners/Bank-of-America-Logo.png",
     width: 150,
     height: 50,
-    logo: 'BAC', 
-    shortName: 'Bank of America' 
-  }
+    logo: "BAC",
+    shortName: "Bank of America",
+  },
 ];
 
 // Duplicate the array to create a seamless loop
-const allPartners = [...financePartners, ...financePartners, ...financePartners];
+const allPartners = [
+  ...financePartners,
+  ...financePartners,
+  ...financePartners,
+];
 
 export default function Partners() {
   const [isPaused, setIsPaused] = useState(false);
   const [isClient, setIsClient] = useState(false);
-  
+
   // This ensures hydration doesn't cause issues with SSR
   useEffect(() => {
     // Only run on client-side
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       setIsClient(true);
     }
   }, []);
-  
+
   return (
-    <section className="py-16 bg-gray-950 border-t border-gray-900">
+    <section className="py-16 bg-[#59B7F2] relative overflow-hidden">
       <style jsx global>{`
         .logo-uniform {
           width: 150px !important;
           height: 50px !important;
           object-fit: contain !important;
+          filter: brightness(0) invert(1) !important;
+          opacity: 0.9 !important;
+        }
+
+        .logo-uniform:hover {
+          opacity: 1 !important;
+          filter: brightness(0) invert(1) !important;
         }
       `}</style>
-      
-      <div className="container mx-auto px-4 mb-6">
-        <h3 className="text-center text-gray-400 text-sm uppercase tracking-wider font-medium mb-8">
+
+      <div className="container mx-auto px-4 mb-6 relative z-10">
+        <h3 className="text-center text-white text-sm uppercase tracking-wider font-medium mb-8">
           Our students work at top financial institutions
         </h3>
       </div>
-      
-      <div className="max-w-full mx-auto">
-        <div 
+
+      <div className="max-w-full mx-auto relative z-10">
+        <div
           className="overflow-hidden relative"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
           {/* Left gradient mask */}
-          <div className="absolute left-0 top-0 h-full w-24 z-10 bg-gradient-to-r from-gray-950 to-transparent pointer-events-none"></div>
-          
+          <div className="absolute left-0 top-0 h-full w-24 z-10 bg-gradient-to-r from-[#59B7F2] to-transparent pointer-events-none"></div>
+
           {isClient && (
-            <motion.div 
+            <motion.div
               className="flex items-center"
               initial={{ x: "0%" }}
               animate={{ x: "-33.33%" }}
-              transition={{ 
+              transition={{
                 repeat: Infinity,
                 duration: 15,
                 ease: "linear",
                 repeatType: "loop",
-                ...(isPaused && { playState: 'paused' })
+                ...(isPaused && { playState: "paused" }),
               }}
             >
               {allPartners.map((partner, index) => (
@@ -187,11 +198,10 @@ export default function Partners() {
                   initial={{ opacity: 0.6 }}
                   whileInView={{ opacity: 0.8 }}
                   viewport={{ once: true }}
-                  whileHover={{ 
-                    opacity: 1, 
+                  whileHover={{
+                    opacity: 1,
                     scale: 1.05,
-                    filter: "drop-shadow(0 0 8px rgba(255, 255, 255, 0.3))",
-                    transition: { duration: 0.3 }
+                    transition: { duration: 0.3 },
                   }}
                 >
                   {partner.hasLogo ? (
@@ -202,27 +212,31 @@ export default function Partners() {
                         alt={partner.name}
                         width={150}
                         height={50}
-                        className="logo-uniform object-contain filter brightness-0 invert opacity-90 hover:opacity-100 transition-all duration-300 hover:brightness-110"
+                        className="logo-uniform object-contain transition-opacity duration-300"
                       />
                     </div>
                   ) : (
                     // Display text for firms without logos
                     <div className="w-[150px] h-[50px] flex items-center space-x-3">
-                      <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
-                        <span className="text-white font-bold text-lg">{partner.logo}</span>
+                      <div className="w-10 h-10 rounded-full bg-[#1E3A8A]/20 flex items-center justify-center">
+                        <span className="text-white font-bold text-lg">
+                          {partner.logo}
+                        </span>
                       </div>
-                      <span className="text-white font-light text-xl tracking-wide whitespace-nowrap">{partner.shortName}</span>
+                      <span className="text-white font-light text-xl tracking-wide whitespace-nowrap">
+                        {partner.shortName}
+                      </span>
                     </div>
                   )}
                 </motion.div>
               ))}
             </motion.div>
           )}
-          
+
           {/* Right gradient mask */}
-          <div className="absolute right-0 top-0 h-full w-24 z-10 bg-gradient-to-l from-gray-950 to-transparent pointer-events-none"></div>
+          <div className="absolute right-0 top-0 h-full w-24 z-10 bg-gradient-to-l from-[#59B7F2] to-transparent pointer-events-none"></div>
         </div>
       </div>
     </section>
   );
-} 
+}

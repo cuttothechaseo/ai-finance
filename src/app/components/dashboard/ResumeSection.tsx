@@ -152,18 +152,18 @@ export default function ResumeSection({ user }: ResumeSectionProps) {
         initial="hidden"
         animate="visible"
         variants={fadeIn}
-        className="bg-gray-800 shadow rounded-lg overflow-hidden border border-gray-700"
+        className="bg-white shadow-md rounded-lg overflow-hidden border border-[#E6E8F0]"
       >
-        <div className="px-6 py-5 border-b border-gray-700 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Your Resumes</h1>
+        <div className="px-6 py-5 border-b border-[#E6E8F0] flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-[#1E293B]">Your Resumes</h1>
           <Link href="/resume" className="group">
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200"
+              className="inline-flex items-center px-4 py-2 border border-[#DCEFFB] shadow-sm text-sm font-medium rounded-md text-[#1E293B] bg-white hover:bg-[#E0F7FA] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#B3E5FC] transition-all duration-200"
             >
               <svg
-                className="-ml-1 mr-2 h-5 w-5 group-hover:rotate-90 transition-transform duration-300"
+                className="-ml-1 mr-2 h-5 w-5 text-[#1E293B] group-hover:rotate-90 transition-transform duration-300"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -190,13 +190,13 @@ export default function ResumeSection({ user }: ResumeSectionProps) {
                 <motion.div
                   key={index}
                   variants={listItem}
-                  className="bg-gray-700 rounded-lg overflow-hidden border border-gray-600 shadow-md hover:shadow-lg transition-all duration-300"
+                  className="bg-white rounded-lg overflow-hidden border border-[#E6E8F0] shadow-sm hover:shadow-md transition-all duration-300"
                 >
                   <div className="p-4">
                     <div className="flex items-start space-x-3">
-                      <div className="bg-primary/10 rounded-full p-2">
+                      <div className="bg-[#E0F7FA] rounded-full p-2">
                         <svg
-                          className="w-6 h-6 text-primary"
+                          className="w-6 h-6 text-[#1E293B]"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -211,10 +211,10 @@ export default function ResumeSection({ user }: ResumeSectionProps) {
                         </svg>
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-medium text-lg truncate">
+                        <h3 className="font-medium text-lg truncate text-[#1E293B]">
                           {resume.file_name}
                         </h3>
-                        <p className="text-sm text-gray-400">
+                        <p className="text-sm text-[#475569]">
                           {resume.created_at
                             ? `Uploaded on ${new Date(
                                 resume.created_at
@@ -226,7 +226,7 @@ export default function ResumeSection({ user }: ResumeSectionProps) {
                             : "Recently uploaded"}
                         </p>
                         {resume.file_size && (
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-xs text-[#475569] mt-1">
                             {(resume.file_size / 1024 / 1024).toFixed(2)} MB •{" "}
                             {resume.file_type?.toUpperCase() || "Document"}
                           </p>
@@ -235,16 +235,16 @@ export default function ResumeSection({ user }: ResumeSectionProps) {
                     </div>
                   </div>
 
-                  <div className="bg-gray-750 px-4 py-3 flex justify-end space-x-2 border-t border-gray-600">
+                  <div className="bg-white px-4 py-3 flex justify-end space-x-2 border-t border-[#E6E8F0]">
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => handleViewPreview(resume)}
-                      className="p-2 bg-gray-800 rounded-md hover:bg-gray-700 transition-colors"
+                      className="p-2 bg-[#E6E8F0] rounded-md hover:bg-[#C9DFFF] transition-colors"
                       title="View Resume"
                     >
                       <svg
-                        className="w-5 h-5 text-gray-300"
+                        className="w-5 h-5 text-[#334155]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -268,11 +268,11 @@ export default function ResumeSection({ user }: ResumeSectionProps) {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => handleAnalyzeResume(resume)}
-                      className="p-2 bg-primary/10 rounded-md hover:bg-primary/20 transition-colors"
+                      className="p-2 bg-[#E0F7FA] rounded-md hover:bg-[#B3E5FC] transition-colors"
                       title="Get AI Feedback"
                     >
                       <svg
-                        className="w-5 h-5 text-primary"
+                        className="w-5 h-5 text-[#1E293B]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -295,11 +295,11 @@ export default function ResumeSection({ user }: ResumeSectionProps) {
                       <motion.div
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="p-2 bg-primary rounded-md hover:bg-primary-dark transition-colors"
+                        className="p-2 bg-[#B3E5FC] rounded-md hover:bg-[#A7C7E7] transition-colors"
                         title="Download Resume"
                       >
                         <svg
-                          className="w-5 h-5 text-white"
+                          className="w-5 h-5 text-[#1E293B]"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -321,7 +321,7 @@ export default function ResumeSection({ user }: ResumeSectionProps) {
           ) : (
             <motion.div variants={fadeIn} className="text-center py-10">
               <svg
-                className="mx-auto h-12 w-12 text-gray-400"
+                className="mx-auto h-12 w-12 text-[#94A3B8]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -334,10 +334,10 @@ export default function ResumeSection({ user }: ResumeSectionProps) {
                   d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                 />
               </svg>
-              <h3 className="mt-2 text-sm font-medium text-white">
+              <h3 className="mt-2 text-sm font-medium text-[#1E293B]">
                 No resumes yet
               </h3>
-              <p className="mt-1 text-sm text-gray-400">
+              <p className="mt-1 text-sm text-[#475569]">
                 Get started by uploading your first resume.
               </p>
               <div className="mt-6">
@@ -345,10 +345,10 @@ export default function ResumeSection({ user }: ResumeSectionProps) {
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200"
+                    className="inline-flex items-center px-4 py-2 border border-[#DCEFFB] shadow-sm text-sm font-medium rounded-md text-[#1E293B] bg-white hover:bg-[#E0F7FA] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#B3E5FC] transition-all duration-200"
                   >
                     <svg
-                      className="-ml-1 mr-2 h-5 w-5 group-hover:rotate-90 transition-transform duration-300"
+                      className="-ml-1 mr-2 h-5 w-5 text-[#1E293B] group-hover:rotate-90 transition-transform duration-300"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -385,19 +385,19 @@ export default function ResumeSection({ user }: ResumeSectionProps) {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+              className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="px-6 py-4 border-b border-gray-700 flex justify-between items-center">
-                <h3 className="text-xl font-medium">
+              <div className="px-6 py-4 border-b border-[#E6E8F0] flex justify-between items-center">
+                <h3 className="text-xl font-medium text-[#1E293B]">
                   {selectedResume.file_name}
                 </h3>
                 <button
                   onClick={closePreview}
-                  className="p-1 rounded-md hover:bg-gray-700 transition-colors"
+                  className="p-1 rounded-md hover:bg-[#E6E8F0] transition-colors"
                 >
                   <svg
-                    className="w-6 h-6 text-gray-400"
+                    className="w-6 h-6 text-[#475569]"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -414,16 +414,16 @@ export default function ResumeSection({ user }: ResumeSectionProps) {
               <div className="p-6 overflow-auto h-[calc(90vh-8rem)]">
                 <iframe
                   src={selectedResume.resume_url}
-                  className="w-full h-full bg-white rounded border border-gray-600"
+                  className="w-full h-full bg-white rounded border border-[#E6E8F0]"
                   title={selectedResume.file_name}
                 />
               </div>
-              <div className="px-6 py-4 border-t border-gray-700 flex justify-end space-x-3">
+              <div className="px-6 py-4 border-t border-[#E6E8F0] flex justify-end space-x-3">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={closePreview}
-                  className="px-4 py-2 rounded-md bg-gray-700 text-white hover:bg-gray-600 transition-colors"
+                  className="px-4 py-2 rounded-md bg-[#E6E8F0] text-[#334155] hover:bg-[#C9DFFF] transition-colors"
                 >
                   Close
                 </motion.button>
@@ -434,10 +434,10 @@ export default function ResumeSection({ user }: ResumeSectionProps) {
                     closePreview();
                     handleAnalyzeResume(selectedResume);
                   }}
-                  className="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark transition-colors flex items-center"
+                  className="px-4 py-2 rounded-md bg-[#B3E5FC] text-[#1E293B] hover:bg-[#A7C7E7] transition-colors flex items-center"
                 >
                   <svg
-                    className="w-5 h-5 mr-2"
+                    className="w-5 h-5 mr-2 text-[#1E293B]"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"

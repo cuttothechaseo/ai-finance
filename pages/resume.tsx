@@ -94,21 +94,21 @@ export default function ResumeUpload() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0F0F2D] bg-gradient-to-b from-[#0F0F2D] to-[#151538] flex flex-col py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#59B7F2] flex flex-col py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto w-full">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-white">Upload Your Resume</h1>
           <Link
             href="/dashboard"
-            className="text-[#6C63FF] hover:text-[#8A7FFF] transition-colors duration-200"
+            className="text-[#B3E5FC] hover:text-white transition-colors duration-200"
           >
             Back to Dashboard
           </Link>
         </div>
 
-        <div className="bg-[#151538]/70 backdrop-blur-sm p-6 rounded-xl border border-[#2A2A4A] mb-8">
+        <div className="bg-white p-6 rounded-xl border border-white/10 shadow-sm mb-8">
           <div className="mb-6">
-            <p className="text-[#A3A3A3] mb-4">
+            <p className="text-slate-700 mb-4">
               Upload your resume to get personalized finance interview questions
               and feedback. We support PDF, DOCX, and TXT formats up to 5MB.
             </p>
@@ -117,8 +117,8 @@ export default function ResumeUpload() {
               <div
                 className={`p-4 rounded-lg ${
                   messageType === "success"
-                    ? "bg-green-900/30 border border-green-500/50 text-green-200"
-                    : "bg-red-900/30 border border-red-500/50 text-red-200"
+                    ? "bg-green-100 border border-green-300 text-green-700"
+                    : "bg-red-100 border border-red-300 text-red-700"
                 }`}
               >
                 {message}
@@ -127,24 +127,24 @@ export default function ResumeUpload() {
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium text-[#A3A3A3] mb-2">
+            <label className="block text-sm font-medium text-[#1E3A8A] mb-2">
               Select your resume file
             </label>
             <input
               type="file"
               accept=".pdf,.docx,.doc,.txt"
               onChange={handleFileChange}
-              className="block w-full text-sm text-gray-300
+              className="block w-full text-sm text-slate-700
                                 file:mr-4 file:py-2 file:px-4
                                 file:rounded-md file:border-0
                                 file:text-sm file:font-semibold
-                                file:bg-[#2A2A4A] file:text-white
-                                hover:file:bg-[#3A3A5A]
+                                file:bg-[#1E3A8A]/10 file:text-[#1E3A8A]
+                                hover:file:bg-[#B3E5FC] hover:file:text-[#1E3A8A]
                                 file:cursor-pointer file:transition-colors
                                 cursor-pointer"
             />
             {file && (
-              <p className="mt-2 text-sm text-[#A3A3A3]">
+              <p className="mt-2 text-sm text-slate-600">
                 Selected: {file.name} ({(file.size / 1024 / 1024).toFixed(2)}{" "}
                 MB)
               </p>
@@ -154,34 +154,34 @@ export default function ResumeUpload() {
           <button
             onClick={uploadResume}
             disabled={uploading || !file}
-            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-sm font-bold text-white bg-[#6C63FF] hover:bg-[#5A52D5] focus:outline-none focus:ring-2 focus:ring-[#6C63FF] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center px-4 py-3 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-[#1E3A8A] hover:bg-[#59B7F2] focus:outline-none focus:ring-2 focus:ring-[#B3E5FC] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {uploading ? "Uploading..." : "Upload Resume"}
           </button>
         </div>
 
-        <div className="bg-[#151538]/70 backdrop-blur-sm p-6 rounded-xl border border-[#2A2A4A]">
-          <h2 className="text-xl font-semibold text-white mb-4">Resume Tips</h2>
-          <ul className="space-y-3 text-[#A3A3A3]">
+        <div className="bg-white p-6 rounded-xl border border-white/10 shadow-sm">
+          <h2 className="text-xl font-bold text-[#1E3A8A] mb-4">Resume Tips</h2>
+          <ul className="space-y-3 text-slate-700">
             <li className="flex items-start">
-              <span className="text-[#6C63FF] mr-2">•</span>
+              <span className="text-[#59B7F2] mr-2">•</span>
               Keep your resume to one page for finance roles.
             </li>
             <li className="flex items-start">
-              <span className="text-[#6C63FF] mr-2">•</span>
+              <span className="text-[#59B7F2] mr-2">•</span>
               Quantify your achievements with numbers and percentages.
             </li>
             <li className="flex items-start">
-              <span className="text-[#6C63FF] mr-2">•</span>
+              <span className="text-[#59B7F2] mr-2">•</span>
               Include relevant finance-specific skills and certifications.
             </li>
             <li className="flex items-start">
-              <span className="text-[#6C63FF] mr-2">•</span>
+              <span className="text-[#59B7F2] mr-2">•</span>
               Tailor your resume to the specific finance role you&apos;re
               applying for.
             </li>
             <li className="flex items-start">
-              <span className="text-[#6C63FF] mr-2">•</span>
+              <span className="text-[#59B7F2] mr-2">•</span>
               Proofread carefully - attention to detail is critical in finance.
             </li>
           </ul>

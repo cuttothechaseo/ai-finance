@@ -126,13 +126,26 @@ export default function NetworkingSection({ user }: NetworkingSectionProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "connected":
-        return "bg-green-500";
+        return "bg-[#BBF7D0]";
       case "pending":
-        return "bg-yellow-500";
+        return "bg-[#FEF08A]";
       case "follow_up":
-        return "bg-blue-500";
+        return "bg-[#BFDBFE]";
       default:
-        return "bg-gray-500";
+        return "bg-[#E2E8F0]";
+    }
+  };
+
+  const getStatusTextColor = (status: string) => {
+    switch (status) {
+      case "connected":
+        return "text-[#166534]";
+      case "pending":
+        return "text-[#854D0E]";
+      case "follow_up":
+        return "text-[#1E40AF]";
+      default:
+        return "text-[#334155]";
     }
   };
 
@@ -195,10 +208,12 @@ export default function NetworkingSection({ user }: NetworkingSectionProps) {
         initial="hidden"
         animate="visible"
         variants={fadeIn}
-        className="bg-gray-800 shadow rounded-lg overflow-hidden border border-gray-700"
+        className="bg-white/80 backdrop-blur-md shadow-md rounded-lg overflow-hidden border border-white/20"
       >
-        <div className="px-6 py-5 border-b border-gray-700 flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
-          <h1 className="text-2xl font-bold">Professional Network</h1>
+        <div className="px-6 py-5 border-b border-[#E6E8F0] flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
+          <h1 className="text-2xl font-bold text-[#1E293B]">
+            Professional Network
+          </h1>
           <div className="flex flex-wrap gap-2">
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -206,8 +221,8 @@ export default function NetworkingSection({ user }: NetworkingSectionProps) {
               onClick={() => setFilterStatus("all")}
               className={`px-3 py-1.5 text-sm rounded-full transition-colors ${
                 filterStatus === "all"
-                  ? "bg-primary text-white"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                  ? "bg-[#1E3A8A] text-white"
+                  : "bg-[#F1F5F9] text-[#475569] hover:bg-[#59B7F2] hover:text-white"
               }`}
             >
               All Contacts
@@ -218,8 +233,8 @@ export default function NetworkingSection({ user }: NetworkingSectionProps) {
               onClick={() => setFilterStatus("connected")}
               className={`px-3 py-1.5 text-sm rounded-full transition-colors ${
                 filterStatus === "connected"
-                  ? "bg-green-600 text-white"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                  ? "bg-[#BBF7D0] text-[#166534]"
+                  : "bg-[#F1F5F9] text-[#475569] hover:bg-[#59B7F2] hover:text-white"
               }`}
             >
               Connected
@@ -230,8 +245,8 @@ export default function NetworkingSection({ user }: NetworkingSectionProps) {
               onClick={() => setFilterStatus("pending")}
               className={`px-3 py-1.5 text-sm rounded-full transition-colors ${
                 filterStatus === "pending"
-                  ? "bg-yellow-600 text-white"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                  ? "bg-[#FEF08A] text-[#854D0E]"
+                  : "bg-[#F1F5F9] text-[#475569] hover:bg-[#59B7F2] hover:text-white"
               }`}
             >
               Pending
@@ -242,8 +257,8 @@ export default function NetworkingSection({ user }: NetworkingSectionProps) {
               onClick={() => setFilterStatus("follow_up")}
               className={`px-3 py-1.5 text-sm rounded-full transition-colors ${
                 filterStatus === "follow_up"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                  ? "bg-[#BFDBFE] text-[#1E40AF]"
+                  : "bg-[#F1F5F9] text-[#475569] hover:bg-[#59B7F2] hover:text-white"
               }`}
             >
               Follow Up
@@ -252,186 +267,206 @@ export default function NetworkingSection({ user }: NetworkingSectionProps) {
         </div>
 
         <div className="p-6">
-          {filteredContacts.length > 0 ? (
-            <motion.div
-              variants={staggerContainer}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-lg font-semibold text-[#1E293B]">
+              {filteredContacts.length}{" "}
+              {filterStatus === "all"
+                ? "Contacts"
+                : `${getStatusText(filterStatus)} Contacts`}
+            </h2>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleGenerateMessage}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#1E3A8A] hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1E3A8A]/50 transition-colors"
             >
-              {filteredContacts.map((contact: any) => (
-                <motion.div
-                  key={contact.id}
-                  variants={cardVariant}
-                  className="bg-gray-700 rounded-lg overflow-hidden shadow-md border border-gray-600 hover:shadow-lg transition-all duration-300"
-                >
-                  <div className="relative h-20 bg-gradient-to-r from-primary/30 to-primary-dark/30">
-                    <div className="absolute -bottom-10 left-4">
-                      <div className="h-20 w-20 rounded-full border-4 border-gray-700 overflow-hidden shadow-xl">
-                        <Image
-                          src={contact.avatar}
-                          alt={contact.name}
-                          width={80}
-                          height={80}
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                    </div>
-                    <div className="absolute top-4 right-4">
-                      <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                          contact.status
-                        )} text-white`}
-                      >
-                        {getStatusText(contact.status)}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="pt-12 px-4 pb-4">
-                    <h3 className="font-medium text-lg">{contact.name}</h3>
-                    <p className="text-sm text-gray-400 line-clamp-1">
-                      {contact.position} at {contact.company}
-                    </p>
-
-                    {contact.last_contact && (
-                      <p className="text-xs text-gray-500 mt-2">
-                        Last contacted:{" "}
-                        {new Date(contact.last_contact).toLocaleDateString(
-                          "en-US",
-                          {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          }
-                        )}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="bg-gray-750 px-4 py-3 flex justify-end space-x-2 border-t border-gray-600">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => viewContactDetails(contact)}
-                      className="p-2 bg-gray-800 rounded-md hover:bg-gray-700 transition-colors"
-                      title="View Details"
-                    >
-                      <svg
-                        className="w-5 h-5 text-gray-300"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                        />
-                      </svg>
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="p-2 bg-primary/10 rounded-md hover:bg-primary/20 transition-colors"
-                      title="Send Message"
-                    >
-                      <svg
-                        className="w-5 h-5 text-primary"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
-                        />
-                      </svg>
-                    </motion.button>
-                    <a
-                      href={contact.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block"
-                    >
-                      <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="p-2 bg-primary rounded-md hover:bg-primary-dark transition-colors"
-                        title="View LinkedIn Profile"
-                      >
-                        <svg
-                          className="w-5 h-5 text-white"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                        </svg>
-                      </motion.div>
-                    </a>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          ) : (
-            <motion.div variants={fadeIn} className="text-center py-10">
               <svg
-                className="mx-auto h-12 w-12 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                 />
               </svg>
-              <h3 className="mt-2 text-sm font-medium text-white">
-                No contacts found
-              </h3>
-              <p className="mt-1 text-sm text-gray-400">
-                No contacts match your current filter.
-              </p>
-              <div className="mt-6">
-                <Link href="/networking">
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200"
-                  >
-                    <svg
-                      className="-ml-1 mr-2 h-5 w-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                      />
-                    </svg>
-                    Add New Contact
-                  </motion.div>
-                </Link>
-              </div>
+              Generate Networking Message
+            </motion.button>
+          </div>
+
+          {filteredContacts.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-[#475569]">No contacts found.</p>
+            </div>
+          ) : (
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              {filteredContacts.map((contact: any) => (
+                <motion.div
+                  key={contact.id}
+                  variants={cardVariant}
+                  className="bg-white border border-[#E6E8F0] rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <div className="p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 h-10 w-10">
+                          {contact.avatar ? (
+                            <Image
+                              className="h-10 w-10 rounded-full"
+                              src={contact.avatar}
+                              alt={contact.name}
+                              width={40}
+                              height={40}
+                            />
+                          ) : (
+                            <div className="h-10 w-10 rounded-full bg-[#E0F7FA] flex items-center justify-center text-[#1E293B] font-medium">
+                              {contact.name
+                                .split(" ")
+                                .map((n: string) => n[0])
+                                .join("")}
+                            </div>
+                          )}
+                        </div>
+                        <div className="ml-3">
+                          <h3 className="text-sm font-medium text-[#1E293B]">
+                            {contact.name}
+                          </h3>
+                          <p className="text-xs text-[#475569]">
+                            {contact.position}
+                          </p>
+                        </div>
+                      </div>
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
+                          contact.status
+                        )} ${getStatusTextColor(contact.status)}`}
+                      >
+                        {getStatusText(contact.status)}
+                      </span>
+                    </div>
+                    <div className="mt-4">
+                      <p className="text-sm text-[#475569]">
+                        {contact.company}
+                      </p>
+                      {contact.last_contact && (
+                        <p className="text-xs text-[#64748B] mt-1">
+                          Last contact:{" "}
+                          {new Date(contact.last_contact).toLocaleDateString()}
+                        </p>
+                      )}
+                    </div>
+                    <div className="mt-4 flex justify-end">
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => viewContactDetails(contact)}
+                        className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-[#1E3A8A] bg-[#E0F7FA] hover:bg-[#59B7F2] hover:text-white transition-colors"
+                      >
+                        View Details
+                      </motion.button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
             </motion.div>
           )}
+        </div>
+      </motion.div>
+
+      {/* Recent Messages Section - Would be fetched from a database in a real app */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="bg-white/80 backdrop-blur-md shadow-md rounded-lg overflow-hidden border border-white/20 mt-8"
+      >
+        <div className="px-6 py-5 border-b border-[#E6E8F0]">
+          <h2 className="text-xl font-bold text-[#1E293B]">
+            Recent Networking Messages
+          </h2>
+        </div>
+        <div className="p-6">
+          <div className="space-y-4">
+            {/* Sample message items */}
+            <div className="border border-[#E6E8F0] rounded-lg p-4 hover:shadow-sm transition-shadow">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="font-medium text-[#1E293B]">
+                    LinkedIn Connection Request
+                  </h3>
+                  <p className="text-sm text-[#475569] mt-1">
+                    Personalized message for Sarah Chen at AI Solutions
+                  </p>
+                </div>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#E0F7FA] text-[#1E293B]">
+                  LinkedIn Message
+                </span>
+              </div>
+              <div className="mt-3 flex justify-end">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() =>
+                    handleViewMessage({
+                      title: "LinkedIn Connection Request",
+                      type: "linkedin_message",
+                      recipient: "Sarah Chen",
+                      company: "AI Solutions",
+                      content:
+                        "Hi Sarah,\n\nI came across your profile and was impressed by your work in machine learning at AI Solutions. I'm currently developing my skills in ML and would love to connect and potentially learn from your experience.\n\nBest regards,\nDavid",
+                    })
+                  }
+                  className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-[#1E3A8A] bg-[#E0F7FA] hover:bg-[#59B7F2] hover:text-white transition-colors"
+                >
+                  View Message
+                </motion.button>
+              </div>
+            </div>
+
+            <div className="border border-[#E6E8F0] rounded-lg p-4 hover:shadow-sm transition-shadow">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="font-medium text-[#1E293B]">
+                    Software Engineer Application
+                  </h3>
+                  <p className="text-sm text-[#475569] mt-1">
+                    Cover letter for Tech Innovations job opening
+                  </p>
+                </div>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#DCEFFB] text-[#1E293B]">
+                  Cover Letter
+                </span>
+              </div>
+              <div className="mt-3 flex justify-end">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() =>
+                    handleViewMessage({
+                      title: "Software Engineer Application",
+                      type: "cover_letter",
+                      recipient: "Hiring Manager",
+                      company: "Tech Innovations",
+                      content:
+                        "Dear Hiring Manager,\n\nI am writing to express my interest in the Software Engineer position at Tech Innovations. With my background in full-stack development and passion for innovative technologies, I believe I would be a valuable addition to your team.\n\nThroughout my career, I have focused on building scalable web applications and implementing efficient APIs. My experience with React, Node.js, and cloud infrastructure aligns well with the technologies mentioned in your job description.\n\nI am particularly drawn to Tech Innovations' mission to revolutionize the way people interact with technology, and I am excited about the possibility of contributing to your projects.\n\nThank you for considering my application. I look forward to the opportunity to discuss how my skills and experiences align with your needs.\n\nSincerely,\nDavid Johnson",
+                    })
+                  }
+                  className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-[#1E3A8A] bg-[#E0F7FA] hover:bg-[#59B7F2] hover:text-white transition-colors"
+                >
+                  View Message
+                </motion.button>
+              </div>
+            </div>
+          </div>
         </div>
       </motion.div>
 
@@ -442,7 +477,7 @@ export default function NetworkingSection({ user }: NetworkingSectionProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
             onClick={closeContactModal}
           >
             <motion.div
@@ -450,17 +485,19 @@ export default function NetworkingSection({ user }: NetworkingSectionProps) {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="bg-gray-800 rounded-lg shadow-xl max-w-md w-full overflow-hidden"
+              className="bg-white rounded-lg shadow-xl max-w-lg w-full overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="px-6 py-4 border-b border-gray-700 flex justify-between items-center">
-                <h3 className="text-xl font-medium">Contact Details</h3>
+              <div className="px-6 py-4 border-b border-[#E6E8F0] flex justify-between items-center">
+                <h3 className="text-xl font-medium text-[#1E293B]">
+                  Contact Details
+                </h3>
                 <button
                   onClick={closeContactModal}
-                  className="p-1 rounded-md hover:bg-gray-700 transition-colors"
+                  className="p-1 rounded-md hover:bg-[#E6E8F0] transition-colors"
                 >
                   <svg
-                    className="w-6 h-6 text-gray-400"
+                    className="w-6 h-6 text-[#64748B]"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -474,133 +511,131 @@ export default function NetworkingSection({ user }: NetworkingSectionProps) {
                   </svg>
                 </button>
               </div>
-
               <div className="p-6">
-                <div className="flex items-center space-x-4 mb-6">
-                  <div className="h-16 w-16 rounded-full overflow-hidden">
+                <div className="flex items-center mb-6">
+                  {contactDetails.avatar ? (
                     <Image
+                      className="h-16 w-16 rounded-full mr-4"
                       src={contactDetails.avatar}
                       alt={contactDetails.name}
                       width={64}
                       height={64}
-                      className="h-full w-full object-cover"
                     />
-                  </div>
+                  ) : (
+                    <div className="h-16 w-16 rounded-full bg-[#E0F7FA] flex items-center justify-center text-[#1E293B] text-xl font-medium mr-4">
+                      {contactDetails.name
+                        .split(" ")
+                        .map((n: string) => n[0])
+                        .join("")}
+                    </div>
+                  )}
                   <div>
-                    <h4 className="text-lg font-medium">
+                    <h2 className="text-xl font-bold text-[#1E293B]">
                       {contactDetails.name}
-                    </h4>
-                    <p className="text-sm text-gray-400">
+                    </h2>
+                    <p className="text-[#475569]">
                       {contactDetails.position} at {contactDetails.company}
                     </p>
                     <span
-                      className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium mt-1 ${getStatusColor(
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mt-2 ${getStatusColor(
                         contactDetails.status
-                      )} text-white`}
+                      )} ${getStatusTextColor(contactDetails.status)}`}
                     >
                       {getStatusText(contactDetails.status)}
                     </span>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-3">
-                    <svg
-                      className="w-5 h-5 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                      />
-                    </svg>
-                    <a
-                      href={`mailto:${contactDetails.email}`}
-                      className="text-sm text-primary hover:underline truncate"
-                    >
-                      {contactDetails.email}
-                    </a>
+                <div className="space-y-4 mb-6">
+                  <div>
+                    <h3 className="text-sm font-medium text-[#475569] mb-1">
+                      Contact Information
+                    </h3>
+                    <div className="space-y-2">
+                      <p className="text-sm text-[#1E293B] flex items-center">
+                        <svg
+                          className="w-4 h-4 mr-2 text-[#1E3A8A]"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                          />
+                        </svg>
+                        {contactDetails.email}
+                      </p>
+                      <p className="text-sm text-[#1E293B] flex items-center">
+                        <svg
+                          className="w-4 h-4 mr-2 text-[#1E3A8A]"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                          />
+                        </svg>
+                        {contactDetails.phone}
+                      </p>
+                      <p className="text-sm text-[#1E293B] flex items-center">
+                        <svg
+                          className="w-4 h-4 mr-2 text-[#1E3A8A]"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                          />
+                        </svg>
+                        <a
+                          href={contactDetails.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#1E3A8A] hover:underline"
+                        >
+                          LinkedIn Profile
+                        </a>
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="flex items-center space-x-3">
-                    <svg
-                      className="w-5 h-5 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                      />
-                    </svg>
-                    <a
-                      href={`tel:${contactDetails.phone}`}
-                      className="text-sm text-primary hover:underline"
-                    >
-                      {contactDetails.phone}
-                    </a>
-                  </div>
-
-                  <div className="flex items-center space-x-3">
-                    <svg
-                      className="w-5 h-5 text-gray-400"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                    </svg>
-                    <a
-                      href={contactDetails.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-primary hover:underline truncate"
-                    >
-                      {contactDetails.linkedin.replace(
-                        "https://linkedin.com/in/",
-                        ""
-                      )}
-                    </a>
-                  </div>
+                  {contactDetails.notes && (
+                    <div>
+                      <h3 className="text-sm font-medium text-[#475569] mb-1">
+                        Notes
+                      </h3>
+                      <p className="text-sm text-[#1E293B] bg-[#F8FAFC] p-3 rounded-md">
+                        {contactDetails.notes}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
-                {contactDetails.notes && (
-                  <div className="mt-6">
-                    <h5 className="text-sm font-medium text-gray-300 mb-2">
-                      Notes
-                    </h5>
-                    <p className="text-sm text-gray-400 bg-gray-750 p-3 rounded-md border border-gray-600">
-                      {contactDetails.notes}
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              <div className="px-6 py-4 border-t border-gray-700 flex justify-end space-x-3">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={closeContactModal}
-                  className="px-4 py-2 rounded-md bg-gray-700 text-white hover:bg-gray-600 transition-colors"
-                >
-                  Close
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark transition-colors"
-                >
-                  Schedule Follow-up
-                </motion.button>
+                <div className="flex justify-end space-x-3">
+                  <button
+                    onClick={closeContactModal}
+                    className="px-4 py-2 border border-[#E6E8F0] rounded-md text-[#475569] hover:bg-[#F1F5F9] transition-colors"
+                  >
+                    Close
+                  </button>
+                  <button
+                    onClick={handleGenerateMessage}
+                    className="px-4 py-2 rounded-md text-white bg-[#1E3A8A] hover:brightness-105 transition-colors"
+                  >
+                    Generate Message
+                  </button>
+                </div>
               </div>
             </motion.div>
           </motion.div>
@@ -614,7 +649,7 @@ export default function NetworkingSection({ user }: NetworkingSectionProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
             onClick={closePreview}
           >
             <motion.div
@@ -622,24 +657,25 @@ export default function NetworkingSection({ user }: NetworkingSectionProps) {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+              className="bg-white rounded-lg shadow-xl max-w-2xl w-full overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="px-6 py-4 border-b border-gray-700 flex justify-between items-center">
+              <div className="px-6 py-4 border-b border-[#E6E8F0] flex justify-between items-center">
                 <div>
-                  <h3 className="text-xl font-medium text-white">
-                    {selectedMessage.company_name}
+                  <h3 className="text-xl font-medium text-[#1E293B]">
+                    {selectedMessage.title}
                   </h3>
-                  <p className="text-sm text-gray-400">
-                    {getMessageTypeLabel(selectedMessage.message_type)}
+                  <p className="text-sm text-[#475569]">
+                    {getMessageTypeLabel(selectedMessage.type)} for{" "}
+                    {selectedMessage.recipient} at {selectedMessage.company}
                   </p>
                 </div>
                 <button
                   onClick={closePreview}
-                  className="p-1 rounded-md hover:bg-gray-700 transition-colors"
+                  className="p-1 rounded-md hover:bg-[#E6E8F0] transition-colors"
                 >
                   <svg
-                    className="w-6 h-6 text-gray-400"
+                    className="w-6 h-6 text-[#64748B]"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -653,54 +689,42 @@ export default function NetworkingSection({ user }: NetworkingSectionProps) {
                   </svg>
                 </button>
               </div>
-              <div className="p-6 overflow-auto max-h-[calc(90vh-8rem)]">
-                <div className="bg-gray-750 p-4 rounded-lg border border-gray-600">
-                  <pre className="whitespace-pre-wrap font-sans text-gray-300">
-                    {selectedMessage.generated_message}
-                  </pre>
+              <div className="p-6">
+                <div className="bg-[#F8FAFC] border border-[#E6E8F0] rounded-lg p-4 mb-6 whitespace-pre-wrap">
+                  {selectedMessage.content}
                 </div>
-              </div>
-              <div className="px-6 py-4 border-t border-gray-700 flex justify-end space-x-3">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={closePreview}
-                  className="px-4 py-2 rounded-md bg-gray-700 text-white hover:bg-gray-600 transition-colors"
-                >
-                  Close
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => {
-                    navigator.clipboard.writeText(
-                      selectedMessage.generated_message
-                    );
-                  }}
-                  className="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark transition-colors flex items-center"
-                >
-                  <svg
-                    className="w-5 h-5 mr-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+
+                <div className="flex justify-end space-x-3">
+                  <button
+                    onClick={closePreview}
+                    className="px-4 py-2 border border-[#E6E8F0] rounded-md text-[#475569] hover:bg-[#F1F5F9] transition-colors"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
-                    />
-                  </svg>
-                  Copy to Clipboard
-                </motion.button>
+                    Close
+                  </button>
+                  <button className="px-4 py-2 rounded-md text-white bg-[#1E3A8A] hover:brightness-105 transition-colors flex items-center">
+                    <svg
+                      className="w-4 h-4 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"
+                      />
+                    </svg>
+                    Copy to Clipboard
+                  </button>
+                </div>
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Generator Modal */}
+      {/* Networking Strategy Generator */}
       <AnimatePresence>
         {showGenerator && (
           <NetworkingStrategyGenerator

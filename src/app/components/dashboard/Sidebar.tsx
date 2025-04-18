@@ -41,7 +41,9 @@ export default function Sidebar({
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          className={`w-5 h-5 ${isActive ? "text-[#6C63FF]" : "text-gray-400"}`}
+          className={`w-5 h-5 ${
+            isActive ? "text-[#59B7F2]" : "text-[#1E3A8A]/70"
+          }`}
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -62,7 +64,9 @@ export default function Sidebar({
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          className={`w-5 h-5 ${isActive ? "text-[#6C63FF]" : "text-gray-400"}`}
+          className={`w-5 h-5 ${
+            isActive ? "text-[#59B7F2]" : "text-[#1E3A8A]/70"
+          }`}
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -84,7 +88,9 @@ export default function Sidebar({
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          className={`w-5 h-5 ${isActive ? "text-[#6C63FF]" : "text-gray-400"}`}
+          className={`w-5 h-5 ${
+            isActive ? "text-[#59B7F2]" : "text-[#1E3A8A]/70"
+          }`}
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -105,7 +111,9 @@ export default function Sidebar({
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          className={`w-5 h-5 ${isActive ? "text-[#6C63FF]" : "text-gray-400"}`}
+          className={`w-5 h-5 ${
+            isActive ? "text-[#59B7F2]" : "text-[#1E3A8A]/70"
+          }`}
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -126,7 +134,9 @@ export default function Sidebar({
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          className={`w-5 h-5 ${isActive ? "text-[#6C63FF]" : "text-gray-400"}`}
+          className={`w-5 h-5 ${
+            isActive ? "text-[#59B7F2]" : "text-[#1E3A8A]/70"
+          }`}
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -194,7 +204,7 @@ export default function Sidebar({
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
-          className="absolute left-16 bg-gray-800 text-white text-sm px-2 py-1 rounded shadow z-50 whitespace-nowrap"
+          className="absolute left-16 bg-[#59B7F2] text-white text-sm px-2 py-1 rounded shadow z-50 whitespace-nowrap"
         >
           {children}
         </motion.div>
@@ -226,13 +236,13 @@ export default function Sidebar({
         initial={false}
         animate={isOpen ? "open" : "closed"}
         className={`
-          fixed top-0 left-0 h-full bg-[#0F0F2D] border-r border-[#2A2A4A]
-          flex flex-col transition-all duration-300 ease-in-out overflow-hidden
+          fixed top-0 left-0 h-full bg-white backdrop-blur-md border-r border-[#B3E5FC]/30
+          flex flex-col transition-all duration-300 ease-in-out overflow-hidden shadow-md
           ${isMobile ? "z-30 shadow-xl" : "z-10"}
         `}
       >
         {/* Logo section */}
-        <div className="p-4 border-b border-[#2A2A4A] flex items-center justify-between">
+        <div className="p-4 border-b border-[#B3E5FC]/30 flex items-center justify-between">
           <Link href="/" className="flex items-center">
             <Image
               src="/assets/logos/wallstreetai-logo.svg"
@@ -243,7 +253,7 @@ export default function Sidebar({
             />
             <motion.span
               variants={logoTextVariants}
-              className="ml-2 text-xl font-bold text-white transition-all duration-200"
+              className="ml-2 text-xl font-bold text-[#1E3A8A] transition-all duration-200"
             >
               Wall Street AI
             </motion.span>
@@ -251,11 +261,11 @@ export default function Sidebar({
           {isMobile && (
             <button
               onClick={toggleSidebar}
-              className="p-1 rounded-md hover:bg-[#151538]"
+              className="p-1 rounded-md hover:bg-[#B3E5FC]/20 text-[#1E3A8A]"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6 text-gray-400"
+                className="h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -290,8 +300,8 @@ export default function Sidebar({
                     flex items-center px-4 py-3 rounded-lg transition-all duration-200
                     ${
                       isActive
-                        ? "bg-[#6C63FF]/10 text-[#6C63FF]"
-                        : "text-gray-300 hover:bg-[#151538] hover:text-white"
+                        ? "bg-[#B3E5FC]/50 text-[#1E3A8A]"
+                        : "text-[#1E3A8A]/70 hover:bg-[#B3E5FC]/20 hover:text-[#1E3A8A]"
                     }
                   `}
                 >
@@ -316,21 +326,21 @@ export default function Sidebar({
         </nav>
 
         {/* Profile section */}
-        <div className="border-t border-[#2A2A4A] p-4">
+        <div className="border-t border-[#B3E5FC]/30 p-4">
           <button
             className={`
-              flex items-center w-full px-4 py-2 rounded-lg text-gray-300 
-              hover:bg-[#151538] hover:text-white transition-all duration-200
+              flex items-center w-full px-4 py-2 rounded-lg text-[#1E3A8A]/70 
+              hover:bg-[#B3E5FC]/20 hover:text-[#1E3A8A] transition-all duration-200
             `}
             onMouseEnter={() =>
               !isOpen && !isMobile && setActiveTooltip("Logout")
             }
             onMouseLeave={() => setActiveTooltip(null)}
           >
-            <span className="p-1 mr-3 bg-[#6C63FF]/20 rounded-md">
+            <span className="p-1 mr-3 bg-[#59B7F2]/20 rounded-md">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 text-[#6C63FF]"
+                className="h-5 w-5 text-[#1E3A8A]"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -359,14 +369,14 @@ export default function Sidebar({
 
         {/* Collapse toggle button for desktop */}
         {!isMobile && (
-          <div className="p-4 border-t border-[#2A2A4A] flex justify-center">
+          <div className="p-4 border-t border-[#B3E5FC]/30 flex justify-center">
             <button
               onClick={toggleSidebar}
-              className="p-1 rounded-full hover:bg-[#151538] transition-colors"
+              className="p-1 rounded-full hover:bg-[#B3E5FC]/20 text-[#1E3A8A]/70 hover:text-[#1E3A8A] transition-colors"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className={`h-5 w-5 text-gray-400 transition-transform duration-300 ${
+                className={`h-5 w-5 transition-transform duration-300 ${
                   isOpen ? "rotate-180" : ""
                 }`}
                 fill="none"

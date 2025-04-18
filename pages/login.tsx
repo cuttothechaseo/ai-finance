@@ -55,8 +55,41 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0F0F2D] bg-gradient-to-b from-[#0F0F2D] to-[#151538] flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-[#59B7F2] flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Cloud elements */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <svg
+          className="absolute top-10 right-[10%] w-64 h-64 opacity-5"
+          viewBox="0 0 200 200"
+          fill="white"
+        >
+          <circle cx="60" cy="60" r="50" />
+          <circle cx="100" cy="70" r="60" />
+          <circle cx="140" cy="60" r="50" />
+        </svg>
+
+        <svg
+          className="absolute bottom-0 left-[20%] w-72 h-72 opacity-5"
+          viewBox="0 0 200 200"
+          fill="white"
+        >
+          <circle cx="60" cy="60" r="50" />
+          <circle cx="100" cy="70" r="60" />
+          <circle cx="140" cy="60" r="50" />
+        </svg>
+
+        <svg
+          className="absolute top-[40%] left-0 w-48 h-48 opacity-5"
+          viewBox="0 0 200 200"
+          fill="white"
+        >
+          <circle cx="60" cy="60" r="50" />
+          <circle cx="100" cy="70" r="60" />
+          <circle cx="140" cy="60" r="50" />
+        </svg>
+      </div>
+
+      <div className="w-full max-w-md z-10">
         <div className="flex justify-center mb-8">
           <Link href="/">
             <div className="flex items-center">
@@ -75,21 +108,23 @@ export default function Login() {
         </div>
 
         <motion.div
-          className="bg-[#151538]/70 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden border border-[#2A2A4A]"
+          className="bg-white/80 backdrop-blur-md rounded-lg shadow-lg overflow-hidden border border-white/20"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
           <div className="p-6">
             <div className="text-center mb-6">
-              <h5 className="text-[#A3A3A3] text-sm font-medium mb-1">
+              <h5 className="text-[#1E293B] text-sm font-medium mb-1">
                 Please enter your details
               </h5>
-              <h2 className="text-white text-2xl font-bold">Welcome back</h2>
+              <h2 className="text-[#1E293B] text-2xl font-bold">
+                Welcome back
+              </h2>
             </div>
 
             {error && (
-              <div className="mb-6 bg-red-900/30 border border-red-500/50 text-red-200 px-4 py-3 rounded-lg text-sm">
+              <div className="mb-6 bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-lg text-sm">
                 {error}
               </div>
             )}
@@ -104,7 +139,7 @@ export default function Login() {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="appearance-none block w-full px-3 py-3 border border-[#3A3A5A] rounded-lg shadow-sm placeholder-[#6C6C8A] bg-[#1E1E3F]/50 text-white focus:outline-none focus:ring-2 focus:ring-[#6C63FF]/50 focus:border-[#6C63FF] transition-all duration-200"
+                  className="appearance-none block w-full px-3 py-3 border border-[#DCEFFB] rounded-lg shadow-sm placeholder-slate-400 bg-white text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/50 focus:border-[#1E3A8A] transition-all duration-200"
                   placeholder="Email address"
                 />
               </div>
@@ -118,7 +153,7 @@ export default function Login() {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="appearance-none block w-full px-3 py-3 border border-[#3A3A5A] rounded-lg shadow-sm placeholder-[#6C6C8A] bg-[#1E1E3F]/50 text-white focus:outline-none focus:ring-2 focus:ring-[#6C63FF]/50 focus:border-[#6C63FF] transition-all duration-200"
+                  className="appearance-none block w-full px-3 py-3 border border-[#DCEFFB] rounded-lg shadow-sm placeholder-slate-400 bg-white text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/50 focus:border-[#1E3A8A] transition-all duration-200"
                   placeholder="Password"
                 />
               </div>
@@ -131,11 +166,11 @@ export default function Login() {
                     type="checkbox"
                     checked={rememberMe}
                     onChange={handleRememberMeChange}
-                    className="h-4 w-4 text-[#6C63FF] focus:ring-[#6C63FF] border-[#3A3A5A] rounded"
+                    className="h-4 w-4 text-[#1E3A8A] focus:ring-[#1E3A8A] border-[#DCEFFB] rounded"
                   />
                   <label
                     htmlFor="remember_me"
-                    className="ml-2 block text-sm text-[#A3A3A3]"
+                    className="ml-2 block text-sm text-[#1E293B]"
                   >
                     Remember for 30 days
                   </label>
@@ -144,7 +179,7 @@ export default function Login() {
                 <div className="text-sm">
                   <Link
                     href="#"
-                    className="font-medium text-[#6C63FF] hover:text-[#8A7FFF] transition-colors"
+                    className="font-medium text-[#1E3A8A] hover:text-[#1E3A8A]/80 transition-colors"
                   >
                     Forgot password
                   </Link>
@@ -155,7 +190,7 @@ export default function Login() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-sm font-bold text-white bg-[#6C63FF] hover:bg-[#5A52D5] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6C63FF] transform transition-all duration-200 hover:translate-y-[-2px] active:translate-y-[0px] disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-sm font-semibold text-white bg-[#1E3A8A] hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1E3A8A]/50 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   {isLoading ? "Signing in..." : "Sign in"}
                 </button>
@@ -165,10 +200,10 @@ export default function Login() {
             <div className="mt-6">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-[#2A2A4A]"></div>
+                  <div className="w-full border-t border-[#DCEFFB]"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-[#151538] text-[#A3A3A3]">
+                  <span className="px-2 bg-white text-[#1E293B]">
                     Or sign in with
                   </span>
                 </div>
@@ -178,7 +213,7 @@ export default function Login() {
             <div className="mt-6">
               <button
                 type="button"
-                className="w-full inline-flex justify-center items-center py-3 px-4 border border-[#2A2A4A] rounded-lg shadow-sm bg-white/5 backdrop-blur-sm text-sm font-medium text-white hover:bg-white/10 transition-all duration-200 transform hover:translate-y-[-2px] active:translate-y-[0px]"
+                className="w-full inline-flex justify-center items-center py-3 px-4 border border-[#DCEFFB] rounded-lg shadow-sm bg-white text-sm font-medium text-[#1E293B] hover:bg-[#F8FAFC] transition-all duration-200 transform hover:translate-y-[-2px] active:translate-y-[0px]"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -207,11 +242,11 @@ export default function Login() {
             </div>
 
             <div className="mt-5 text-center text-sm">
-              <p className="text-[#A3A3A3]">
+              <p className="text-[#1E293B]">
                 Don&apos;t have an account?{" "}
                 <Link
                   href="/signup"
-                  className="font-medium text-[#6C63FF] hover:text-[#8A7FFF] transition-colors"
+                  className="font-medium text-[#1E3A8A] hover:text-[#1E3A8A]/80 transition-colors"
                 >
                   Sign up
                 </Link>

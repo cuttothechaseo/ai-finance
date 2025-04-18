@@ -114,7 +114,7 @@ export default function NetworkingStrategyGenerator({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
       onClick={onClose}
     >
       <motion.div
@@ -122,19 +122,19 @@ export default function NetworkingStrategyGenerator({
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="bg-[#151538] rounded-lg shadow-xl max-w-2xl w-full overflow-hidden"
+        className="bg-white rounded-xl border border-white/10 shadow-sm max-w-2xl w-full overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="px-6 py-4 border-b border-[#2A2A4A] flex justify-between items-center">
-          <h3 className="text-xl font-medium text-white">
+        <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+          <h3 className="text-xl font-bold text-[#1E3A8A]">
             Generate Networking Message
           </h3>
           <button
             onClick={onClose}
-            className="p-1 rounded-md hover:bg-[#2A2A4A] transition-colors"
+            className="p-1 rounded-md hover:bg-[#1E3A8A]/10 transition-colors"
           >
             <svg
-              className="w-6 h-6 text-gray-400"
+              className="w-6 h-6 text-slate-600"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -154,7 +154,7 @@ export default function NetworkingStrategyGenerator({
             <div>
               <label
                 htmlFor="companyName"
-                className="block text-sm font-medium text-gray-300"
+                className="block text-sm font-medium text-[#1E3A8A]"
               >
                 Company Name
               </label>
@@ -165,7 +165,7 @@ export default function NetworkingStrategyGenerator({
                 value={formData.companyName}
                 onChange={handleInputChange}
                 required
-                className="appearance-none block w-full px-3 py-3 border border-[#3A3A5A] rounded-lg shadow-sm placeholder-[#6C6C8A] bg-[#1E1E3F]/50 text-white focus:outline-none focus:ring-2 focus:ring-[#6C63FF]/50 focus:border-[#6C63FF] transition-all duration-200 sm:text-sm"
+                className="appearance-none block w-full px-3 py-3 border border-slate-200 rounded-lg shadow-sm placeholder-slate-400 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/50 focus:border-[#1E3A8A] transition-all duration-200 sm:text-sm"
                 placeholder="Company name"
               />
             </div>
@@ -173,7 +173,7 @@ export default function NetworkingStrategyGenerator({
             <div>
               <label
                 htmlFor="role"
-                className="block text-sm font-medium text-gray-300"
+                className="block text-sm font-medium text-[#1E3A8A]"
               >
                 Target Role
               </label>
@@ -184,7 +184,7 @@ export default function NetworkingStrategyGenerator({
                 value={formData.role}
                 onChange={handleInputChange}
                 required
-                className="appearance-none block w-full px-3 py-3 border border-[#3A3A5A] rounded-lg shadow-sm placeholder-[#6C6C8A] bg-[#1E1E3F]/50 text-white focus:outline-none focus:ring-2 focus:ring-[#6C63FF]/50 focus:border-[#6C63FF] transition-all duration-200 sm:text-sm"
+                className="appearance-none block w-full px-3 py-3 border border-slate-200 rounded-lg shadow-sm placeholder-slate-400 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/50 focus:border-[#1E3A8A] transition-all duration-200 sm:text-sm"
                 placeholder="Position or role"
               />
             </div>
@@ -192,7 +192,7 @@ export default function NetworkingStrategyGenerator({
             <div>
               <label
                 htmlFor="contactName"
-                className="block text-sm font-medium text-gray-300"
+                className="block text-sm font-medium text-[#1E3A8A]"
               >
                 Contact Name (Optional)
               </label>
@@ -202,7 +202,7 @@ export default function NetworkingStrategyGenerator({
                 name="contactName"
                 value={formData.contactName}
                 onChange={handleInputChange}
-                className="appearance-none block w-full px-3 py-3 border border-[#3A3A5A] rounded-lg shadow-sm placeholder-[#6C6C8A] bg-[#1E1E3F]/50 text-white focus:outline-none focus:ring-2 focus:ring-[#6C63FF]/50 focus:border-[#6C63FF] transition-all duration-200 sm:text-sm"
+                className="appearance-none block w-full px-3 py-3 border border-slate-200 rounded-lg shadow-sm placeholder-slate-400 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/50 focus:border-[#1E3A8A] transition-all duration-200 sm:text-sm"
                 placeholder="Contact person's name"
               />
             </div>
@@ -210,7 +210,7 @@ export default function NetworkingStrategyGenerator({
             <div>
               <label
                 htmlFor="contactRole"
-                className="block text-sm font-medium text-gray-300"
+                className="block text-sm font-medium text-[#1E3A8A]"
               >
                 Contact Role (Optional)
               </label>
@@ -220,7 +220,7 @@ export default function NetworkingStrategyGenerator({
                 name="contactRole"
                 value={formData.contactRole}
                 onChange={handleInputChange}
-                className="appearance-none block w-full px-3 py-3 border border-[#3A3A5A] rounded-lg shadow-sm placeholder-[#6C6C8A] bg-[#1E1E3F]/50 text-white focus:outline-none focus:ring-2 focus:ring-[#6C63FF]/50 focus:border-[#6C63FF] transition-all duration-200 sm:text-sm"
+                className="appearance-none block w-full px-3 py-3 border border-slate-200 rounded-lg shadow-sm placeholder-slate-400 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/50 focus:border-[#1E3A8A] transition-all duration-200 sm:text-sm"
                 placeholder="Contact's role or position"
               />
             </div>
@@ -228,7 +228,7 @@ export default function NetworkingStrategyGenerator({
             <div>
               <label
                 htmlFor="resumeText"
-                className="block text-sm font-medium text-gray-300"
+                className="block text-sm font-medium text-[#1E3A8A]"
               >
                 Resume Text
               </label>
@@ -239,7 +239,7 @@ export default function NetworkingStrategyGenerator({
                 onChange={handleInputChange}
                 required
                 rows={4}
-                className="appearance-none block w-full px-3 py-3 border border-[#3A3A5A] rounded-lg shadow-sm placeholder-[#6C6C8A] bg-[#1E1E3F]/50 text-white focus:outline-none focus:ring-2 focus:ring-[#6C63FF]/50 focus:border-[#6C63FF] transition-all duration-200 sm:text-sm custom-scrollbar"
+                className="appearance-none block w-full px-3 py-3 border border-slate-200 rounded-lg shadow-sm placeholder-slate-400 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/50 focus:border-[#1E3A8A] transition-all duration-200 sm:text-sm custom-scrollbar"
                 placeholder="Paste your resume text here"
               />
             </div>
@@ -247,7 +247,7 @@ export default function NetworkingStrategyGenerator({
             <div>
               <label
                 htmlFor="messageType"
-                className="block text-sm font-medium text-gray-300"
+                className="block text-sm font-medium text-[#1E3A8A]"
               >
                 Message Type
               </label>
@@ -257,7 +257,7 @@ export default function NetworkingStrategyGenerator({
                 value={formData.messageType}
                 onChange={handleInputChange}
                 required
-                className="appearance-none block w-full px-3 py-3 border border-[#3A3A5A] rounded-lg shadow-sm bg-[#1E1E3F]/50 text-white focus:outline-none focus:ring-2 focus:ring-[#6C63FF]/50 focus:border-[#6C63FF] transition-all duration-200 sm:text-sm"
+                className="appearance-none block w-full px-3 py-3 border border-slate-200 rounded-lg shadow-sm bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/50 focus:border-[#1E3A8A] transition-all duration-200 sm:text-sm"
               >
                 <option value="linkedin_message">LinkedIn Message</option>
                 <option value="intro_email">Introduction Email</option>
@@ -265,16 +265,16 @@ export default function NetworkingStrategyGenerator({
               </select>
             </div>
 
-            {error && <div className="text-red-400 text-sm mt-2">{error}</div>}
+            {error && <div className="text-red-600 text-sm mt-2">{error}</div>}
 
             {/* Generated Message Display */}
             {generatedMessage && (
               <div className="mt-4">
-                <label className="block text-sm font-medium text-white mb-2">
+                <label className="block text-sm font-medium text-[#1E3A8A] mb-2">
                   Generated Message
                 </label>
-                <div className="bg-gray-800 rounded-lg p-4 max-h-[300px] overflow-y-auto custom-scrollbar">
-                  <pre className="text-gray-300 whitespace-pre-wrap font-sans">
+                <div className="bg-[#1E3A8A]/5 border border-slate-200 rounded-lg p-4 max-h-[300px] overflow-y-auto custom-scrollbar">
+                  <pre className="text-slate-700 whitespace-pre-wrap font-sans">
                     {generatedMessage}
                   </pre>
                 </div>
@@ -286,14 +286,14 @@ export default function NetworkingStrategyGenerator({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-md bg-[#2A2A4A] text-white hover:bg-[#3A3A5A] transition-colors"
+              className="px-4 py-2 rounded-md bg-[#1E3A8A]/10 text-[#1E3A8A] hover:bg-[#B3E5FC] transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isGenerating}
-              className="px-4 py-2 rounded-md bg-[#6C63FF] text-white hover:bg-[#5A52D5] transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 rounded-md text-sm font-semibold text-white bg-[#1E3A8A] hover:bg-[#59B7F2] focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/50 transition-all duration-200 flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isGenerating ? (
                 <>

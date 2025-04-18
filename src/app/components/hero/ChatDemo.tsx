@@ -1,46 +1,49 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Predefined static messages
 const staticMessages = [
   {
-    id: '1',
+    id: "1",
     text: "Hi! I'm your finance coach - your second-round interview for the Goldman Sachs Investment Banking Role is on Wednesday. Do you want me to help you prepare?",
-    sender: 'ai',
-    label: 'AI Finance Coach',
+    sender: "ai",
+    label: "AI Finance Coach",
   },
   {
-    id: '2',
+    id: "2",
     text: "Yes, please! Let's practice a mock interview.",
-    sender: 'user',
-    label: 'You',
+    sender: "user",
+    label: "You",
   },
   {
-    id: '3',
+    id: "3",
     text: "Sure thing! Let's start off with a technical question. Can you walk me through how you would value a company using the Discounted Cash Flow (DCF) method?",
-    sender: 'ai',
-    label: 'AI Finance Coach',
+    sender: "ai",
+    label: "AI Finance Coach",
   },
   {
-    id: '4',
+    id: "4",
     text: "DCF values a company by forecasting future cash flows and discounting them back to present value using an appropriate discount rate. You start with projecting financial statements, calculate free cash flows, determine WACC, and estimate terminal value.",
-    sender: 'user',
-    label: 'You',
+    sender: "user",
+    label: "You",
   },
   {
-    id: '5',
+    id: "5",
     text: "That's a good start! In your DCF explanation, you correctly mentioned forecasting future cash flows and discounting them back to present value. I'd suggest also mentioning how you determine the discount rate using WACC and how you calculate terminal value. Additionally, consider discussing the sensitivity analysis to show how changes in assumptions affect the valuation.",
-    sender: 'ai',
-    label: 'AI Finance Coach',
-    feedback: "Strong points: Structured approach, technical accuracy\nAreas to improve: More detail on discount rate determination, terminal value calculation",
+    sender: "ai",
+    label: "AI Finance Coach",
+    feedback:
+      "Strong points: Structured approach, technical accuracy\nAreas to improve: More detail on discount rate determination, terminal value calculation",
   },
 ];
 
 // ChatDemo component
 export default function ChatDemo() {
-  const [visibleMessages, setVisibleMessages] = useState<typeof staticMessages>([]);
+  const [visibleMessages, setVisibleMessages] = useState<typeof staticMessages>(
+    []
+  );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAITyping, setIsAITyping] = useState(false);
   const [isUserTyping, setIsUserTyping] = useState(false);
@@ -50,7 +53,7 @@ export default function ChatDemo() {
     const addNextMessage = () => {
       if (currentIndex < staticMessages.length) {
         const nextMessage = staticMessages[currentIndex];
-        if (nextMessage.sender === 'ai') {
+        if (nextMessage.sender === "ai") {
           setIsAITyping(true);
           setIsUserTyping(false);
         } else {
@@ -83,7 +86,8 @@ export default function ChatDemo() {
   useEffect(() => {
     const scrollTimeout = setTimeout(() => {
       if (chatContainerRef.current) {
-        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        chatContainerRef.current.scrollTop =
+          chatContainerRef.current.scrollHeight;
       }
     }, 100);
     return () => clearTimeout(scrollTimeout);
@@ -131,7 +135,7 @@ export default function ChatDemo() {
       transition: {
         repeat: Infinity,
         duration: 1.2, // Slower bounce for a calmer effect
-        ease: 'easeInOut',
+        ease: "easeInOut",
       },
     },
   };
@@ -141,7 +145,7 @@ export default function ChatDemo() {
     initial: { opacity: 0, height: 0 },
     animate: {
       opacity: 1,
-      height: 'auto',
+      height: "auto",
       transition: {
         duration: 0.5, // Smoother expansion
         ease: [0.4, 0, 0.2, 1],
@@ -151,20 +155,22 @@ export default function ChatDemo() {
   };
 
   return (
-    <div className="bg-secondary-dark/80 border border-gray-800 shadow-2xl rounded-xl overflow-hidden flex flex-col h-[500px] md:h-[600px]">
-      <div className="p-4 border-b border-gray-800 flex items-center justify-between bg-secondary-dark">
+    <div className="bg-white border border-[#DCEFFB] shadow-md rounded-xl overflow-hidden flex flex-col h-[500px] md:h-[600px]">
+      <div className="p-4 border-b border-[#DCEFFB] flex items-center justify-between bg-[#F8FAFC]">
         <div className="flex space-x-2">
           <div className="w-3 h-3 rounded-full bg-red-500"></div>
           <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
           <div className="w-3 h-3 rounded-full bg-green-500"></div>
         </div>
-        <div className="text-sm text-gray-400">Goldman Sachs Interview Prep</div>
+        <div className="text-sm text-slate-800">
+          Goldman Sachs Interview Prep
+        </div>
         <div className="w-12"></div>
       </div>
 
       <div
         ref={chatContainerRef}
-        className="flex-1 overflow-y-auto p-4 space-y-6"
+        className="flex-1 overflow-y-auto p-4 space-y-6 bg-white"
       >
         <AnimatePresence>
           {visibleMessages.map((message) => (
@@ -175,11 +181,11 @@ export default function ChatDemo() {
               animate="animate"
               exit="exit"
               className={`flex items-start ${
-                message.sender === 'user' ? 'justify-end' : 'justify-start'
+                message.sender === "user" ? "justify-end" : "justify-start"
               }`}
             >
-              {message.sender === 'ai' && (
-                <div className="w-10 h-10 bg-blue-900 text-white rounded-full flex items-center justify-center mr-3 flex-shrink-0 shadow-md">
+              {message.sender === "ai" && (
+                <div className="w-10 h-10 bg-[#B3E5FC] text-slate-800 rounded-full flex items-center justify-center mr-3 flex-shrink-0 shadow-sm">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-6 w-6"
@@ -199,19 +205,19 @@ export default function ChatDemo() {
               <div className="flex flex-col max-w-[75%]">
                 <div
                   className={`text-xs font-medium mb-1 ${
-                    message.sender === 'user'
-                      ? 'text-blue-300 text-right'
-                      : 'text-primary-light'
+                    message.sender === "user"
+                      ? "text-slate-600 text-right"
+                      : "text-slate-600"
                   }`}
                 >
                   {message.label}
                 </div>
                 <div
-                  className={`rounded-2xl p-4 ${
-                    message.sender === 'user'
-                      ? 'bg-purple-600/80 text-white rounded-tr-none'
-                      : 'bg-blue-900/80 text-gray-200 rounded-tl-none'
-                  } shadow-md`}
+                  className={`rounded-2xl p-4 text-slate-800 shadow-sm ${
+                    message.sender === "user"
+                      ? "bg-[#FFF0F5] rounded-tr-none"
+                      : "bg-[#E0F7FA] rounded-tl-none"
+                  }`}
                 >
                   <p className="text-sm md:text-base">{message.text}</p>
                   {message.feedback && (
@@ -219,20 +225,20 @@ export default function ChatDemo() {
                       variants={feedbackVariants}
                       initial="initial"
                       animate="animate"
-                      className="mt-3 pt-3 border-t border-gray-700"
+                      className="mt-3 pt-3 border-t border-[#DCEFFB]"
                     >
-                      <p className="text-xs text-primary-light font-medium mb-1">
+                      <p className="text-xs text-slate-600 font-medium mb-1">
                         Feedback:
                       </p>
-                      <p className="text-xs text-gray-400 whitespace-pre-line">
+                      <p className="text-xs text-slate-800 whitespace-pre-line">
                         {message.feedback}
                       </p>
                     </motion.div>
                   )}
                 </div>
               </div>
-              {message.sender === 'user' && (
-                <div className="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center ml-3 flex-shrink-0 shadow-md">
+              {message.sender === "user" && (
+                <div className="w-10 h-10 bg-[#FEE0E9] text-slate-800 rounded-full flex items-center justify-center ml-3 flex-shrink-0 shadow-sm">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-6 w-6"
@@ -260,7 +266,7 @@ export default function ChatDemo() {
               exit="exit"
               className="flex items-start justify-start"
             >
-              <div className="w-10 h-10 bg-blue-900 text-white rounded-full flex items-center justify-center mr-3 flex-shrink-0 shadow-md">
+              <div className="w-10 h-10 bg-[#B3E5FC] text-slate-800 rounded-full flex items-center justify-center mr-3 flex-shrink-0 shadow-sm">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-6 w-6"
@@ -277,27 +283,27 @@ export default function ChatDemo() {
                 </svg>
               </div>
               <div className="flex flex-col max-w-[75%]">
-                <div className="text-xs font-medium mb-1 text-primary-light">
+                <div className="text-xs font-medium mb-1 text-slate-600">
                   AI Finance Coach
                 </div>
-                <div className="bg-blue-900/80 text-gray-200 rounded-2xl rounded-tl-none p-3 shadow-md">
+                <div className="bg-[#E0F7FA] text-slate-800 rounded-2xl rounded-tl-none p-3 shadow-sm">
                   <div className="flex space-x-1">
                     <motion.div
                       variants={dotVariants}
                       animate="animate"
-                      className="w-2 h-2 bg-gray-300 rounded-full"
+                      className="w-2 h-2 bg-slate-400 rounded-full"
                     />
                     <motion.div
                       variants={dotVariants}
                       animate="animate"
                       transition={{ delay: 0.2 }} // Stagger dots
-                      className="w-2 h-2 bg-gray-300 rounded-full"
+                      className="w-2 h-2 bg-slate-400 rounded-full"
                     />
                     <motion.div
                       variants={dotVariants}
                       animate="animate"
                       transition={{ delay: 0.4 }} // Stagger dots
-                      className="w-2 h-2 bg-gray-300 rounded-full"
+                      className="w-2 h-2 bg-slate-400 rounded-full"
                     />
                   </div>
                 </div>
@@ -314,32 +320,32 @@ export default function ChatDemo() {
               className="flex items-start justify-end"
             >
               <div className="flex flex-col max-w-[75%]">
-                <div className="text-xs font-medium mb-1 text-blue-300 text-right">
+                <div className="text-xs font-medium mb-1 text-slate-600 text-right">
                   You
                 </div>
-                <div className="bg-purple-600/80 text-white rounded-2xl rounded-tr-none p-3 shadow-md">
+                <div className="bg-[#FFF0F5] text-slate-800 rounded-2xl rounded-tr-none p-3 shadow-sm">
                   <div className="flex space-x-1">
                     <motion.div
                       variants={dotVariants}
                       animate="animate"
-                      className="w-2 h-2 bg-gray-200 rounded-full"
+                      className="w-2 h-2 bg-slate-400 rounded-full"
                     />
                     <motion.div
                       variants={dotVariants}
                       animate="animate"
                       transition={{ delay: 0.2 }} // Stagger dots
-                      className="w-2 h-2 bg-gray-200 rounded-full"
+                      className="w-2 h-2 bg-slate-400 rounded-full"
                     />
                     <motion.div
                       variants={dotVariants}
                       animate="animate"
                       transition={{ delay: 0.4 }} // Stagger dots
-                      className="w-2 h-2 bg-gray-200 rounded-full"
+                      className="w-2 h-2 bg-slate-400 rounded-full"
                     />
                   </div>
                 </div>
               </div>
-              <div className="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center ml-3 flex-shrink-0 shadow-md">
+              <div className="w-10 h-10 bg-[#FEE0E9] text-slate-800 rounded-full flex items-center justify-center ml-3 flex-shrink-0 shadow-sm">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-6 w-6"
@@ -360,9 +366,9 @@ export default function ChatDemo() {
         </AnimatePresence>
       </div>
 
-      <div className="p-4 border-t border-gray-800 bg-secondary-dark">
+      <div className="p-4 border-t border-[#DCEFFB] bg-[#F8FAFC]">
         <div className="flex items-center space-x-2">
-          <button className="p-2 text-gray-400 hover:text-gray-300 focus:outline-none">
+          <button className="p-2 text-slate-500 hover:text-slate-700 focus:outline-none transition-colors">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
@@ -381,14 +387,13 @@ export default function ChatDemo() {
           <input
             type="text"
             placeholder="Type your answer..."
-            disabled
-            className="flex-1 bg-gray-800 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className="flex-1 bg-white border border-[#DCEFFB] text-slate-800 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#B3E5FC]/50 focus:border-[#B3E5FC] placeholder:text-slate-400"
           />
-          <button className="bg-primary text-white rounded-lg px-4 py-2 transition-colors">
+          <button className="bg-gradient-to-r from-[#FEE0E9] to-[#DCEFFB] text-slate-800 rounded-lg px-4 py-2 shadow-sm hover:brightness-105 transition-all duration-200">
             Send
           </button>
         </div>
       </div>
     </div>
   );
-} 
+}

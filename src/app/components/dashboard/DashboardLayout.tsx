@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Sidebar from './Sidebar';
-import Navbar from './Navbar';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Sidebar from "./Sidebar";
+import Navbar from "./Navbar";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -11,10 +11,14 @@ interface DashboardLayoutProps {
   onLogout: () => void;
 }
 
-export default function DashboardLayout({ children, user, onLogout }: DashboardLayoutProps) {
+export default function DashboardLayout({
+  children,
+  user,
+  onLogout,
+}: DashboardLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  const [activeTab, setActiveTab] = useState('/dashboard');
+  const [activeTab, setActiveTab] = useState("/dashboard");
 
   // Handle responsiveness
   useEffect(() => {
@@ -28,10 +32,10 @@ export default function DashboardLayout({ children, user, onLogout }: DashboardL
     };
 
     checkIfMobile();
-    window.addEventListener('resize', checkIfMobile);
+    window.addEventListener("resize", checkIfMobile);
 
     return () => {
-      window.removeEventListener('resize', checkIfMobile);
+      window.removeEventListener("resize", checkIfMobile);
     };
   }, []);
 
@@ -40,50 +44,79 @@ export default function DashboardLayout({ children, user, onLogout }: DashboardL
   };
 
   const mainContentVariants = {
-    expanded: { 
+    expanded: {
       marginLeft: isMobile ? 0 : "16rem",
-      transition: { type: "spring", stiffness: 300, damping: 30 }
+      transition: { type: "spring", stiffness: 300, damping: 30 },
     },
-    collapsed: { 
+    collapsed: {
       marginLeft: isMobile ? 0 : "5rem",
-      transition: { type: "spring", stiffness: 300, damping: 30 }
-    }
+      transition: { type: "spring", stiffness: 300, damping: 30 },
+    },
   };
 
   const childrenVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
-      transition: { 
+      transition: {
         duration: 0.4,
-        ease: "easeInOut"
-      }
-    }
+        ease: "easeInOut",
+      },
+    },
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gray-900 text-white">
+    <div className="h-screen flex flex-col bg-[#ffffff] text-white relative overflow-hidden">
+      {/* Cloud elements */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <svg
+          className="absolute top-10 right-[10%] w-64 h-64 opacity-5"
+          viewBox="0 0 200 200"
+          fill="white"
+        >
+          <circle cx="60" cy="60" r="50" />
+          <circle cx="100" cy="70" r="60" />
+          <circle cx="140" cy="60" r="50" />
+        </svg>
+
+        <svg
+          className="absolute bottom-0 left-[20%] w-72 h-72 opacity-5"
+          viewBox="0 0 200 200"
+          fill="white"
+        >
+          <circle cx="60" cy="60" r="50" />
+          <circle cx="100" cy="70" r="60" />
+          <circle cx="140" cy="60" r="50" />
+        </svg>
+
+        <svg
+          className="absolute top-[40%] left-0 w-48 h-48 opacity-5"
+          viewBox="0 0 200 200"
+          fill="white"
+        >
+          <circle cx="60" cy="60" r="50" />
+          <circle cx="100" cy="70" r="60" />
+          <circle cx="140" cy="60" r="50" />
+        </svg>
+      </div>
+
       {/* Sidebar visible on all screen sizes, but collapsible on mobile */}
-      <Sidebar 
-        isMobile={isMobile} 
-        toggleSidebar={toggleSidebar} 
-        isOpen={isSidebarOpen} 
+      <Sidebar
+        isMobile={isMobile}
+        toggleSidebar={toggleSidebar}
+        isOpen={isSidebarOpen}
       />
 
       {/* Main Content */}
-      <motion.div 
+      <motion.div
         variants={mainContentVariants}
         initial={false}
         animate={isSidebarOpen ? "expanded" : "collapsed"}
-        className={`flex-1 transition-all duration-300`}
+        className={`flex-1 transition-all duration-300 relative z-10`}
       >
         {/* Navbar for mobile and desktop */}
-        <Navbar 
-          user={user} 
-          onLogout={onLogout} 
-          toggleSidebar={toggleSidebar}
-        />
+        <Navbar user={user} onLogout={onLogout} toggleSidebar={toggleSidebar} />
 
         {/* Main Content Area with animated transitions */}
         <main className="px-4 sm:px-6 lg:px-8 py-6 overflow-auto h-[calc(100vh-64px)]">
@@ -100,4 +133,4 @@ export default function DashboardLayout({ children, user, onLogout }: DashboardL
       </motion.div>
     </div>
   );
-} 
+}
