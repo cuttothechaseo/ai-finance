@@ -446,7 +446,7 @@ export default function JoinWaitlist() {
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         {/* Top Right Cloud */}
         <div className="absolute top-10 right-[10%] w-64 h-64">
-          <div className="cloud-shape opacity-10">
+          <div className="cloud-shape opacity-20">
             <div className="cloud-circle cloud-circle-1"></div>
             <div className="cloud-circle cloud-circle-2"></div>
             <div className="cloud-circle cloud-circle-3"></div>
@@ -455,7 +455,7 @@ export default function JoinWaitlist() {
 
         {/* Bottom Left Cloud */}
         <div className="absolute bottom-0 left-[20%] w-72 h-72">
-          <div className="cloud-shape opacity-5">
+          <div className="cloud-shape opacity-20">
             <div className="cloud-circle cloud-circle-1"></div>
             <div className="cloud-circle cloud-circle-2"></div>
             <div className="cloud-circle cloud-circle-3"></div>
@@ -464,7 +464,7 @@ export default function JoinWaitlist() {
 
         {/* Middle Left Cloud */}
         <div className="absolute top-[40%] left-0 w-48 h-48">
-          <div className="cloud-shape opacity-15">
+          <div className="cloud-shape opacity-20">
             <div className="cloud-circle cloud-circle-1"></div>
             <div className="cloud-circle cloud-circle-2"></div>
             <div className="cloud-circle cloud-circle-3"></div>

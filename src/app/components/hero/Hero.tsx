@@ -107,7 +107,7 @@ export default function Hero() {
             delay: 1,
           }}
         >
-          <div className="cloud-shape opacity-15">
+          <div className="cloud-shape opacity-20">
             <div className="cloud-circle cloud-circle-1"></div>
             <div className="cloud-circle cloud-circle-2"></div>
             <div className="cloud-circle cloud-circle-3"></div>
@@ -143,7 +143,7 @@ export default function Hero() {
             delay: 1.5,
           }}
         >
-          <div className="cloud-shape opacity-15">
+          <div className="cloud-shape opacity-20">
             <div className="cloud-circle cloud-circle-1"></div>
             <div className="cloud-circle cloud-circle-2"></div>
             <div className="cloud-circle cloud-circle-3"></div>
@@ -161,7 +161,7 @@ export default function Hero() {
             delay: 0.5,
           }}
         >
-          <div className="cloud-shape opacity-10">
+          <div className="cloud-shape opacity-20">
             <div className="cloud-circle cloud-circle-1"></div>
             <div className="cloud-circle cloud-circle-2"></div>
             <div className="cloud-circle cloud-circle-3"></div>

@@ -106,7 +106,7 @@ export default function SuccessStories() {
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         {/* Top Left Cloud */}
         <div className="absolute top-5 left-[5%] w-56 h-56">
-          <div className="cloud-shape opacity-15">
+          <div className="cloud-shape opacity-20">
             <div className="cloud-circle cloud-circle-1"></div>
             <div className="cloud-circle cloud-circle-2"></div>
             <div className="cloud-circle cloud-circle-3"></div>
