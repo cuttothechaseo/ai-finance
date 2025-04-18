@@ -51,10 +51,10 @@ export default function ProfileSection({ user }: ProfileSectionProps) {
       <motion.div
         custom={0}
         variants={fadeIn}
-        className="bg-[#59B7F2]/90 backdrop-blur-md shadow-md rounded-lg overflow-hidden border border-white/20"
+        className="bg-[#ffffff]/90 backdrop-blur-md shadow-md rounded-lg overflow-hidden border border-white/20"
       >
         <div className="px-6 py-5 border-b border-white/20 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-white">Your Profile</h1>
+          <h1 className="text-2xl font-bold text-[#1E3A8A]">Your Profile</h1>
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}

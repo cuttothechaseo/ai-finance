@@ -92,17 +92,14 @@ export default function Login() {
       <div className="w-full max-w-md z-10">
         <div className="flex justify-center mb-8">
           <Link href="/">
-            <div className="flex items-center">
+            <div className="flex justify-center">
               <Image
                 src="/assets/logos/wallstreetai-logo.svg"
                 alt="WallStreetAI Logo"
-                width={40}
-                height={40}
-                className="h-10 w-auto"
+                width={70}
+                height={70}
+                className="mx-auto"
               />
-              <span className="ml-2 text-xl font-semibold text-white">
-                Wall Street AI
-              </span>
             </div>
           </Link>
         </div>
@@ -203,9 +200,7 @@ export default function Login() {
                   <div className="w-full border-t border-[#DCEFFB]"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-[#1E293B]">
-                    Or sign in with
-                  </span>
+                  <span className="px-2 text-[#1E293B]">Or sign in with</span>
                 </div>
               </div>
             </div>

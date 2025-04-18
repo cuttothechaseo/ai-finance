@@ -67,7 +67,7 @@ export default function DashboardLayout({
   };
 
   return (
-    <div className="h-screen flex flex-col bg-[#ffffff] text-white relative overflow-hidden">
+    <div className="h-screen flex flex-col bg-[#59B7F2] text-white relative overflow-hidden">
       {/* Cloud elements */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <svg

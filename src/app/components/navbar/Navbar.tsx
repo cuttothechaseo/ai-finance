@@ -73,29 +73,15 @@ export default function Navbar() {
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 400, damping: 10 }}
         >
-          {/* Logo with bank icon and text */}
+          {/* Logo with wallstreetai logo */}
           <div className="flex items-center">
-            <div className="bg-[#1E3A8A] p-2 rounded-lg mr-2">
-              <div className="text-[#B3E5FC] text-xl">
-                <span className="flex justify-center">
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M3 21H21M5 21V5C5 4.44772 5.44772 4 6 4H18C18.5523 4 19 4.44772 19 5V21M9 21V17M12 21V14M15 21V17"
-                      stroke="#B3E5FC"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </span>
-              </div>
-            </div>
-            <span className="text-white text-xl font-bold">WallStreetAI</span>
+            <Image
+              src="/assets/logos/wallstreetai-logo.svg"
+              alt="WallStreetAI Logo"
+              width={40}
+              height={40}
+              className="mr-2"
+            />
           </div>
         </motion.div>
 

@@ -111,8 +111,8 @@ export default function Signup() {
             <Image
               src="/assets/logos/wallstreetai-logo.svg"
               alt="WallStreetAI Logo"
-              width={60}
-              height={60}
+              width={70}
+              height={70}
               className="mx-auto"
             />
           </Link>
@@ -253,9 +253,7 @@ export default function Signup() {
                 <div className="w-full border-t border-[#DCEFFB]"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-[#1E293B]">
-                  Or sign up with
-                </span>
+                <span className="px-2 text-[#1E293B]">Or sign up with</span>
               </div>
             </div>
 
