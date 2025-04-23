@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 // Testimonial type definition
 type Testimonial = {
@@ -9,6 +10,7 @@ type Testimonial = {
   quote: string;
   student: string;
   company: string;
+  profilePic?: string; // Optional profile picture path
 };
 
 export default function SuccessStories() {
@@ -20,49 +22,93 @@ export default function SuccessStories() {
     {
       id: "1",
       quote:
-        "The AI interview practice was incredibly realistic. I felt much more confident in my Superday and ended up with an offer from Goldman Sachs.",
+        "The AI interview practice was incredibly realistic and gave me a sense of what to expect. I felt much more confident in my Superday and ended up with an offer from Goldman Sachs.",
       student: "Alex K.",
       company: "Goldman Sachs",
+      profilePic: "/assets/testimonials/Alex-K.jpg?v=2",
     },
     {
       id: "2",
       quote:
-        "This platform helped me master technical questions I struggled with. The personalized feedback was like having a private tutor.",
+        "This platform helped me master technical questions I previously struggled with. I gained so much confidence, aced my interviews, and ended up with an offer from Morgan Stanley.",
       student: "Sophia L.",
       company: "Morgan Stanley",
+      profilePic: "/assets/testimonials/Sophia-L.jpg?v=2",
     },
     {
       id: "3",
       quote:
-        "After practicing with the AI interviewer, my real PE interviews felt familiar. I secured an associate position at Blackstone.",
+        "After using the mock interview platform, my real investment banking interviews felt extremely familiar. The confidence boost was invaluable, and I secured an analyst position at Blackstone.",
       student: "Michael T.",
       company: "Blackstone",
+      profilePic: "/assets/testimonials/Michael-T.jpg?v=2",
     },
     {
       id: "4",
       quote:
-        "The real-time feedback on my answers helped me refine my approach. I'm now working at my dream firm thanks to this platform.",
-      student: "Emma R.",
-      company: "JP Morgan",
+        "The finance-specific mock interviews gave me insights I couldn't get anywhere else. I was thoroughly prepared for my interviews at JPMorgan.",
+      student: "Jennifer C.",
+      company: "JPMorgan",
+      profilePic: "/assets/testimonials/Jennifer-C.jpg?v=2",
     },
     {
       id: "5",
       quote:
-        "The structured practice and analytics helped me identify my weak areas. I improved rapidly and landed a role at KKR.",
-      student: "David W.",
-      company: "KKR",
+        "The resume optimization tool helped me highlight my relevant skills. I received multiple interview calls and accepted an offer from UBS.",
+      student: "Daniel M.",
+      company: "UBS",
+      profilePic: "/assets/testimonials/Daniel-M.jpg?v=2",
+    },
+    {
+      id: "6",
+      quote:
+        "I was struggling with case interviews until I found this platform. The personalized feedback helped me refine my approach and land a role at Merrill Lynch.",
+      student: "Olivia P.",
+      company: "Merrill Lynch",
+      profilePic: "/assets/testimonials/Olivia-P.jpg?v=2",
+    },
+    {
+      id: "7",
+      quote:
+        "The technical question database was extensive and covered everything that came up in my interviews. I'm now working at my dream company.",
+      student: "Thomas R.",
+      company: "Credit Suisse",
+      profilePic: "/assets/testimonials/Thomas-R.jpg?v=2",
+    },
+    {
+      id: "8",
+      quote:
+        "The networking guidance and industry insights were invaluable. I managed to connect with key professionals and secure a role at Deutsche Bank.",
+      student: "Natalie H.",
+      company: "Deutsche Bank",
+      profilePic: "/assets/testimonials/Natalie-H.jpg?v=2",
+    },
+    {
+      id: "9",
+      quote:
+        "The mock assessment center simulations were incredibly accurate. I felt prepared for every aspect of the Barclays hiring process thanks to this platform.",
+      student: "James W.",
+      company: "Evercore",
+      profilePic: "/assets/testimonials/James-W.jpg?v=2",
     },
   ];
 
+  // Group testimonials into sets of 3 for each slide
+  const testimonialGroups = Array.from(
+    { length: Math.ceil(testimonials.length / 3) },
+    (_, i) => testimonials.slice(i * 3, i * 3 + 3)
+  );
+
   const nextSlide = useCallback(() => {
     setDirection(1);
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
-  }, [testimonials.length]);
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonialGroups.length);
+  }, [testimonialGroups.length]);
 
   const prevSlide = () => {
     setDirection(-1);
     setCurrentIndex(
-      (prevIndex) => (prevIndex - 1 + testimonials.length) % testimonials.length
+      (prevIndex) =>
+        (prevIndex - 1 + testimonialGroups.length) % testimonialGroups.length
     );
   };
 
@@ -195,27 +241,39 @@ export default function SuccessStories() {
                 className="w-full"
               >
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {[0, 1, 2].map((offset) => {
-                    const index = (currentIndex + offset) % testimonials.length;
-                    return (
-                      <div
-                        key={testimonials[index].id}
-                        className="bg-white p-6 rounded-xl border border-white/10 shadow-sm"
-                      >
-                        <p className="text-slate-700 mb-6">
-                          &ldquo;{testimonials[index].quote}&rdquo;
-                        </p>
+                  {testimonialGroups[currentIndex].map((testimonial) => (
+                    <div
+                      key={testimonial.id}
+                      className="bg-white p-6 rounded-xl border border-white/10 shadow-sm"
+                    >
+                      <p className="text-slate-700 mb-6">
+                        &ldquo;{testimonial.quote}&rdquo;
+                      </p>
+                      <div className="flex items-center">
+                        {testimonial.profilePic ? (
+                          <div className="mr-4 flex-shrink-0">
+                            <div className="w-14 h-14 rounded-full p-0.5 bg-gradient-to-r from-[#1E3A8A]/40 to-[#B3E5FC]/40">
+                              <Image
+                                src={testimonial.profilePic}
+                                alt={`${testimonial.student} profile`}
+                                width={56}
+                                height={56}
+                                className="rounded-full object-cover w-full h-full border-2 border-white"
+                              />
+                            </div>
+                          </div>
+                        ) : null}
                         <div>
                           <p className="font-bold text-[#1E3A8A]">
-                            {testimonials[index].student}
+                            {testimonial.student}
                           </p>
                           <p className="text-[#1E3A8A] text-sm">
-                            {testimonials[index].company}
+                            {testimonial.company}
                           </p>
                         </div>
                       </div>
-                    );
-                  })}
+                    </div>
+                  ))}
                 </div>
               </motion.div>
             </AnimatePresence>
@@ -224,7 +282,7 @@ export default function SuccessStories() {
           {/* Navigation Buttons */}
           <div className="flex justify-between mt-8">
             <div className="flex space-x-2">
-              {testimonials.map((_, index) => (
+              {testimonialGroups.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => goToSlide(index)}
