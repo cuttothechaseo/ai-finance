@@ -29,7 +29,7 @@ const financePartners: Partner[] = [
   {
     name: "Goldman Sachs",
     hasLogo: true,
-    logoPath: "/assets/logos/partners/Goldman-Sachs-Logo.png",
+    logoPath: "/assets/logos/partners/Goldman-Sachs-Logo-tumb.png",
     width: 150,
     height: 50,
     logo: "GS",
@@ -38,7 +38,7 @@ const financePartners: Partner[] = [
   {
     name: "Morgan Stanley",
     hasLogo: true,
-    logoPath: "/assets/logos/partners/Morgan-Stanley-Logo.png",
+    logoPath: "/assets/logos/partners/Morgan-Stanley-Logo-tumb.png",
     width: 150,
     height: 50,
     logo: "MS",
@@ -47,38 +47,29 @@ const financePartners: Partner[] = [
   {
     name: "JP Morgan",
     hasLogo: true,
-    logoPath: "/assets/logos/partners/jpmorgan-logo.png",
+    logoPath: "/assets/logos/partners/J.P.-Morgan-Chase-Logo-tumb.png",
     width: 150,
     height: 50,
     logo: "JPM",
     shortName: "JP Morgan",
   },
   {
-    name: "Blackstone",
-    hasLogo: true,
-    logoPath: "/assets/logos/partners/Blackstone-Logo.png",
-    width: 150,
-    height: 50,
-    logo: "BX",
-    shortName: "Blackstone",
-  },
-  {
     name: "BlackRock",
     hasLogo: true,
-    logoPath: "/assets/logos/partners/blackrock-logo.svg",
+    logoPath: "/assets/logos/partners/BlackRock-Logo.png",
     width: 150,
     height: 50,
     logo: "BLK",
     shortName: "BlackRock",
   },
   {
-    name: "Evercore",
+    name: "KKR",
     hasLogo: true,
-    logoPath: "/assets/logos/partners/evercore-logo.png",
+    logoPath: "/assets/logos/partners/KKR-Logo-thumb.png",
     width: 150,
     height: 50,
-    logo: "EVR",
-    shortName: "Evercore",
+    logo: "KKR",
+    shortName: "KKR",
   },
   {
     name: "UBS",
@@ -101,7 +92,7 @@ const financePartners: Partner[] = [
   {
     name: "Deutsche Bank",
     hasLogo: true,
-    logoPath: "/assets/logos/partners/deutsche-bank-logo.png",
+    logoPath: "/assets/logos/partners/deutsche-bank-logo-png-transparent.png",
     width: 150,
     height: 50,
     logo: "DB",
@@ -110,7 +101,7 @@ const financePartners: Partner[] = [
   {
     name: "Barclays",
     hasLogo: true,
-    logoPath: "/assets/logos/partners/barclays-logo.png",
+    logoPath: "/assets/logos/partners/Barclays-Logo.wine.png",
     width: 150,
     height: 50,
     logo: "BCS",
@@ -119,11 +110,38 @@ const financePartners: Partner[] = [
   {
     name: "Bank of America",
     hasLogo: true,
-    logoPath: "/assets/logos/partners/Bank-of-America-Logo.png",
+    logoPath: "/assets/logos/partners/Bank-of-America-Logo-tumb.png",
     width: 150,
     height: 50,
     logo: "BAC",
     shortName: "Bank of America",
+  },
+  {
+    name: "Merrill Lynch",
+    hasLogo: true,
+    logoPath: "/assets/logos/partners/Merrill-Lynch-logo.png",
+    width: 150,
+    height: 50,
+    logo: "MER",
+    shortName: "Merrill Lynch",
+  },
+  {
+    name: "Citi",
+    hasLogo: true,
+    logoPath: "/assets/logos/partners/citi-logo-transparent.png",
+    width: 150,
+    height: 50,
+    logo: "C",
+    shortName: "Citi",
+  },
+  {
+    name: "Evercore",
+    hasLogo: true,
+    logoPath: "/assets/logos/partners/Evercore.webp",
+    width: 150,
+    height: 50,
+    logo: "EVR",
+    shortName: "Evercore",
   },
 ];
 
@@ -135,31 +153,138 @@ const allPartners = [
 ];
 
 export default function Partners() {
-  const [isPaused, setIsPaused] = useState(false);
+  const [currentPartners, setCurrentPartners] = useState<Partner[]>([]);
   const [isClient, setIsClient] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   // This ensures hydration doesn't cause issues with SSR
   useEffect(() => {
     // Only run on client-side
     if (typeof window !== "undefined") {
       setIsClient(true);
+
+      // Initialize with a random set of partners
+      shufflePartners();
+
+      // Set up the interval to shuffle partners every 7 seconds
+      const interval = setInterval(() => {
+        animatePartnerChange();
+      }, 7000);
+
+      // Clean up the interval on component unmount
+      return () => clearInterval(interval);
     }
   }, []);
+
+  // Function to handle the animation sequence
+  const animatePartnerChange = () => {
+    setIsAnimating(true);
+
+    // Wait for fade-out animation to complete
+    setTimeout(() => {
+      shufflePartners();
+      // Begin fade-in animation
+      setIsAnimating(false);
+    }, 500);
+  };
+
+  // Function to randomly select partners to display
+  const shufflePartners = () => {
+    const shuffled = [...financePartners].sort(() => 0.5 - Math.random());
+
+    // Single row layout - determine how many logos to show based on screen width
+    const logoCount =
+      window.innerWidth < 640
+        ? 3
+        : window.innerWidth < 768
+        ? 4
+        : window.innerWidth < 1024
+        ? 6
+        : 8;
+
+    setCurrentPartners(shuffled.slice(0, logoCount));
+  };
 
   return (
     <section className="py-16 bg-[#59B7F2] relative overflow-hidden">
       <style jsx global>{`
-        .logo-uniform {
+        .logo-container {
           width: 150px !important;
           height: 50px !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          background-color: transparent !important;
+        }
+
+        .logo-uniform {
+          width: auto !important;
+          max-width: 150px !important;
+          height: auto !important;
+          max-height: 50px !important;
           object-fit: contain !important;
+          transition: all 0.3s ease !important;
+        }
+
+        /* Apply different styles depending on image format */
+        .logo-png,
+        .logo-webp {
           filter: brightness(0) invert(1) !important;
           opacity: 0.9 !important;
         }
 
+        .logo-jpg {
+          background-color: white !important;
+          border-radius: 8px !important;
+          padding: 5px !important;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+        }
+
         .logo-uniform:hover {
           opacity: 1 !important;
-          filter: brightness(0) invert(1) !important;
+          transform: scale(1.05);
+        }
+
+        .partner-container {
+          width: 100%;
+          max-width: 1400px;
+          padding: 0 40px;
+          margin: 0 auto;
+          overflow: hidden;
+        }
+
+        .partner-row {
+          display: flex;
+          flex-wrap: nowrap;
+          justify-content: center;
+          align-items: center;
+          gap: 4rem;
+          margin: 0 auto;
+          padding: 1rem 0;
+        }
+
+        @media (max-width: 1024px) {
+          .partner-row {
+            gap: 3rem;
+          }
+          .partner-container {
+            padding: 0 30px;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .partner-row {
+            gap: 2rem;
+          }
+          .partner-container {
+            padding: 0 20px;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .partner-row {
+            gap: 1.5rem;
+          }
         }
       `}</style>
 
@@ -169,73 +294,57 @@ export default function Partners() {
         </h3>
       </div>
 
-      <div className="max-w-full mx-auto relative z-10">
-        <div
-          className="overflow-hidden relative"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
-          {/* Left gradient mask */}
-          <div className="absolute left-0 top-0 h-full w-24 z-10 bg-gradient-to-r from-[#59B7F2] to-transparent pointer-events-none"></div>
-
-          {isClient && (
-            <motion.div
-              className="flex items-center"
-              initial={{ x: "0%" }}
-              animate={{ x: "-33.33%" }}
-              transition={{
-                repeat: Infinity,
-                duration: 15,
-                ease: "linear",
-                repeatType: "loop",
-                ...(isPaused && { playState: "paused" }),
-              }}
-            >
-              {allPartners.map((partner, index) => (
-                <motion.div
-                  key={`${partner.name}-${index}`}
-                  className="px-6 md:px-8 py-4 flex-shrink-0"
-                  initial={{ opacity: 0.6 }}
-                  whileInView={{ opacity: 0.8 }}
-                  viewport={{ once: true }}
-                  whileHover={{
-                    opacity: 1,
-                    scale: 1.05,
-                    transition: { duration: 0.3 },
-                  }}
-                >
-                  {partner.hasLogo ? (
-                    // Display logo for firms with available logos
-                    <div className="w-[150px] h-[50px] flex items-center justify-center">
-                      <Image
-                        src={partner.logoPath}
-                        alt={partner.name}
-                        width={150}
-                        height={50}
-                        className="logo-uniform object-contain transition-opacity duration-300"
-                      />
-                    </div>
-                  ) : (
-                    // Display text for firms without logos
-                    <div className="w-[150px] h-[50px] flex items-center space-x-3">
-                      <div className="w-10 h-10 rounded-full bg-[#1E3A8A]/20 flex items-center justify-center">
-                        <span className="text-white font-bold text-lg">
-                          {partner.logo}
-                        </span>
-                      </div>
-                      <span className="text-white font-light text-xl tracking-wide whitespace-nowrap">
-                        {partner.shortName}
+      <div className="partner-container relative z-10">
+        {isClient && (
+          <motion.div
+            className="partner-row"
+            initial={{ opacity: 1 }}
+            animate={{ opacity: isAnimating ? 0 : 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            {currentPartners.map((partner, index) => (
+              <motion.div
+                key={`${partner.name}-${index}`}
+                className="partner-item flex items-center justify-center flex-shrink-0"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{
+                  duration: 0.5,
+                  delay: index * 0.05,
+                }}
+              >
+                {partner.hasLogo ? (
+                  <div className="logo-container">
+                    <Image
+                      src={partner.logoPath}
+                      alt={partner.name}
+                      width={150}
+                      height={50}
+                      className={`logo-uniform ${
+                        partner.logoPath.toLowerCase().endsWith(".jpg")
+                          ? "logo-jpg"
+                          : partner.logoPath.toLowerCase().endsWith(".webp")
+                          ? "logo-webp"
+                          : "logo-png"
+                      }`}
+                    />
+                  </div>
+                ) : (
+                  <div className="h-[50px] flex items-center space-x-3">
+                    <div className="w-10 h-10 rounded-full bg-[#1E3A8A]/20 flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">
+                        {partner.logo}
                       </span>
                     </div>
-                  )}
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
-
-          {/* Right gradient mask */}
-          <div className="absolute right-0 top-0 h-full w-24 z-10 bg-gradient-to-l from-[#59B7F2] to-transparent pointer-events-none"></div>
-        </div>
+                    <span className="text-white font-light text-xl tracking-wide whitespace-nowrap">
+                      {partner.shortName}
+                    </span>
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
       </div>
     </section>
   );

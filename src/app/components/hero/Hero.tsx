@@ -24,9 +24,11 @@ export default function Hero() {
     heading.innerHTML = "";
 
     // Define the text parts
-    const firstLine = "Ace your Finance";
-    const secondLine = "Interviews with AI";
+    const firstLine = "Make Finance";
+    const secondLine = "Recruiting a Breeze";
     const fullText = firstLine + " " + secondLine; // Combine for smoother flow
+    const breezeWord = "Breeze";
+    const breezeStartIndex = fullText.length - breezeWord.length;
     let index = 0;
     let lastTimestamp = 0;
     const charDelay = 60; // Adjusted to 60ms for a slightly faster typing speed
@@ -38,11 +40,9 @@ export default function Hero() {
       // Only update if enough time has passed (charDelay)
       if (timestamp - lastTimestamp >= charDelay) {
         if (index < fullText.length) {
-          const currentText = fullText.slice(0, index + 1);
-
-          // Handle line break and "AI" styling at the end
+          // Handle line break between first and second line
           if (index < firstLine.length) {
-            heading.textContent = currentText; // First line
+            heading.textContent = fullText.slice(0, index + 1); // First line
           } else if (index === firstLine.length) {
             heading.innerHTML = firstLine + "<br>"; // Add line break
           } else {
@@ -50,24 +50,34 @@ export default function Hero() {
               firstLine.length + 1,
               index + 1
             );
-            if (index >= fullText.length - 2) {
-              // Reached "AI", apply styling
-              heading.innerHTML = `${firstLine}<br>${secondLine.slice(
+
+            // Check if we've reached the "Breeze" part
+            if (index >= breezeStartIndex) {
+              // We're typing "Breeze", so style it differently
+              const beforeBreeze = secondLine.slice(
                 0,
-                -2
-              )}<span class="text-[#B3E5FC]">AI</span>`;
+                secondLine.length - breezeWord.length
+              );
+              const breezeTyped = breezeWord.slice(
+                0,
+                index - breezeStartIndex + 1
+              );
+
+              heading.innerHTML = `${firstLine}<br>${beforeBreeze}<span class="text-[#B3E5FC]">${breezeTyped}</span>`;
             } else {
               heading.innerHTML = `${firstLine}<br>${secondLineText}`;
             }
           }
+
           index++;
           lastTimestamp = timestamp;
         } else {
-          // Finish with the period
-          heading.innerHTML = `${firstLine}<br>${secondLine.slice(
+          // Animation complete - final state
+          const beforeBreeze = secondLine.slice(
             0,
-            -2
-          )}<span class="text-[#B3E5FC]">AI.</span>`;
+            secondLine.length - breezeWord.length
+          );
+          heading.innerHTML = `${firstLine}<br>${beforeBreeze}<span class="text-[#B3E5FC]">${breezeWord}</span>`;
           return; // Stop animation
         }
       }
@@ -212,9 +222,9 @@ export default function Hero() {
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           {/* Initial content will be cleared and animated */}
-          Ace your Finance
+          Make Finance
           <br />
-          Interviews with <span className="text-[#B3E5FC]">AI.</span>
+          Recruiting a <span className="text-[#B3E5FC]">Breeze.</span>
         </motion.h1>
 
         <motion.p
@@ -223,8 +233,8 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          Get instant feedback on your answers, improve technical & behavioral
-          skills, and land your dream finance job.
+          Your AI assistant for breaking into finance — polish your resume,
+          master mock interviews, and send outreach that gets noticed.
         </motion.p>
 
         <motion.div
