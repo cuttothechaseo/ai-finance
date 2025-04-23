@@ -18,18 +18,18 @@ const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 // Metadata configuration
 export const metadata: Metadata = {
   metadataBase: new URL("https://wallstreetai.app"),
-  title: "WallStreetAI - AI-Powered Finance Interview Prep",
+  title: "WallStreetAI - AI-Powered Finance Recruiting Tool",
   description:
-    "Ace your finance interviews with AI-powered mock interviews, resume analysis, and personalized coaching. Land your dream finance job with WallStreetAI.",
+    "Your AI assistant for breaking into finance — polish your resume, master mock interviews, and send outreach that gets noticed.",
   keywords:
     "finance interview, AI interview prep, Wall Street, investment banking, financial analyst, resume analysis, mock interviews",
   authors: [{ name: "WallStreetAI Team" }],
   creator: "WallStreetAI",
   publisher: "WallStreetAI",
   openGraph: {
-    title: "WallStreetAI - AI-Powered Finance Interview Prep",
+    title: "WallStreetAI - AI-Powered Finance Recruiting Tool",
     description:
-      "Ace your finance interviews with AI-powered mock interviews, resume analysis, and personalized coaching.",
+      "Your AI assistant for breaking into finance — polish your resume, master mock interviews, and send outreach that gets noticed.",
     url: "https://wallstreetai.app",
     siteName: "WallStreetAI",
     images: [
@@ -45,9 +45,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "WallStreetAI - AI-Powered Finance Interview Prep",
+    title: "WallStreetAI - AI-Powered Finance Recruiting Tool",
     description:
-      "Ace your finance interviews with AI-powered mock interviews, resume analysis, and personalized coaching.",
+      "Your AI assistant for breaking into finance — polish your resume, master mock interviews, and send outreach that gets noticed.",
     images: ["/assets/logos/wallstreetai-logo.svg"],
   },
   icons: {
