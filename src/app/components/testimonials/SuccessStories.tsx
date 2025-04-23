@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
+// We're not using Next.js Image component anymore to avoid SSR issues
+// import Image from "next/image";
 
 // Testimonial type definition
 type Testimonial = {
@@ -17,6 +18,12 @@ export default function SuccessStories() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+
+  // Create a proper, absolute URL path
+  const getAbsoluteImagePath = (relativePath: string) => {
+    // For client-side rendering, use the full URL
+    return `${process.env.NEXT_PUBLIC_BASE_URL || ""}${relativePath}`;
+  };
 
   const testimonials: Testimonial[] = [
     {
@@ -121,6 +128,15 @@ export default function SuccessStories() {
       return () => clearInterval(timer);
     }
   }, [isPaused, nextSlide]);
+
+  useEffect(() => {
+    // Log the paths for debugging
+    testimonials.forEach((t) => {
+      if (t.profilePic) {
+        console.log(`Loading profile pic for ${t.student}: ${t.profilePic}`);
+      }
+    });
+  }, []);
 
   const goToSlide = (index: number) => {
     setDirection(index > currentIndex ? 1 : -1);
@@ -252,12 +268,31 @@ export default function SuccessStories() {
                       <div className="flex items-center">
                         {testimonial.profilePic ? (
                           <div className="mr-4 flex-shrink-0">
-                            <div className="w-14 h-14 rounded-full p-0.5 bg-gradient-to-r from-[#1E3A8A]/40 to-[#B3E5FC]/40 relative overflow-hidden">
-                              <img
-                                src={testimonial.profilePic}
-                                alt={`${testimonial.student} profile`}
-                                className="rounded-full object-cover border-2 border-white absolute inset-0 w-full h-full"
-                              />
+                            <div
+                              style={{
+                                width: "56px",
+                                height: "56px",
+                                borderRadius: "50%",
+                                border: "2px solid white",
+                                overflow: "hidden",
+                                boxShadow: "0 0 0 2px rgba(30, 58, 138, 0.2)",
+                                backgroundImage: `url(${testimonial.profilePic})`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                backgroundColor: "#1e3a8a",
+                                color: "white",
+                                fontWeight: "bold",
+                                fontSize: "20px",
+                              }}
+                            >
+                              {/* Fallback content - show initials if image fails to load */}
+                              {testimonial.student
+                                .split(" ")
+                                .map((name) => name[0])
+                                .join("")}
                             </div>
                           </div>
                         ) : null}
