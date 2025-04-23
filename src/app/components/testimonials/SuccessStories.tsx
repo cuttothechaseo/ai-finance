@@ -252,13 +252,11 @@ export default function SuccessStories() {
                       <div className="flex items-center">
                         {testimonial.profilePic ? (
                           <div className="mr-4 flex-shrink-0">
-                            <div className="w-14 h-14 rounded-full p-0.5 bg-gradient-to-r from-[#1E3A8A]/40 to-[#B3E5FC]/40">
-                              <Image
+                            <div className="w-14 h-14 rounded-full p-0.5 bg-gradient-to-r from-[#1E3A8A]/40 to-[#B3E5FC]/40 relative overflow-hidden">
+                              <img
                                 src={testimonial.profilePic}
                                 alt={`${testimonial.student} profile`}
-                                width={56}
-                                height={56}
-                                className="rounded-full object-cover w-full h-full border-2 border-white"
+                                className="rounded-full object-cover border-2 border-white absolute inset-0 w-full h-full"
                               />
                             </div>
                           </div>
