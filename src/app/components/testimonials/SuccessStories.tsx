@@ -19,6 +19,7 @@ export default function SuccessStories() {
   const [isPaused, setIsPaused] = useState(false);
 
   const testimonials: Testimonial[] = [
+    // Changed folder to testimonials
     {
       id: "1",
       quote:
