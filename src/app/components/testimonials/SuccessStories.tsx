@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-// We're not using Next.js Image component anymore to avoid SSR issues
-// import Image from "next/image";
+import Image from "next/image";
 
 // Testimonial type definition
 type Testimonial = {
@@ -19,12 +18,6 @@ export default function SuccessStories() {
   const [direction, setDirection] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
-  // Create a proper, absolute URL path
-  const getAbsoluteImagePath = (relativePath: string) => {
-    // For client-side rendering, use the full URL
-    return `${process.env.NEXT_PUBLIC_BASE_URL || ""}${relativePath}`;
-  };
-
   const testimonials: Testimonial[] = [
     {
       id: "1",
@@ -32,7 +25,7 @@ export default function SuccessStories() {
         "The AI interview practice was incredibly realistic and gave me a sense of what to expect. I felt much more confident in my Superday and ended up with an offer from Goldman Sachs.",
       student: "Alex K.",
       company: "Goldman Sachs",
-      profilePic: "/assets/testimonials/Alex-K.png",
+      profilePic: "/assets/testimonials/Alex-K.jpg",
     },
     {
       id: "2",
@@ -40,7 +33,7 @@ export default function SuccessStories() {
         "This platform helped me master technical questions I previously struggled with. I gained so much confidence, aced my interviews, and ended up with an offer from Morgan Stanley.",
       student: "Sophia L.",
       company: "Morgan Stanley",
-      profilePic: "/assets/testimonials/Sophia-L.png",
+      profilePic: "/assets/testimonials/Sophia-L.jpg",
     },
     {
       id: "3",
@@ -48,7 +41,7 @@ export default function SuccessStories() {
         "After using the mock interview platform, my real investment banking interviews felt extremely familiar. The confidence boost was invaluable, and I secured an analyst position at Blackstone.",
       student: "Michael T.",
       company: "Blackstone",
-      profilePic: "/assets/testimonials/Michael-T.png",
+      profilePic: "/assets/testimonials/Michael-T.jpg",
     },
     {
       id: "4",
@@ -56,7 +49,7 @@ export default function SuccessStories() {
         "The finance-specific mock interviews gave me insights I couldn't get anywhere else. I was thoroughly prepared for my interviews at JPMorgan.",
       student: "Jennifer C.",
       company: "JPMorgan",
-      profilePic: "/assets/testimonials/Jennifer-C.png",
+      profilePic: "/assets/testimonials/Jennifer-C.jpg",
     },
     {
       id: "5",
@@ -64,7 +57,7 @@ export default function SuccessStories() {
         "The resume optimization tool helped me highlight my relevant skills. I received multiple interview calls and accepted an offer from UBS.",
       student: "Daniel M.",
       company: "UBS",
-      profilePic: "/assets/testimonials/Daniel-M.png",
+      profilePic: "https://xsgames.co/randomusers/assets/avatars/male/48.jpg",
     },
     {
       id: "6",
@@ -72,7 +65,7 @@ export default function SuccessStories() {
         "I was struggling with case interviews until I found this platform. The personalized feedback helped me refine my approach and land a role at Merrill Lynch.",
       student: "Olivia P.",
       company: "Merrill Lynch",
-      profilePic: "/assets/testimonials/Olivia-P.png",
+      profilePic: "/assets/testimonials/Olivia-P.jpg",
     },
     {
       id: "7",
@@ -80,7 +73,7 @@ export default function SuccessStories() {
         "The technical question database was extensive and covered everything that came up in my interviews. I'm now working at my dream company.",
       student: "Thomas R.",
       company: "Credit Suisse",
-      profilePic: "/assets/testimonials/Thomas-R.png",
+      profilePic: "/assets/testimonials/Thomas-R.jpg",
     },
     {
       id: "8",
@@ -88,15 +81,15 @@ export default function SuccessStories() {
         "The networking guidance and industry insights were invaluable. I managed to connect with key professionals and secure a role at Deutsche Bank.",
       student: "Natalie H.",
       company: "Deutsche Bank",
-      profilePic: "/assets/testimonials/Natalie-H.png",
+      profilePic: "/assets/testimonials/Natalie-H.jpg",
     },
     {
       id: "9",
       quote:
-        "The mock assessment center simulations were incredibly accurate. I felt prepared for every aspect of the Evercore hiring process thanks to this platform.",
+        "The mock assessment center simulations were incredibly accurate. I felt prepared for every aspect of the Barclays hiring process thanks to this platform.",
       student: "James W.",
       company: "Evercore",
-      profilePic: "/assets/testimonials/James-W.png",
+      profilePic: "/assets/testimonials/James-W.jpg",
     },
   ];
 
@@ -128,15 +121,6 @@ export default function SuccessStories() {
       return () => clearInterval(timer);
     }
   }, [isPaused, nextSlide]);
-
-  useEffect(() => {
-    // Log the paths for debugging
-    testimonials.forEach((t) => {
-      if (t.profilePic) {
-        console.log(`Loading profile pic for ${t.student}: ${t.profilePic}`);
-      }
-    });
-  }, []);
 
   const goToSlide = (index: number) => {
     setDirection(index > currentIndex ? 1 : -1);
@@ -268,31 +252,14 @@ export default function SuccessStories() {
                       <div className="flex items-center">
                         {testimonial.profilePic ? (
                           <div className="mr-4 flex-shrink-0">
-                            <div
-                              style={{
-                                width: "56px",
-                                height: "56px",
-                                borderRadius: "50%",
-                                border: "2px solid white",
-                                overflow: "hidden",
-                                boxShadow: "0 0 0 2px rgba(30, 58, 138, 0.2)",
-                                backgroundImage: `url(${testimonial.profilePic})`,
-                                backgroundSize: "cover",
-                                backgroundPosition: "center",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                backgroundColor: "#1e3a8a",
-                                color: "white",
-                                fontWeight: "bold",
-                                fontSize: "20px",
-                              }}
-                            >
-                              {/* Fallback content - show initials if image fails to load */}
-                              {testimonial.student
-                                .split(" ")
-                                .map((name) => name[0])
-                                .join("")}
+                            <div className="w-14 h-14 rounded-full p-0.5 bg-gradient-to-r from-[#1E3A8A]/40 to-[#B3E5FC]/40">
+                              <Image
+                                src={testimonial.profilePic}
+                                alt={`${testimonial.student} profile`}
+                                width={56}
+                                height={56}
+                                className="rounded-full object-cover w-full h-full border-2 border-white"
+                              />
                             </div>
                           </div>
                         ) : null}
