@@ -25,7 +25,7 @@ export default function SuccessStories() {
         "The AI interview practice was incredibly realistic and gave me a sense of what to expect. I felt much more confident in my Superday and ended up with an offer from Goldman Sachs.",
       student: "Alex K.",
       company: "Goldman Sachs",
-      profilePic: "/assets/testimonials/Alex-K.jpg",
+      profilePic: "/assets/testimonials/Alex-K.png",
     },
     {
       id: "2",
@@ -33,7 +33,7 @@ export default function SuccessStories() {
         "This platform helped me master technical questions I previously struggled with. I gained so much confidence, aced my interviews, and ended up with an offer from Morgan Stanley.",
       student: "Sophia L.",
       company: "Morgan Stanley",
-      profilePic: "/assets/testimonials/Sophia-L.jpg",
+      profilePic: "/assets/testimonials/Sophia-L.png",
     },
     {
       id: "3",
@@ -41,7 +41,7 @@ export default function SuccessStories() {
         "After using the mock interview platform, my real investment banking interviews felt extremely familiar. The confidence boost was invaluable, and I secured an analyst position at Blackstone.",
       student: "Michael T.",
       company: "Blackstone",
-      profilePic: "/assets/testimonials/Michael-T.jpg",
+      profilePic: "/assets/testimonials/Michael-T.png",
     },
     {
       id: "4",
@@ -49,7 +49,7 @@ export default function SuccessStories() {
         "The finance-specific mock interviews gave me insights I couldn't get anywhere else. I was thoroughly prepared for my interviews at JPMorgan.",
       student: "Jennifer C.",
       company: "JPMorgan",
-      profilePic: "/assets/testimonials/Jennifer-C.jpg",
+      profilePic: "/assets/testimonials/Jennifer-C.png",
     },
     {
       id: "5",
@@ -57,7 +57,7 @@ export default function SuccessStories() {
         "The resume optimization tool helped me highlight my relevant skills. I received multiple interview calls and accepted an offer from UBS.",
       student: "Daniel M.",
       company: "UBS",
-      profilePic: "/assets/testimonials/Daniel-M.jpg",
+      profilePic: "/assets/testimonials/Daniel-M.png",
     },
     {
       id: "6",
@@ -65,7 +65,7 @@ export default function SuccessStories() {
         "I was struggling with case interviews until I found this platform. The personalized feedback helped me refine my approach and land a role at Merrill Lynch.",
       student: "Olivia P.",
       company: "Merrill Lynch",
-      profilePic: "/assets/testimonials/Olivia-P.jpg",
+      profilePic: "/assets/testimonials/Olivia-P.png",
     },
     {
       id: "7",
@@ -73,7 +73,7 @@ export default function SuccessStories() {
         "The technical question database was extensive and covered everything that came up in my interviews. I'm now working at my dream company.",
       student: "Thomas R.",
       company: "Credit Suisse",
-      profilePic: "/assets/testimonials/Thomas-R.jpg",
+      profilePic: "/assets/testimonials/Thomas-R.png",
     },
     {
       id: "8",
@@ -81,15 +81,15 @@ export default function SuccessStories() {
         "The networking guidance and industry insights were invaluable. I managed to connect with key professionals and secure a role at Deutsche Bank.",
       student: "Natalie H.",
       company: "Deutsche Bank",
-      profilePic: "/assets/testimonials/Natalie-H.jpg",
+      profilePic: "/assets/testimonials/Natalie-H.png",
     },
     {
       id: "9",
       quote:
-        "The mock assessment center simulations were incredibly accurate. I felt prepared for every aspect of the Barclays hiring process thanks to this platform.",
+        "The mock assessment center simulations were incredibly accurate. I felt prepared for every aspect of the Evercore hiring process thanks to this platform.",
       student: "James W.",
       company: "Evercore",
-      profilePic: "/assets/testimonials/James-W.jpg",
+      profilePic: "/assets/testimonials/James-W.png",
     },
   ];
 
