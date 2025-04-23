@@ -23,7 +23,7 @@ export default function SuccessStories() {
     {
       id: "1",
       quote:
-        "The AI interview practice was incredibly realistic and gave me a sense of what to expect. I felt much more confident in my Superday and ended up with an offer from Goldman Sachs.",
+        "The AI interview practice was incredibly realistic and gave me a sense of what to expect. I ended up with an offer from Goldman Sachs.",
       student: "Alex K.",
       company: "Goldman Sachs",
       profilePic: "/assets/Testimonials/Alex-K.png",
@@ -31,7 +31,7 @@ export default function SuccessStories() {
     {
       id: "2",
       quote:
-        "This platform helped me master technical questions I previously struggled with. I gained so much confidence, aced my interviews, and ended up with an offer from Morgan Stanley.",
+        "This platform helped me master technical questions I previously struggled with. I gained so much confidence and got an offer from Morgan Stanley.",
       student: "Sophia L.",
       company: "Morgan Stanley",
       profilePic: "/assets/Testimonials/Sophia-L.png",
@@ -39,7 +39,7 @@ export default function SuccessStories() {
     {
       id: "3",
       quote:
-        "After using the mock interview platform, my real investment banking interviews felt extremely familiar. The confidence boost was invaluable, and I secured an analyst position at Blackstone.",
+        "After using the mock interview platform, my real investment banking interviews felt extremely familiar, and I secured an analyst position at Blackstone.",
       student: "Michael T.",
       company: "Blackstone",
       profilePic: "/assets/Testimonials/Michael-T.png",
