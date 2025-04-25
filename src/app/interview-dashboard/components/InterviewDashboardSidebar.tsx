@@ -6,24 +6,18 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
-type NavItem = {
-  name: string;
-  path: string;
-  icon: (isActive: boolean) => JSX.Element;
-};
-
 interface SidebarProps {
-  isMobile: boolean;
-  toggleSidebar: () => void;
-  isOpen: boolean;
+  isMobile?: boolean;
+  toggleSidebar?: () => void;
+  isOpen?: boolean;
 }
 
-export default function Sidebar({
-  isMobile,
-  toggleSidebar,
-  isOpen,
+export default function InterviewDashboardSidebar({
+  isMobile = false,
+  toggleSidebar = () => {},
+  isOpen = true,
 }: SidebarProps) {
-  const pathname = usePathname();
+  const pathname = usePathname() || "";
   const [mounted, setMounted] = useState(false);
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
 
@@ -31,11 +25,11 @@ export default function Sidebar({
     setMounted(true);
   }, []);
 
-  const navItems: NavItem[] = [
+  const navItems = [
     {
       name: "Dashboard",
       path: "/dashboard",
-      icon: (isActive) => (
+      icon: (isActive: boolean) => (
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -58,7 +52,7 @@ export default function Sidebar({
     {
       name: "Resume Analysis",
       path: "/resume",
-      icon: (isActive) => (
+      icon: (isActive: boolean) => (
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -82,7 +76,7 @@ export default function Sidebar({
     {
       name: "Networking",
       path: "/networking",
-      icon: (isActive) => (
+      icon: (isActive: boolean) => (
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -105,7 +99,7 @@ export default function Sidebar({
     {
       name: "Mock Interviews",
       path: "/interview-dashboard",
-      icon: (isActive) => (
+      icon: (isActive: boolean) => (
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -128,7 +122,7 @@ export default function Sidebar({
     {
       name: "Settings",
       path: "/settings",
-      icon: (isActive) => (
+      icon: (isActive: boolean) => (
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -170,15 +164,6 @@ export default function Sidebar({
         staggerDirection: -1,
       },
     },
-  };
-
-  const itemVariants = {
-    open: {
-      x: 0,
-      opacity: 1,
-      transition: { type: "spring", stiffness: 300, damping: 24 },
-    },
-    closed: { x: -10, opacity: 0 },
   };
 
   const logoTextVariants = {
@@ -284,7 +269,10 @@ export default function Sidebar({
         {/* Navigation */}
         <nav className="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
           {navItems.map((item) => {
-            const isActive = pathname === item.path;
+            const isActive =
+              pathname === item.path ||
+              (item.path === "/interview-dashboard" &&
+                pathname.includes("/interview-dashboard"));
             return (
               <div
                 key={item.name}
