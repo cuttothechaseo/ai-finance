@@ -10,9 +10,19 @@ interface NavbarProps {
   toggleSidebar: () => void;
 }
 
-export default function Navbar({ user, onLogout, toggleSidebar }: NavbarProps) {
+export default function Navbar({
+  user: propUser,
+  onLogout,
+  toggleSidebar,
+}: NavbarProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Use provided user or fallback to mock data if not available
+  const user = propUser || {
+    name: "Chase Ottimo",
+    email: "chaseottimo@gmail.com",
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
