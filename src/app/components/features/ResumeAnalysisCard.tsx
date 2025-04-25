@@ -18,7 +18,7 @@ interface ResumeAnalysisProps {
 // Function to determine color based on score
 const getScoreColor = (score: number) => {
   if (score >= 80) return "#4ADE80"; // Green for high scores
-  if (score >= 60) return "#FBBF24"; // Yellow/amber for medium scores
+  if (score > 60) return "#FBBF24"; // Yellow/amber for medium scores
   return "#EF4444"; // Red for low scores
 };
 
@@ -31,9 +31,9 @@ export default function ResumeAnalysisCard({
   const analysisData = {
     overallScore: 85,
     sections: {
-      content: { score: 80, label: "Content Quality" },
-      formatting: { score: 70, label: "Formatting" },
-      relevance: { score: 90, label: "Industry Relevance" },
+      content: { score: 90, label: "Content Quality" },
+      formatting: { score: 60, label: "Formatting" },
+      relevance: { score: 85, label: "Industry Relevance" },
       impact: { score: 75, label: "Impact Statements" },
     },
     strengths: [
@@ -459,9 +459,11 @@ export default function ResumeAnalysisCard({
                   Feedback
                 </h3>
                 <p className="text-slate-700">
-                  The formatting of your resume needs improvement to enhance
-                  readability and visual appeal. A clearer structure would help
-                  hiring managers scan your qualifications more efficiently.
+                  The formatting of your resume needs significant improvement.
+                  The current layout is difficult to scan and lacks visual
+                  hierarchy, potentially causing recruiters to miss key
+                  information. Inconsistent spacing and formatting decrease
+                  overall readability.
                 </p>
               </div>
 
@@ -473,20 +475,29 @@ export default function ResumeAnalysisCard({
                   <li className="flex items-start">
                     <span className="text-[#59B7F2] mr-2">•</span>
                     <span className="text-slate-700">
-                      Improve section hierarchy with consistent headings and
-                      spacing
+                      Restructure content with clear section headings and
+                      consistent formatting
                     </span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-[#59B7F2] mr-2">•</span>
                     <span className="text-slate-700">
-                      Use bullet points effectively with strong action verbs
+                      Use bullet points consistently with action verbs at the
+                      beginning of each point
                     </span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-[#59B7F2] mr-2">•</span>
                     <span className="text-slate-700">
-                      Optimize white space for better readability
+                      Balance white space and create clear visual separation
+                      between sections
+                    </span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-[#59B7F2] mr-2">•</span>
+                    <span className="text-slate-700">
+                      Consider using a modern resume template with professional
+                      formatting
                     </span>
                   </li>
                 </ul>
