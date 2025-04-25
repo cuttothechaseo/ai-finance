@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-type TabType = "linkedin" | "email" | "cover" | "examples";
+type TabType = "input" | "linkedin" | "email" | "cover" | "examples";
 
 interface NetworkingOutreachProps {
   isPreview?: boolean;
@@ -12,14 +12,16 @@ interface NetworkingOutreachProps {
 export default function NetworkingOutreachCard({
   isPreview = true,
 }: NetworkingOutreachProps) {
-  const [activeTab, setActiveTab] = useState<TabType>("linkedin");
+  const [activeTab, setActiveTab] = useState<TabType>("input");
+  const [selectedMessageType, setSelectedMessageType] =
+    useState<string>("linkedin");
 
   // Sample data for the networking outreach examples
   const outreachData = {
     tips: [
       "Personalize each message with specific details about the company and role",
       "Keep LinkedIn messages concise and under 150 words",
-      "Follow up politely if you don&apos;t hear back within 1-2 weeks",
+      "Follow up politely if you do not hear back within 1-2 weeks",
       "Highlight relevant experience and skills that match the position",
       "Always include a clear call to action in your message",
     ],
@@ -27,22 +29,27 @@ export default function NetworkingOutreachCard({
       subject:
         "Connection Request - Investment Banking Opportunity at Morgan Stanley",
       message:
-        "Hi Sarah,\n\nI noticed your role as an Associate at Morgan Stanley and was impressed by your background in Technology Investment Banking. I&apos;m currently an undergraduate student at Cornell University focusing on a similar path.\n\nI&apos;d love to connect and possibly have a brief conversation about your experience in technology investment banking at Morgan Stanley. I&apos;m particularly interested in how your team evaluates M&A opportunities in the current market.\n\nThank you for considering my connection request.\n\nBest regards,\nJohn Smith",
+        "Hi Sarah,\n\nI noticed your role as an Associate at Morgan Stanley and was impressed by your background in Technology Investment Banking. I am currently an undergraduate student at Cornell University focusing on a similar path.\n\nI would love to connect and possibly have a brief conversation about your experience in technology investment banking at Morgan Stanley. I am particularly interested in how your team evaluates M&A opportunities in the current market.\n\nThank you for considering my connection request.\n\nBest regards,\nJohn Smith",
     },
     emailExample: {
       subject: "Interest in Technology Investment Banking at Morgan Stanley",
       message:
-        "Dear Ms. Fields,\n\nI hope this email finds you well. My name is John Smith, and I am reaching out to express my strong interest in the Summer Analyst position within the Technology Investment Banking team at Morgan Stanley. I am currently a junior at Cornell University majoring in Finance with a minor in Computer Science.\n\nLast summer, I completed an internship in the Technology Equity Capital Markets group at Credit Suisse, where I worked on several IPO and secondary offering transactions for software and fintech companies. During this experience, I developed skills in financial modeling, company valuation, and industry analysis. I contributed to pitch materials for client presentations and gained exposure to the execution process for public offerings.\n\nMy academic coursework in both finance and computer science has provided me with a strong foundation in understanding both the financial and technical aspects of technology companies. I am particularly drawn to Morgan Stanley&apos;s leadership in technology investment banking, having followed your firm&apos;s recent advisory roles in notable technology M&A transactions and IPOs.\n\nI am excited about the opportunity to bring my analytical skills, technical background, and passion for technology to Morgan Stanley&apos;s team. I would welcome the chance to discuss how my experiences align with the expectations for a Summer Analyst role in your Technology Investment Banking group.\n\nPlease find my resume attached for your review. Thank you for your time and consideration.\n\nBest regards,\nJohn Smith",
+        "Dear Ms. Fields,\n\nI hope this email finds you well. My name is John Smith, and I am reaching out to express my strong interest in the Analyst position within the Technology Investment Banking team at Morgan Stanley. I am currently a junior at Cornell University majoring in Finance with a minor in Computer Science.\n\nLast summer, I completed an internship in the Technology Equity Capital Markets group at Credit Suisse, where I worked on several IPO and secondary offering transactions for software and fintech companies. During this experience, I developed skills in financial modeling, company valuation, and industry analysis. I contributed to pitch materials for client presentations and gained exposure to the execution process for public offerings.\n\nMy academic coursework in both finance and computer science has provided me with a strong foundation in understanding both the financial and technical aspects of technology companies. I am particularly drawn to Morgan Stanley's leadership in technology investment banking, having followed your firm's recent advisory roles in notable technology M&A transactions and IPOs.\n\nI am excited about the opportunity to bring my analytical skills, technical background, and passion for technology to Morgan Stanley's team. I would welcome the chance to discuss how my experiences align with the expectations for a Analyst role in your Technology Investment Banking group.\n\nPlease find my resume attached for your review. Thank you for your time and consideration.\n\nBest regards,\nJohn Smith",
     },
     coverLetterExample: {
       subject: "Cover Letter for Analyst Opportunity at Morgan Stanley",
       message:
-        "Dear Ms. Fields,\n\nI am writing to express my strong interest in the Summer Analyst position within the Technology Investment Banking team at Morgan Stanley. I am currently a junior at Cornell University majoring in Finance with a minor in Computer Science, and I am particularly drawn to Morgan Stanley&apos;s leadership in technology investment banking.\n\nLast summer, I completed an internship in the Technology Equity Capital Markets group at Credit Suisse, where I worked on several IPO and secondary offering transactions for software and fintech companies. During this experience, I developed skills in financial modeling, company valuation, and industry analysis. I contributed to pitch materials for client presentations and gained exposure to the execution process for public offerings.\n\nMy academic coursework in both finance and computer science has provided me with a strong foundation in understanding both the financial and technical aspects of technology companies. I have completed coursework in corporate finance, investment analysis, data structures, and algorithms, which I believe will allow me to contribute meaningfully to Morgan Stanley&apos;s technology banking team.\n\nI am particularly impressed by Morgan Stanley&apos;s recent advisory roles in notable technology M&A transactions and IPOs. Your firm&apos;s ability to navigate complex technology deals and maintain strong client relationships exemplifies the type of work environment where I would thrive and contribute.\n\nI am excited about the opportunity to bring my analytical skills, technical background, and passion for technology to Morgan Stanley&apos;s team. I would welcome the chance to discuss how my experiences align with the expectations for the Summer Analyst role in your Technology Investment Banking group.\n\nPlease find my resume attached for your review. Thank you for your time and consideration, and I look forward to the possibility of contributing to Morgan Stanley&apos;s continued success in the technology sector.\n\nSincerely,\nJohn Smith",
+        "Dear Ms. Fields,\n\nI am writing to express my strong interest in the Analyst position within the Technology Investment Banking team at Morgan Stanley. I am currently a junior at Cornell University majoring in Finance with a minor in Computer Science, and I am particularly drawn to Morgan Stanley's leadership in technology investment banking.\n\nLast summer, I completed an internship in the Technology Equity Capital Markets group at Credit Suisse, where I worked on several IPO and secondary offering transactions for software and fintech companies. During this experience, I developed skills in financial modeling, company valuation, and industry analysis. I contributed to pitch materials for client presentations and gained exposure to the execution process for public offerings.\n\nMy academic coursework in both finance and computer science has provided me with a strong foundation in understanding both the financial and technical aspects of technology companies. I have completed coursework in corporate finance, investment analysis, data structures, and algorithms, which I believe will allow me to contribute meaningfully to Morgan Stanley's technology banking team.\n\nI am particularly impressed by Morgan Stanley's recent advisory roles in notable technology M&A transactions and IPOs. Your firm's ability to navigate complex technology deals and maintain strong client relationships exemplifies the type of work environment where I would thrive and contribute.\n\nI am excited about the opportunity to bring my analytical skills, technical background, and passion for technology to Morgan Stanley's team. I would welcome the chance to discuss how my experiences align with the expectations for the Analyst role in your Technology Investment Banking group.\n\nPlease find my resume attached for your review. Thank you for your time and consideration, and I look forward to the possibility of contributing to Morgan Stanley's continued success in the technology sector.\n\nSincerely,\nJohn Smith",
     },
   };
 
   const handleTabClick = (tab: TabType) => {
     setActiveTab(tab);
+    // Prevent scrolling by maintaining current scroll position
+    const currentScrollY = window.scrollY;
+    setTimeout(() => {
+      window.scrollTo(0, currentScrollY);
+    }, 0);
   };
 
   // If preview mode is enabled, show the card only
@@ -84,11 +91,21 @@ export default function NetworkingOutreachCard({
 
   // Full outreach view
   return (
-    <div className="bg-white rounded-xl shadow-xl w-full overflow-hidden border border-slate-200">
+    <div className="bg-white rounded-xl shadow-xl w-full border border-slate-200">
       <div className="flex flex-col md:flex-row">
         {/* Sidebar with tabs */}
         <div className="w-full md:w-64 bg-[#1E3A8A]/5 md:min-h-[600px] border-r border-slate-200">
           <nav className="flex md:flex-col overflow-x-auto md:overflow-x-visible p-4 space-y-1">
+            <button
+              className={`whitespace-nowrap md:whitespace-normal text-left px-4 py-2 rounded-lg flex items-center transition-colors ${
+                activeTab === "input"
+                  ? "bg-[#59B7F2] text-white"
+                  : "text-[#1E3A8A] hover:bg-[#1E3A8A]/10"
+              }`}
+              onClick={() => handleTabClick("input")}
+            >
+              Input
+            </button>
             <button
               className={`whitespace-nowrap md:whitespace-normal text-left px-4 py-2 rounded-lg flex items-center transition-colors ${
                 activeTab === "linkedin"
@@ -151,12 +168,158 @@ export default function NetworkingOutreachCard({
         </div>
 
         {/* Main content area */}
-        <div className="flex-1 p-6 overflow-auto">
+        <div className="flex-1 p-6">
+          {activeTab === "input" && (
+            <div className="space-y-6">
+              <div className="bg-white p-6 rounded-lg border border-slate-200">
+                <h3 className="text-lg font-bold text-[#1E3A8A] mb-6">
+                  Generate Networking Message
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <label
+                      htmlFor="companyName"
+                      className="block text-sm font-medium text-slate-700 mb-1"
+                    >
+                      Company Name
+                    </label>
+                    <input
+                      type="text"
+                      id="companyName"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-md text-black"
+                      placeholder="Company name"
+                      defaultValue="Morgan Stanley"
+                      readOnly
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="targetRole"
+                      className="block text-sm font-medium text-slate-700 mb-1"
+                    >
+                      Target Role
+                    </label>
+                    <input
+                      type="text"
+                      id="targetRole"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-md text-black"
+                      placeholder="Position or role"
+                      defaultValue="Analyst"
+                      readOnly
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="contactName"
+                      className="block text-sm font-medium text-slate-700 mb-1"
+                    >
+                      Contact Name (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      id="contactName"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-md text-black"
+                      placeholder="Contact person's name"
+                      defaultValue="Sarah Fields"
+                      readOnly
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="contactRole"
+                      className="block text-sm font-medium text-slate-700 mb-1"
+                    >
+                      Contact Role (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      id="contactRole"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-md text-black"
+                      placeholder="Contact's role or position"
+                      defaultValue="Associate"
+                      readOnly
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="resume"
+                      className="block text-sm font-medium text-slate-700 mb-1"
+                    >
+                      Resume
+                    </label>
+                    <div className="w-full px-3 py-2 border border-slate-300 rounded-md bg-slate-50 flex items-center">
+                      <svg
+                        className="w-5 h-5 text-slate-500 mr-2"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span className="text-slate-700">
+                        John Smith Resume - April 2025.pdf
+                      </span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="messageType"
+                      className="block text-sm font-medium text-slate-700 mb-1"
+                    >
+                      Message Type
+                    </label>
+                    <select
+                      id="messageType"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-md text-black"
+                      value={selectedMessageType}
+                      onChange={(e) => setSelectedMessageType(e.target.value)}
+                    >
+                      <option value="linkedin">LinkedIn Message</option>
+                      <option value="email">Intro Email</option>
+                      <option value="cover">Cover Letter</option>
+                    </select>
+                  </div>
+
+                  <div className="pt-4 flex justify-end">
+                    <button
+                      type="button"
+                      className="bg-[#1E3A8A] text-white px-4 py-2 rounded-md hover:bg-[#1E3A8A]/90 transition-colors"
+                      onClick={() => {
+                        // Map the selected message type to the corresponding tab
+                        const tabMapping: Record<string, TabType> = {
+                          linkedin: "linkedin",
+                          email: "email",
+                          cover: "cover",
+                        };
+
+                        // Switch to the appropriate tab
+                        if (tabMapping[selectedMessageType]) {
+                          handleTabClick(tabMapping[selectedMessageType]);
+                        }
+                      }}
+                    >
+                      Generate Message
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {activeTab === "linkedin" && (
             <div className="space-y-6">
               <div className="bg-white p-6 rounded-lg border border-slate-200">
                 <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
-                  LinkedIn Message Example
+                  LinkedIn Message Generation
                 </h3>
                 <div>
                   <p className="text-sm text-slate-600 mb-2">Subject:</p>
@@ -219,7 +382,7 @@ export default function NetworkingOutreachCard({
             <div className="space-y-6">
               <div className="bg-white p-6 rounded-lg border border-slate-200">
                 <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
-                  Introduction Email Example
+                  Introduction Email Generation
                 </h3>
                 <div>
                   <p className="text-sm text-slate-600 mb-2">Subject:</p>
@@ -282,7 +445,7 @@ export default function NetworkingOutreachCard({
             <div className="space-y-6">
               <div className="bg-white p-6 rounded-lg border border-slate-200">
                 <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
-                  Cover Letter Example
+                  Cover Letter Generation
                 </h3>
                 <div>
                   <p className="text-sm text-slate-600 mb-2">Subject:</p>
@@ -310,8 +473,8 @@ export default function NetworkingOutreachCard({
                       <strong className="text-[#1E3A8A]">
                         Opening paragraph:
                       </strong>{" "}
-                      Specify the position you&apos;re applying for and express
-                      your interest
+                      Specify the position you are applying for and express your
+                      interest
                     </span>
                   </li>
                   <li className="flex items-start">
@@ -404,7 +567,7 @@ export default function NetworkingOutreachCard({
 
               <div className="bg-white p-6 rounded-lg border border-slate-200">
                 <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
-                  Do&apos;s and Don&apos;ts
+                  Dos and Donts
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
@@ -420,7 +583,7 @@ export default function NetworkingOutreachCard({
                       <li className="flex items-start">
                         <span className="text-green-600 mr-2">✓</span>
                         <span className="text-slate-700">
-                          Make a specific connection to the recipient&apos;s
+                          Make a specific connection to the recipient's
                           background
                         </span>
                       </li>
@@ -439,9 +602,7 @@ export default function NetworkingOutreachCard({
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-red-600 mb-2">
-                      Don&apos;t:
-                    </h4>
+                    <h4 className="font-semibold text-red-600 mb-2">Do not:</h4>
                     <ul className="space-y-2">
                       <li className="flex items-start">
                         <span className="text-red-600 mr-2">✗</span>

@@ -10,8 +10,16 @@
     "allowJs": true,
     "checkJs": false,
     "lib": ["ES2020", "dom"],
-    "typeRoots": ["."]
+    "typeRoots": ["@types", ".", "node_modules/@types"],
+    "baseUrl": ".",
+    "types": [],
+    "paths": {
+      "job-scheduler": ["./job-scheduler/index.ts"],
+      "networking-job-scheduler": ["./networking-job-scheduler/index.ts"],
+      "notifyWaitlist": ["./notifyWaitlist/index.ts"],
+      "process-analysis-job": ["./process-analysis-job/index.ts"]
+    }
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "**/*.d.ts"],
   "exclude": ["node_modules"]
 } 

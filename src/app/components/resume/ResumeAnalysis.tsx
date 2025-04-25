@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../../../../lib/supabase";
+import { useRouter } from "next/navigation";
 
 // Define type directly since we can't import from lib/claude.ts
 // This keeps the component independent from the API integration
@@ -49,6 +50,7 @@ export default function ResumeAnalysis({
   onClose,
   initialData,
 }: ResumeAnalysisProps) {
+  const router = useRouter();
   const [resumeId, setResumeId] = useState<string>(initialResumeId);
   const [analysis, setAnalysis] = useState<ResumeAnalysisResult | null>(
     initialData || null
@@ -892,7 +894,10 @@ export default function ResumeAnalysis({
           >
             Close
           </button>
-          <button className="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#1E3A8A] hover:bg-[#59B7F2] focus:outline-none focus:ring-2 focus:ring-[#B3E5FC] transition-all duration-200 flex items-center">
+          <button
+            onClick={() => router.push("/resume/analyses")}
+            className="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#1E3A8A] hover:bg-[#59B7F2] focus:outline-none focus:ring-2 focus:ring-[#B3E5FC] transition-all duration-200 flex items-center"
+          >
             <svg
               className="w-5 h-5 mr-2 text-current"
               fill="none"
@@ -903,10 +908,10 @@ export default function ResumeAnalysis({
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
               />
             </svg>
-            Export Report
+            View Resume Analyses
           </button>
         </div>
       </motion.div>

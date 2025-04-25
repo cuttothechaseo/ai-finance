@@ -6,10 +6,17 @@ import { supabase } from "../../../lib/supabase";
 
 export interface NetworkingStrategyGeneratorProps {
   onClose: () => void;
+  onMessageGenerated?: (
+    message: string,
+    company: string,
+    role: string,
+    type: string
+  ) => void;
 }
 
 export default function NetworkingStrategyGenerator({
   onClose,
+  onMessageGenerated,
 }: NetworkingStrategyGeneratorProps) {
   const [formData, setFormData] = useState({
     companyName: "",
@@ -77,6 +84,15 @@ export default function NetworkingStrategyGenerator({
       try {
         const data = await response.json();
         setGeneratedMessage(data.message);
+        // Call the onMessageGenerated callback if it exists
+        if (onMessageGenerated) {
+          onMessageGenerated(
+            data.message,
+            formData.companyName,
+            formData.role,
+            formData.messageType
+          );
+        }
       } catch (parseError) {
         console.error("Error parsing success response as JSON:", parseError);
         try {
@@ -240,7 +256,7 @@ export default function NetworkingStrategyGenerator({
                 required
                 rows={4}
                 className="appearance-none block w-full px-3 py-3 border border-slate-200 rounded-lg shadow-sm placeholder-slate-400 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/50 focus:border-[#1E3A8A] transition-all duration-200 sm:text-sm custom-scrollbar"
-                placeholder="Paste your resume text here"
+                placeholder="Copy all text from your resume document and paste it here"
               />
             </div>
 

@@ -106,6 +106,9 @@ export default function ResumeUpload() {
           </Link>
         </div>
 
+        {/* White line divider */}
+        <div className="h-px bg-white/30 w-full mb-8 rounded-full"></div>
+
         <div className="bg-white p-6 rounded-xl border border-white/10 shadow-sm mb-8">
           <div className="mb-6">
             <p className="text-slate-700 mb-4">
