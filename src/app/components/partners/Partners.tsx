@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 
 // Define partner types
@@ -157,6 +157,35 @@ export default function Partners() {
   const [isClient, setIsClient] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
+  // Function to randomly select partners to display
+  const shufflePartners = useCallback(() => {
+    const shuffled = [...financePartners].sort(() => 0.5 - Math.random());
+
+    // Single row layout - determine how many logos to show based on screen width
+    const logoCount =
+      window.innerWidth < 640
+        ? 3
+        : window.innerWidth < 768
+        ? 4
+        : window.innerWidth < 1024
+        ? 6
+        : 8;
+
+    setCurrentPartners(shuffled.slice(0, logoCount));
+  }, []);
+
+  // Function to handle the animation sequence
+  const animatePartnerChange = useCallback(() => {
+    setIsAnimating(true);
+
+    // Wait for fade-out animation to complete
+    setTimeout(() => {
+      shufflePartners();
+      // Begin fade-in animation
+      setIsAnimating(false);
+    }, 500);
+  }, [shufflePartners]);
+
   // This ensures hydration doesn't cause issues with SSR
   useEffect(() => {
     // Only run on client-side
@@ -174,36 +203,8 @@ export default function Partners() {
       // Clean up the interval on component unmount
       return () => clearInterval(interval);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // Function to handle the animation sequence
-  const animatePartnerChange = () => {
-    setIsAnimating(true);
-
-    // Wait for fade-out animation to complete
-    setTimeout(() => {
-      shufflePartners();
-      // Begin fade-in animation
-      setIsAnimating(false);
-    }, 500);
-  };
-
-  // Function to randomly select partners to display
-  const shufflePartners = () => {
-    const shuffled = [...financePartners].sort(() => 0.5 - Math.random());
-
-    // Single row layout - determine how many logos to show based on screen width
-    const logoCount =
-      window.innerWidth < 640
-        ? 3
-        : window.innerWidth < 768
-        ? 4
-        : window.innerWidth < 1024
-        ? 6
-        : 8;
-
-    setCurrentPartners(shuffled.slice(0, logoCount));
-  };
 
   return (
     <section className="py-16 bg-[#59B7F2] relative overflow-hidden">

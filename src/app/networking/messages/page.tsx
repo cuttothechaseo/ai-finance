@@ -452,7 +452,7 @@ export default function NetworkingMessagesPage() {
                 <span className="text-[#59B7F2] mr-2 mt-1">•</span>
                 <span className="text-[#475569]">
                   <strong className="text-[#1E293B]">Follow up politely</strong>{" "}
-                  if you don't hear back within 1-2 weeks.
+                  if you don&apos;t hear back within 1-2 weeks.
                 </span>
               </li>
               <li className="flex items-start">

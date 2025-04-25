@@ -82,6 +82,7 @@ export default function ResumeAnalysis({
         clearInterval(pollInterval);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resumeId, initialData]);
 
   // Helper function to calculate similarity between two strings
