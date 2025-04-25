@@ -91,7 +91,9 @@ const MessageView = ({
         </div>
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-9rem)]">
           <div className="bg-[#F8FAFC] border border-[#E6E8F0] rounded-md p-5 whitespace-pre-wrap">
-            {message.generated_message}
+            <p className="text-[#1E293B] !important">
+              {message.generated_message}
+            </p>
           </div>
 
           <div className="mt-6 flex justify-between items-center">

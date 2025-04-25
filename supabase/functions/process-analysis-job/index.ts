@@ -335,7 +335,8 @@ function constructFallbackResponse(text) {
       feedback: "Please see summary for details.",
       suggestions: []
     },
-    suggestedEdits: []
+    suggestedEdits: [],
+    rawAnalysis: ""
   };
   
   // Add the full text as raw content

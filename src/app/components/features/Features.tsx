@@ -1,72 +1,87 @@
 "use client";
 
 import { motion } from "framer-motion";
+import ResumeAnalysisCard from "./ResumeAnalysisCard";
+import NetworkingOutreachCard from "./NetworkingOutreachCard";
+import React from "react";
+
+// Feature type definition
+type Feature = {
+  id: string;
+  title: string;
+  description: string;
+  icon: JSX.Element;
+};
 
 export default function Features() {
-  const features = [
+  // Features data
+  const features: Feature[] = [
     {
       id: "1",
-      title: "AI Interview Simulation",
+      title: "Resume Analysis",
       description:
-        "Practice with our AI interviewer that adapts to your responses and provides real-time feedback.",
+        "Get detailed AI-powered feedback on your resume to stand out to finance recruiters.",
       icon: (
         <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
+          className="w-14 h-14 text-[#1E293B]"
           viewBox="0 0 24 24"
+          fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            stroke="currentColor"
+            strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
           />
         </svg>
       ),
     },
     {
       id: "2",
-      title: "Personalized Feedback",
+      title: "Networking Outreach",
       description:
-        "Receive detailed analysis of your performance with specific improvement suggestions.",
+        "Generate personalized outreach messages for networking on LinkedIn and other platforms.",
       icon: (
         <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
+          className="w-14 h-14 text-[#1E293B]"
           viewBox="0 0 24 24"
+          fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
+            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+            stroke="currentColor"
+            strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
           />
         </svg>
       ),
     },
     {
       id: "3",
-      title: "Industry-Specific Questions",
+      title: "Mock Interviews",
       description:
-        "Practice with questions tailored to investment banking, private equity, and other finance roles.",
+        "Practice with our AI interviewer that provides real-time feedback on your responses.",
       icon: (
         <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
+          className="w-14 h-14 text-[#1E293B]"
           viewBox="0 0 24 24"
+          fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
+            d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z"
+            stroke="currentColor"
+            strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={2}
-            d="M13 10V3L4 14h7v7l9-11h-7z"
           />
+          <circle cx="8" cy="10" r="1" fill="currentColor" />
+          <circle cx="12" cy="10" r="1" fill="currentColor" />
+          <circle cx="16" cy="10" r="1" fill="currentColor" />
         </svg>
       ),
     },
@@ -102,7 +117,7 @@ export default function Features() {
 
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -112,31 +127,118 @@ export default function Features() {
             AI-Powered <span className="text-[#B3E5FC]">Features</span>
           </h2>
           <p className="text-xl text-white/90 max-w-3xl mx-auto">
-            Our platform uses advanced AI to help you prepare for finance
-            interviews
+            Our platform uses advanced AI to help you prepare for and land your
+            dream finance job
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* Feature Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           {features.map((feature, index) => (
             <motion.div
               key={feature.id}
-              className="bg-white p-6 rounded-xl border border-white/10 shadow-sm"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ duration: 0.6, delay: index * 0.2 }}
+              className="group relative rounded-xl p-8 flex flex-col h-full overflow-hidden bg-white border border-white/10 shadow-sm"
             >
-              <div className="w-14 h-14 bg-[#1E3A8A]/10 rounded-lg flex items-center justify-center mb-6 text-[#1E3A8A]">
-                {feature.icon}
+              {/* Gradient background with animation */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[#1E3A8A]/5 to-white/90 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+              {/* Blurred glow effect */}
+              <div className="absolute -inset-1 bg-gradient-to-br from-white/20 to-[#1E3A8A]/10 rounded-xl blur-xl opacity-0 group-hover:opacity-70 transition-opacity duration-500"></div>
+
+              {/* Content container */}
+              <div className="relative z-10 flex flex-col h-full">
+                {/* Icon with hover animation */}
+                <motion.div
+                  className="mb-6 relative"
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  <div className="bg-[#1E3A8A]/10 w-20 h-20 rounded-lg flex items-center justify-center shadow-md">
+                    <motion.div
+                      whileHover={{
+                        color: "#1E3A8A",
+                        transition: { duration: 0.3 },
+                      }}
+                    >
+                      {React.cloneElement(feature.icon, {
+                        className: "w-14 h-14 text-[#1E3A8A]",
+                      })}
+                    </motion.div>
+                  </div>
+                </motion.div>
+
+                {/* Feature title */}
+                <div className="mb-4">
+                  <h3 className="text-xl font-bold text-[#1E3A8A]">
+                    {feature.title}
+                  </h3>
+                </div>
+
+                {/* Description */}
+                <p className="text-slate-700">{feature.description}</p>
               </div>
-              <h3 className="text-xl font-bold mb-3 text-[#1E3A8A]">
-                {feature.title}
-              </h3>
-              <p className="text-slate-700">{feature.description}</p>
             </motion.div>
           ))}
         </div>
+
+        {/* Resume Analysis Feature Detail */}
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-white">
+            AI-Powered <span className="text-[#B3E5FC]">Resume Analysis</span>
+          </h2>
+          <p className="text-xl text-white/90 max-w-3xl mx-auto">
+            Get comprehensive feedback on your resume to help you land your
+            dream finance job
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="max-w-5xl mx-auto mb-24"
+        >
+          <ResumeAnalysisCard isPreview={false} />
+        </motion.div>
+
+        {/* Networking Outreach Feature Detail */}
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-white">
+            AI-Powered{" "}
+            <span className="text-[#B3E5FC]">Networking Outreach</span>
+          </h2>
+          <p className="text-xl text-white/90 max-w-3xl mx-auto">
+            Generate personalized outreach messages to connect with finance
+            professionals
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="max-w-5xl mx-auto"
+        >
+          <NetworkingOutreachCard isPreview={false} />
+        </motion.div>
       </div>
     </section>
   );

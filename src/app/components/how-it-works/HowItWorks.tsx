@@ -18,9 +18,9 @@ export default function HowItWorks() {
     {
       id: "1",
       number: 1,
-      title: "Pick Your Role",
+      title: "Perfect Your Resume",
       description:
-        "Choose from IB, PE, or RE interview tracks to match your career goals.",
+        "Get AI-powered analysis of your resume with detailed feedback on content, formatting, and industry relevance.",
       icon: (
         <svg
           className="w-14 h-14 text-[#1E293B]"
@@ -29,14 +29,7 @@ export default function HowItWorks() {
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="M20 7H4C2.89543 7 2 7.89543 2 9V19C2 20.1046 2.89543 21 4 21H20C21.1046 21 22 20.1046 22 19V9C22 7.89543 21.1046 7 20 7Z"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M16 21V5C16 3.89543 15.1046 3 14 3H10C8.89543 3 8 3.89543 8 5V21"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
             stroke="currentColor"
             strokeWidth="2"
             strokeLinecap="round"
@@ -48,9 +41,9 @@ export default function HowItWorks() {
     {
       id: "2",
       number: 2,
-      title: "Practice with AI-Powered Mock Interviews",
+      title: "Craft Networking Messages",
       description:
-        "Receive real finance interview questions and answer in a live AI-powered chat.",
+        "Create personalized outreach messages for LinkedIn, email, and cover letters to connect with finance professionals.",
       icon: (
         <svg
           className="w-14 h-14 text-[#1E293B]"
@@ -74,9 +67,9 @@ export default function HowItWorks() {
     {
       id: "3",
       number: 3,
-      title: "Get Instant AI Feedback & Improve",
+      title: "Master Mock Interviews",
       description:
-        "See where you can improve with AI-driven feedback on your answers.",
+        "Practice with AI-powered finance interview questions and receive instant feedback to improve your responses.",
       icon: (
         <svg
           className="w-14 h-14 text-[#1E293B]"
@@ -151,8 +144,8 @@ export default function HowItWorks() {
             transition={{ duration: 0.5 }}
             className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-white"
           >
-            Your <span className="text-[#B3E5FC]">Fastest Path</span> to Landing
-            a Finance Offer
+            Your <span className="text-[#B3E5FC]">Guaranteed Path</span> to
+            Elite Finance Offers
           </motion.h2>
 
           <motion.p
@@ -162,8 +155,8 @@ export default function HowItWorks() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-white/90 max-w-3xl mx-auto text-lg"
           >
-            In just 3 simple steps, you&apos;ll be interview-ready for top
-            finance firms.
+            Students who follow these 3 steps are 4x more likely to receive
+            offers from Goldman Sachs, JP Morgan, and other top-tier firms.
           </motion.p>
         </div>
 

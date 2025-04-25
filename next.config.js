@@ -3,16 +3,8 @@ const nextConfig = {
   // Enable strict mode for better development experience
   reactStrictMode: true,
   
-  // Enable Fast Refresh by not modifying the webpack config
-  webpack: (config, { dev, isServer }) => {
-    if (dev && !isServer) {
-      // Ensure Fast Refresh is enabled and preserved
-      const entries = config.entry;
-      config.entry = async () => {
-        const entryObj = await entries();
-        return entryObj;
-      };
-    }
+  // Simplified webpack config to avoid module resolution issues
+  webpack: (config, { isServer }) => {
     return config;
   },
   
@@ -54,7 +46,7 @@ const nextConfig = {
     ];
   },
   
-  // Add headers for better security and caching
+  // Simplified headers to avoid MIME type issues
   async headers() {
     return [
       {
@@ -79,19 +71,69 @@ const nextConfig = {
         ],
       },
       {
-        // Cache static assets for 1 year
-        source: '/:path*(jpg|jpeg|png|gif|webp|svg|ico|woff|woff2)',
+        // Cache static image assets with appropriate headers
+        source: '/:path*.jpg',
         headers: [
           {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable',
           },
+          {
+            key: 'Content-Type',
+            value: 'image/jpeg',
+          },
         ],
       },
       {
-        // Reduced caching time for JS and CSS
-        source: '/:path*(css|js)',
+        // SVG files
+        source: '/:path*.svg',
         headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+          {
+            key: 'Content-Type',
+            value: 'image/svg+xml',
+          },
+        ],
+      },
+      {
+        // PNG files
+        source: '/:path*.png',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+          {
+            key: 'Content-Type',
+            value: 'image/png',
+          },
+        ],
+      },
+      {
+        // Ensure correct MIME types for JavaScript files
+        source: '/:path*.js',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/javascript; charset=utf-8',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=3600, must-revalidate',
+          },
+        ],
+      },
+      {
+        // Ensure correct MIME types for CSS files
+        source: '/:path*.css',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'text/css; charset=utf-8',
+          },
           {
             key: 'Cache-Control',
             value: 'public, max-age=3600, must-revalidate',

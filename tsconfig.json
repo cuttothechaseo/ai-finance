@@ -46,6 +46,13 @@
       {
         "name": "next"
       }
+    ],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./supabase/functions"
+    ],
+    "types": [
+      "node"
     ]
   },
   "include": [
