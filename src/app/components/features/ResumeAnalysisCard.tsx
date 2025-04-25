@@ -15,6 +15,13 @@ interface ResumeAnalysisProps {
   isPreview?: boolean;
 }
 
+// Function to determine color based on score
+const getScoreColor = (score: number) => {
+  if (score >= 80) return "#4ADE80"; // Green for high scores
+  if (score >= 60) return "#FBBF24"; // Yellow/amber for medium scores
+  return "#EF4444"; // Red for low scores
+};
+
 export default function ResumeAnalysisCard({
   isPreview = true,
 }: ResumeAnalysisProps) {
@@ -88,16 +95,16 @@ export default function ResumeAnalysisCard({
               <svg className="w-full h-full" viewBox="0 0 100 100">
                 <circle
                   className="text-gray-200"
-                  strokeWidth="10"
+                  strokeWidth="4"
                   stroke="currentColor"
-                  fill="transparent"
+                  fill="white"
                   r="40"
                   cx="50"
                   cy="50"
                 />
                 <circle
                   className="text-green-500"
-                  strokeWidth="10"
+                  strokeWidth="4"
                   strokeDasharray={251.2}
                   strokeDashoffset={
                     251.2 - (251.2 * analysisData.overallScore) / 100
@@ -111,7 +118,10 @@ export default function ResumeAnalysisCard({
                 />
               </svg>
               <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
-                <span className="text-2xl font-bold text-gray-700">
+                <span
+                  className="text-2xl font-bold"
+                  style={{ color: getScoreColor(analysisData.overallScore) }}
+                >
                   {analysisData.overallScore}
                 </span>
               </div>
@@ -198,10 +208,10 @@ export default function ResumeAnalysisCard({
                 <svg className="h-full w-full" viewBox="0 0 100 100">
                   {/* Background circle */}
                   <circle
-                    className="text-[#E6E8F0]"
-                    strokeWidth="8"
+                    className="text-gray-200"
+                    strokeWidth="4"
                     stroke="currentColor"
-                    fill="transparent"
+                    fill="white"
                     r="45"
                     cx="50"
                     cy="50"
@@ -209,7 +219,7 @@ export default function ResumeAnalysisCard({
                   {/* Progress circle */}
                   <circle
                     className="text-[#4ADE80]"
-                    strokeWidth="8"
+                    strokeWidth="4"
                     strokeDasharray={2 * Math.PI * 45}
                     strokeDashoffset={
                       2 * Math.PI * 45 * (1 - analysisData.overallScore / 100)
@@ -223,7 +233,10 @@ export default function ResumeAnalysisCard({
                   />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-[#4ADE80]">
+                  <span
+                    className="text-2xl font-bold"
+                    style={{ color: getScoreColor(analysisData.overallScore) }}
+                  >
                     {analysisData.overallScore}
                   </span>
                 </div>
@@ -260,10 +273,10 @@ export default function ResumeAnalysisCard({
                   <svg className="h-full w-full" viewBox="0 0 100 100">
                     {/* Background circle */}
                     <circle
-                      className="text-[#E6E8F0]"
-                      strokeWidth="8"
+                      className="text-gray-200"
+                      strokeWidth="4"
                       stroke="currentColor"
-                      fill="transparent"
+                      fill="white"
                       r="45"
                       cx="50"
                       cy="50"
@@ -271,7 +284,7 @@ export default function ResumeAnalysisCard({
                     {/* Progress circle */}
                     <circle
                       className="text-[#4ADE80]"
-                      strokeWidth="8"
+                      strokeWidth="4"
                       strokeDasharray={2 * Math.PI * 45}
                       strokeDashoffset={
                         2 * Math.PI * 45 * (1 - analysisData.overallScore / 100)
@@ -285,7 +298,12 @@ export default function ResumeAnalysisCard({
                     />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-2xl font-bold text-[#4ADE80]">
+                    <span
+                      className="text-2xl font-bold"
+                      style={{
+                        color: getScoreColor(analysisData.overallScore),
+                      }}
+                    >
                       {analysisData.overallScore}
                     </span>
                   </div>
@@ -337,9 +355,12 @@ export default function ResumeAnalysisCard({
                     ([key, section]) => (
                       <div
                         key={key}
-                        className="bg-[#1E3A8A]/5 p-4 rounded-lg text-center"
+                        className="bg-white p-4 rounded-lg text-center border border-[#1E3A8A]/30"
                       >
-                        <div className="text-2xl font-bold text-[#1E3A8A] mb-1">
+                        <div
+                          className="text-2xl font-bold mb-1"
+                          style={{ color: getScoreColor(section.score) }}
+                        >
                           {section.score}
                         </div>
                         <div className="text-sm text-slate-600">
@@ -356,8 +377,13 @@ export default function ResumeAnalysisCard({
           {activeTab === "content" && (
             <div className="space-y-6">
               <div className="flex items-center mb-4">
-                <div className="bg-[#1E3A8A]/10 rounded-full h-16 w-16 flex items-center justify-center mr-4">
-                  <span className="text-2xl font-bold text-[#1E3A8A]">
+                <div className="bg-white rounded-full h-16 w-16 flex items-center justify-center mr-4 border-2 border-[#1E3A8A]/30">
+                  <span
+                    className="text-2xl font-bold"
+                    style={{
+                      color: getScoreColor(analysisData.sections.content.score),
+                    }}
+                  >
                     {analysisData.sections.content.score}
                   </span>
                 </div>
@@ -411,8 +437,15 @@ export default function ResumeAnalysisCard({
           {activeTab === "formatting" && (
             <div className="space-y-6">
               <div className="flex items-center mb-4">
-                <div className="bg-[#1E3A8A]/10 rounded-full h-16 w-16 flex items-center justify-center mr-4">
-                  <span className="text-2xl font-bold text-[#1E3A8A]">
+                <div className="bg-white rounded-full h-16 w-16 flex items-center justify-center mr-4 border-2 border-[#1E3A8A]/30">
+                  <span
+                    className="text-2xl font-bold"
+                    style={{
+                      color: getScoreColor(
+                        analysisData.sections.formatting.score
+                      ),
+                    }}
+                  >
                     {analysisData.sections.formatting.score}
                   </span>
                 </div>
@@ -464,8 +497,15 @@ export default function ResumeAnalysisCard({
           {activeTab === "relevance" && (
             <div className="space-y-6">
               <div className="flex items-center mb-4">
-                <div className="bg-[#1E3A8A]/10 rounded-full h-16 w-16 flex items-center justify-center mr-4">
-                  <span className="text-2xl font-bold text-[#1E3A8A]">
+                <div className="bg-white rounded-full h-16 w-16 flex items-center justify-center mr-4 border-2 border-[#1E3A8A]/30">
+                  <span
+                    className="text-2xl font-bold"
+                    style={{
+                      color: getScoreColor(
+                        analysisData.sections.relevance.score
+                      ),
+                    }}
+                  >
                     {analysisData.sections.relevance.score}
                   </span>
                 </div>
@@ -517,8 +557,13 @@ export default function ResumeAnalysisCard({
           {activeTab === "impact" && (
             <div className="space-y-6">
               <div className="flex items-center mb-4">
-                <div className="bg-[#1E3A8A]/10 rounded-full h-16 w-16 flex items-center justify-center mr-4">
-                  <span className="text-2xl font-bold text-[#1E3A8A]">
+                <div className="bg-white rounded-full h-16 w-16 flex items-center justify-center mr-4 border-2 border-[#1E3A8A]/30">
+                  <span
+                    className="text-2xl font-bold"
+                    style={{
+                      color: getScoreColor(analysisData.sections.impact.score),
+                    }}
+                  >
                     {analysisData.sections.impact.score}
                   </span>
                 </div>

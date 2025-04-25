@@ -42,7 +42,7 @@ export default function Features() {
       id: "2",
       title: "Networking Outreach",
       description:
-        "Generate personalized outreach messages for networking on LinkedIn and other platforms.",
+        "Create AI-generated personalized outreach messages for networking on LinkedIn and other platforms.",
       icon: (
         <svg
           className="w-14 h-14 text-[#1E293B]"
