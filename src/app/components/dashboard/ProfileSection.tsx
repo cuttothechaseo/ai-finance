@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface ProfileSectionProps {
   user: any;
@@ -16,6 +18,7 @@ export default function ProfileSection({ user }: ProfileSectionProps) {
     bio: user?.bio || "",
     location: user?.location || "",
   });
+  const router = useRouter();
 
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
@@ -44,6 +47,18 @@ export default function ProfileSection({ user }: ProfileSectionProps) {
     // Here you would typically save changes to the backend
     console.log("Saving user data:", formData);
     setIsEditing(false);
+  };
+
+  const navigateToResumes = () => {
+    if (user?.analysesCount > 0) {
+      router.push("/resume/analyses");
+    }
+  };
+
+  const navigateToNetworking = () => {
+    if (user?.networkingCount > 0) {
+      router.push("/networking/messages");
+    }
   };
 
   return (
@@ -271,37 +286,65 @@ export default function ProfileSection({ user }: ProfileSectionProps) {
                     <div className="grid grid-cols-2 gap-4">
                       <motion.div
                         whileHover={{ scale: 1.03, filter: "brightness(1.05)" }}
-                        className="bg-[#59B7F2]/20 p-4 rounded-lg transition-colors"
-                      >
-                        <p className="text-[#1E3A8A] text-sm">Resumes</p>
-                        <p className="text-2xl font-bold text-[#1E3A8A]">
-                          {user?.resumeCount || 0}
-                        </p>
-                      </motion.div>
-                      <motion.div
-                        whileHover={{ scale: 1.03, filter: "brightness(1.05)" }}
-                        className="bg-[#59B7F2]/20 p-4 rounded-lg transition-colors"
+                        className="bg-[#59B7F2]/20 p-4 rounded-lg transition-colors relative group cursor-pointer"
+                        onClick={navigateToResumes}
                       >
                         <p className="text-[#1E3A8A] text-sm">
-                          Network Connections
+                          Resume Analyses
                         </p>
-                        <p className="text-2xl font-bold text-[#1E3A8A]">0</p>
+                        <p className="text-2xl font-bold text-[#1E3A8A]">
+                          {user?.analysesCount || 0}
+                        </p>
+                        {/* Tooltip */}
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[#1E3A8A]/90 rounded-lg text-white p-2 text-xs text-center">
+                          {user?.analysesCount
+                            ? "Click to view your resume analyses"
+                            : "Analyze your resume to get AI-powered feedback"}
+                        </div>
                       </motion.div>
                       <motion.div
                         whileHover={{ scale: 1.03, filter: "brightness(1.05)" }}
-                        className="bg-[#59B7F2]/20 p-4 rounded-lg transition-colors"
+                        className="bg-[#59B7F2]/20 p-4 rounded-lg transition-colors relative group cursor-pointer"
+                        onClick={navigateToNetworking}
+                      >
+                        <p className="text-[#1E3A8A] text-sm">
+                          Networking Messages
+                        </p>
+                        <p className="text-2xl font-bold text-[#1E3A8A]">
+                          {user?.networkingCount || 0}
+                        </p>
+                        {/* Tooltip */}
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[#1E3A8A]/90 rounded-lg text-white p-2 text-xs text-center">
+                          {user?.networkingCount
+                            ? "Click to view your networking messages"
+                            : "Generate personalized networking messages"}
+                        </div>
+                      </motion.div>
+                      <motion.div
+                        whileHover={{ scale: 1.03, filter: "brightness(1.05)" }}
+                        className="bg-[#59B7F2]/20 p-4 rounded-lg transition-colors relative group cursor-pointer"
                       >
                         <p className="text-[#1E3A8A] text-sm">
                           Mock Interviews
                         </p>
                         <p className="text-2xl font-bold text-[#1E3A8A]">0</p>
+                        {/* Tooltip */}
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[#1E3A8A]/90 rounded-lg text-white p-2 text-xs text-center">
+                          Schedule mock interviews to practice your skills
+                          (Coming soon)
+                        </div>
                       </motion.div>
                       <motion.div
                         whileHover={{ scale: 1.03, filter: "brightness(1.05)" }}
-                        className="bg-[#59B7F2]/20 p-4 rounded-lg transition-colors"
+                        className="bg-[#59B7F2]/20 p-4 rounded-lg transition-colors relative group cursor-pointer"
                       >
                         <p className="text-[#1E3A8A] text-sm">AI Feedback</p>
                         <p className="text-2xl font-bold text-[#1E3A8A]">0</p>
+                        {/* Tooltip */}
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[#1E3A8A]/90 rounded-lg text-white p-2 text-xs text-center">
+                          Get personalized AI feedback on your application
+                          materials (Coming soon)
+                        </div>
                       </motion.div>
                     </div>
                   </motion.div>

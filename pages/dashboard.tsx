@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { getUserWithDetails, logOut } from "../lib/auth";
+import { getUserWithDetails, logOut } from "@lib/auth";
 import dynamic from "next/dynamic";
 
 // Dynamically import components
@@ -44,6 +44,8 @@ interface UserData {
   location?: string;
   resumes?: Resume[];
   resumeCount?: number;
+  analysesCount?: number;
+  networkingCount?: number;
   [key: string]: any; // For any additional fields from Supabase
 }
 
@@ -64,6 +66,8 @@ export default function Dashboard() {
           ...userData,
           resumes: userData.resumes || [],
           resumeCount: userData.resumes ? userData.resumes.length : 0,
+          analysesCount: userData.analysesCount || 0,
+          networkingCount: userData.networkingCount || 0,
         };
 
         setUser(typedUserData);

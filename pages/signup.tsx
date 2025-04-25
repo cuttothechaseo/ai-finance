@@ -3,7 +3,7 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { signUp } from "../lib/auth";
+import { signUp } from "@lib/auth";
 import Image from "next/image";
 
 interface FormData {

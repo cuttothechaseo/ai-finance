@@ -1,7 +1,7 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { signIn } from "../lib/auth";
+import { signIn } from "@lib/auth";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
