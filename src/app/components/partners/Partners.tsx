@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 
 // Define partner types
@@ -93,8 +92,8 @@ const financePartners: Partner[] = [
     name: "Deutsche Bank",
     hasLogo: true,
     logoPath: "/assets/logos/partners/deutsche-bank-logo-png-transparent.png",
-    width: 150,
-    height: 50,
+    width: 200,
+    height: 70,
     logo: "DB",
     shortName: "Deutsche Bank",
   },
@@ -145,67 +144,10 @@ const financePartners: Partner[] = [
   },
 ];
 
-// Duplicate the array to create a seamless loop
-const allPartners = [
-  ...financePartners,
-  ...financePartners,
-  ...financePartners,
-];
+// Duplicate the array for seamless looping
+const allPartners = [...financePartners, ...financePartners];
 
 export default function Partners() {
-  const [currentPartners, setCurrentPartners] = useState<Partner[]>([]);
-  const [isClient, setIsClient] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  // Function to randomly select partners to display
-  const shufflePartners = useCallback(() => {
-    const shuffled = [...financePartners].sort(() => 0.5 - Math.random());
-
-    // Single row layout - determine how many logos to show based on screen width
-    const logoCount =
-      window.innerWidth < 640
-        ? 3
-        : window.innerWidth < 768
-        ? 4
-        : window.innerWidth < 1024
-        ? 6
-        : 8;
-
-    setCurrentPartners(shuffled.slice(0, logoCount));
-  }, []);
-
-  // Function to handle the animation sequence
-  const animatePartnerChange = useCallback(() => {
-    setIsAnimating(true);
-
-    // Wait for fade-out animation to complete
-    setTimeout(() => {
-      shufflePartners();
-      // Begin fade-in animation
-      setIsAnimating(false);
-    }, 500);
-  }, [shufflePartners]);
-
-  // This ensures hydration doesn't cause issues with SSR
-  useEffect(() => {
-    // Only run on client-side
-    if (typeof window !== "undefined") {
-      setIsClient(true);
-
-      // Initialize with a random set of partners
-      shufflePartners();
-
-      // Set up the interval to shuffle partners every 7 seconds
-      const interval = setInterval(() => {
-        animatePartnerChange();
-      }, 7000);
-
-      // Clean up the interval on component unmount
-      return () => clearInterval(interval);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
     <section className="py-16 bg-[#59B7F2] relative overflow-hidden">
       <style jsx global>{`
@@ -254,10 +196,26 @@ export default function Partners() {
           overflow: hidden;
         }
 
+        .marquee {
+          display: flex;
+          flex-wrap: nowrap;
+          width: fit-content;
+          animation: marquee 25s linear infinite;
+        }
+
+        @keyframes marquee {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+
         .partner-row {
           display: flex;
           flex-wrap: nowrap;
-          justify-content: center;
+          justify-content: flex-start;
           align-items: center;
           gap: 4rem;
           margin: 0 auto;
@@ -275,16 +233,38 @@ export default function Partners() {
 
         @media (max-width: 768px) {
           .partner-row {
-            gap: 2rem;
+            gap: 1.2rem;
           }
           .partner-container {
-            padding: 0 20px;
+            padding: 0 10px;
+          }
+          .logo-container {
+            width: 90px !important;
+            height: 32px !important;
+          }
+          .logo-uniform {
+            max-width: 90px !important;
+            max-height: 32px !important;
+          }
+          .marquee {
+            animation-duration: 35s;
           }
         }
 
         @media (max-width: 640px) {
           .partner-row {
-            gap: 1.5rem;
+            gap: 0.7rem;
+          }
+          .logo-container {
+            width: 60px !important;
+            height: 22px !important;
+          }
+          .logo-uniform {
+            max-width: 60px !important;
+            max-height: 22px !important;
+          }
+          .marquee {
+            animation-duration: 45s;
           }
         }
       `}</style>
@@ -296,23 +276,12 @@ export default function Partners() {
       </div>
 
       <div className="partner-container relative z-10">
-        {isClient && (
-          <motion.div
-            className="partner-row"
-            initial={{ opacity: 1 }}
-            animate={{ opacity: isAnimating ? 0 : 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            {currentPartners.map((partner, index) => (
-              <motion.div
+        <div className="marquee">
+          <div className="partner-row">
+            {allPartners.map((partner, index) => (
+              <div
                 key={`${partner.name}-${index}`}
                 className="partner-item flex items-center justify-center flex-shrink-0"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{
-                  duration: 0.5,
-                  delay: index * 0.05,
-                }}
               >
                 {partner.hasLogo ? (
                   <div className="logo-container">
@@ -342,10 +311,10 @@ export default function Partners() {
                     </span>
                   </div>
                 )}
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
-        )}
+          </div>
+        </div>
       </div>
     </section>
   );
