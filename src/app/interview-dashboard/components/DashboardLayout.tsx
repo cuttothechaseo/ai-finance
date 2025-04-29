@@ -19,7 +19,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       setSidebarOpen(window.innerWidth >= 1024);
     };
 
-    // Set initial value
+    // Set initial values
     checkMobile();
 
     // Add event listener for window resize
