@@ -8,6 +8,7 @@ import "./globals.css";
 
 // Contexts
 import { WaitlistProvider } from "./contexts/WaitlistContext";
+import AuthProvider from "@/components/AuthProvider";
 
 // Font configuration
 const inter = Inter({ subsets: ["latin"] });
@@ -109,7 +110,9 @@ export default function RootLayout({
         )}
       </head>
       <body className={inter.className} suppressHydrationWarning>
-        <WaitlistProvider>{children}</WaitlistProvider>
+        <AuthProvider>
+          <WaitlistProvider>{children}</WaitlistProvider>
+        </AuthProvider>
       </body>
     </html>
   );

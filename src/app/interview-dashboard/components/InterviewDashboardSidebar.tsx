@@ -12,6 +12,16 @@ interface SidebarProps {
   isOpen?: boolean;
 }
 
+interface NavItem {
+  name: string;
+  path: string;
+  icon?: (isActive: boolean) => JSX.Element;
+  subItems?: {
+    name: string;
+    path: string;
+  }[];
+}
+
 export default function InterviewDashboardSidebar({
   isMobile = false,
   toggleSidebar = () => {},
@@ -25,7 +35,7 @@ export default function InterviewDashboardSidebar({
     setMounted(true);
   }, []);
 
-  const navItems = [
+  const navItems: NavItem[] = [
     {
       name: "Dashboard",
       path: "/dashboard",
@@ -118,6 +128,20 @@ export default function InterviewDashboardSidebar({
           <line x1="15" y1="10" x2="15" y2="10"></line>
         </svg>
       ),
+      subItems: [
+        {
+          name: "Interview List",
+          path: "/interview-dashboard",
+        },
+        {
+          name: "Generate Interview",
+          path: "/interview-dashboard/interview-generation",
+        },
+        {
+          name: "Generated Interviews",
+          path: "/interview-dashboard/generated-interviews",
+        },
+      ],
     },
     {
       name: "Settings",
@@ -200,188 +224,123 @@ export default function InterviewDashboardSidebar({
   if (!mounted) return null;
 
   return (
-    <>
-      {/* Mobile backdrop */}
-      <AnimatePresence>
-        {isMobile && isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-20"
-            onClick={toggleSidebar}
-          ></motion.div>
-        )}
-      </AnimatePresence>
+    <motion.div
+      variants={sidebarVariants}
+      animate={isOpen ? "open" : "closed"}
+      initial={false}
+      className={`fixed left-0 top-0 h-screen bg-white border-r border-gray-200 z-50 flex flex-col ${
+        isMobile ? "shadow-lg" : ""
+      }`}
+    >
+      {/* Logo section */}
+      <div className="p-4 flex items-center space-x-4">
+        <Link href="/dashboard" className="flex items-center">
+          <Image
+            src="/wallstreetai-logo.png"
+            alt="WallStreetAI Logo"
+            width={32}
+            height={32}
+            className="rounded-lg"
+          />
+          <motion.span
+            variants={logoTextVariants}
+            className="ml-2 text-xl font-semibold text-[#1E3A8A]"
+          >
+            WallStreetAI
+          </motion.span>
+        </Link>
+      </div>
 
-      {/* Sidebar */}
-      <motion.aside
-        variants={sidebarVariants}
-        initial={false}
-        animate={isOpen ? "open" : "closed"}
-        className={`
-          fixed top-0 left-0 h-full bg-white backdrop-blur-md border-r border-[#B3E5FC]/30
-          flex flex-col transition-all duration-300 ease-in-out overflow-hidden shadow-md
-          ${isMobile ? "z-30 shadow-xl" : "z-10"}
-        `}
-      >
-        {/* Logo section */}
-        <div className="p-4 border-b border-[#B3E5FC]/30 flex items-center justify-between">
-          <Link href="/" className="flex items-center">
-            <Image
-              src="/assets/logos/wallstreetai-logo.svg"
-              alt="WallStreetAI Logo"
-              width={32}
-              height={32}
-              className="h-8 w-8"
-            />
-            <motion.span
-              variants={logoTextVariants}
-              className="ml-2 text-xl font-bold text-[#1E3A8A] transition-all duration-200"
-            >
-              Wall Street AI
-            </motion.span>
-          </Link>
-          {isMobile && (
-            <button
-              onClick={toggleSidebar}
-              className="p-1 rounded-md hover:bg-[#B3E5FC]/20 text-[#1E3A8A]"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          )}
-        </div>
+      {/* Navigation section */}
+      <nav className="flex-1 px-2 py-4">
+        {navItems.map((item) => {
+          const isActive = pathname.startsWith(item.path);
+          const showTooltip = !isOpen && activeTooltip === item.name;
 
-        {/* Navigation */}
-        <nav className="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
-          {navItems.map((item) => {
-            const isActive =
-              pathname === item.path ||
-              (item.path === "/interview-dashboard" &&
-                pathname.includes("/interview-dashboard"));
-            return (
-              <div
-                key={item.name}
-                className="relative"
-                onMouseEnter={() =>
-                  !isOpen && !isMobile && setActiveTooltip(item.name)
-                }
+          return (
+            <div key={item.name}>
+              <Link
+                href={item.path}
+                className={`flex items-center px-3 py-2 rounded-lg mb-1 relative group ${
+                  isActive
+                    ? "bg-[#59B7F2]/10 text-[#59B7F2]"
+                    : "text-[#1E3A8A]/70 hover:bg-gray-100"
+                }`}
+                onMouseEnter={() => !isOpen && setActiveTooltip(item.name)}
                 onMouseLeave={() => setActiveTooltip(null)}
+                onClick={() => isMobile && toggleSidebar()}
               >
-                <Link
-                  href={item.path}
-                  className={`
-                    flex items-center px-4 py-3 rounded-lg transition-all duration-200
-                    ${
-                      isActive
-                        ? "bg-[#B3E5FC]/50 text-[#1E3A8A]"
-                        : "text-[#1E3A8A]/70 hover:bg-[#B3E5FC]/20 hover:text-[#1E3A8A]"
-                    }
-                  `}
-                >
-                  <span className="flex-shrink-0">{item.icon(isActive)}</span>
-                  <motion.span
-                    variants={logoTextVariants}
-                    className="ml-3 transition-all duration-200"
-                  >
-                    {item.name}
-                  </motion.span>
-                </Link>
-
-                {/* Tooltip for collapsed state */}
-                <Tooltip
-                  show={!isOpen && !isMobile && activeTooltip === item.name}
+                {item.icon && item.icon(isActive)}
+                <motion.span
+                  variants={logoTextVariants}
+                  className="ml-3 font-medium"
                 >
                   {item.name}
-                </Tooltip>
-              </div>
-            );
-          })}
-        </nav>
+                </motion.span>
+                <Tooltip show={showTooltip}>{item.name}</Tooltip>
+              </Link>
 
-        {/* Profile section */}
-        <div className="border-t border-[#B3E5FC]/30 p-4">
-          <button
-            className={`
-              flex items-center w-full px-4 py-2 rounded-lg text-[#1E3A8A]/70 
-              hover:bg-[#B3E5FC]/20 hover:text-[#1E3A8A] transition-all duration-200
-            `}
-            onMouseEnter={() =>
-              !isOpen && !isMobile && setActiveTooltip("Logout")
-            }
-            onMouseLeave={() => setActiveTooltip(null)}
+              {/* Sub-items */}
+              {isOpen && item.subItems && isActive && (
+                <div className="ml-8 space-y-1">
+                  {item.subItems.map((subItem) => {
+                    const isSubItemActive = pathname === subItem.path;
+                    return (
+                      <Link
+                        key={subItem.path}
+                        href={subItem.path}
+                        className={`flex items-center px-3 py-2 rounded-lg text-sm ${
+                          isSubItemActive
+                            ? "bg-[#59B7F2]/10 text-[#59B7F2]"
+                            : "text-[#1E3A8A]/70 hover:bg-gray-100"
+                        }`}
+                        onClick={() => isMobile && toggleSidebar()}
+                      >
+                        {subItem.name}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </nav>
+
+      {/* Settings section */}
+      <div className="p-4">
+        <Link
+          href="/settings"
+          className={`flex items-center px-3 py-2 rounded-lg relative ${
+            pathname === "/settings"
+              ? "bg-[#59B7F2]/10 text-[#59B7F2]"
+              : "text-[#1E3A8A]/70 hover:bg-gray-100"
+          }`}
+          onMouseEnter={() => !isOpen && setActiveTooltip("Settings")}
+          onMouseLeave={() => setActiveTooltip(null)}
+          onClick={() => isMobile && toggleSidebar()}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            className="w-5 h-5"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
-            <span className="p-1 mr-3 bg-[#59B7F2]/20 rounded-md">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 text-[#1E3A8A]"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                />
-              </svg>
-            </span>
-            <motion.span
-              variants={logoTextVariants}
-              className="transition-all duration-200"
-            >
-              Logout
-            </motion.span>
-
-            {/* Tooltip for logout button */}
-            <Tooltip show={!isOpen && !isMobile && activeTooltip === "Logout"}>
-              Logout
-            </Tooltip>
-          </button>
-        </div>
-
-        {/* Collapse toggle button for desktop */}
-        {!isMobile && (
-          <div className="p-4 border-t border-[#B3E5FC]/30 flex justify-center">
-            <button
-              onClick={toggleSidebar}
-              className="p-1 rounded-full hover:bg-[#B3E5FC]/20 text-[#1E3A8A]/70 hover:text-[#1E3A8A] transition-colors"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className={`h-5 w-5 transition-transform duration-300 ${
-                  isOpen ? "rotate-180" : ""
-                }`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d={isOpen ? "M15 19l-7-7 7-7" : "M9 5l7 7-7 7"}
-                />
-              </svg>
-            </button>
-          </div>
-        )}
-      </motion.aside>
-    </>
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <motion.span variants={logoTextVariants} className="ml-3 font-medium">
+            Settings
+          </motion.span>
+          <Tooltip show={!isOpen && activeTooltip === "Settings"}>
+            Settings
+          </Tooltip>
+        </Link>
+      </div>
+    </motion.div>
   );
 }
