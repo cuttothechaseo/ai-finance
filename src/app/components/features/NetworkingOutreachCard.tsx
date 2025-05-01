@@ -95,7 +95,7 @@ export default function NetworkingOutreachCard({
       <div className="flex flex-col md:flex-row">
         {/* Sidebar with tabs */}
         <div className="w-full md:w-64 bg-[#1E3A8A]/5 md:min-h-[600px] border-r border-slate-200">
-          <nav className="flex md:flex-col overflow-x-auto md:overflow-x-visible p-4 space-y-1">
+          <nav className="flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible p-4 space-x-2 md:space-x-0 md:space-y-1">
             <button
               className={`whitespace-nowrap md:whitespace-normal text-left px-4 py-2 rounded-lg flex items-center transition-colors ${
                 activeTab === "input"
@@ -148,7 +148,7 @@ export default function NetworkingOutreachCard({
             </button>
           </nav>
 
-          {/* Tips section */}
+          {/* Tips section - show on desktop only */}
           <div className="hidden md:block mt-8 pt-6 border-t border-slate-200 px-4">
             <h4 className="text-sm font-medium text-[#1E3A8A] mb-2">
               Networking Tips
@@ -168,7 +168,25 @@ export default function NetworkingOutreachCard({
         </div>
 
         {/* Main content area */}
-        <div className="flex-1 p-6">
+        <div className="flex-1 p-4 md:p-6">
+          {/* Tips section for mobile - show above main card */}
+          <div className="block md:hidden mb-4">
+            <h4 className="text-sm font-medium text-[#1E3A8A] mb-2">
+              Networking Tips
+            </h4>
+            <ul className="space-y-1">
+              {outreachData.tips.slice(0, 3).map((tip, index) => (
+                <li
+                  key={index}
+                  className="text-sm text-slate-700 flex items-start"
+                >
+                  <span className="text-[#59B7F2] mr-2">•</span>
+                  <span>{tip}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
           {activeTab === "input" && (
             <div className="space-y-6">
               <div className="bg-white p-6 rounded-lg border border-slate-200">

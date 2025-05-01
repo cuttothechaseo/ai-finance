@@ -138,7 +138,7 @@ export default function ResumeAnalysisCard({
       <div className="flex flex-col md:flex-row">
         {/* Sidebar with tabs */}
         <div className="w-full md:w-64 bg-[#1E3A8A]/5 md:min-h-[600px] border-r border-slate-200">
-          <nav className="flex md:flex-col overflow-x-auto md:overflow-x-visible p-4 space-y-1">
+          <nav className="flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible p-4 space-x-2 md:space-x-0 md:space-y-1">
             <button
               className={`whitespace-nowrap md:whitespace-normal text-left px-4 py-2 rounded-lg flex items-center transition-colors ${
                 activeTab === "overview"
@@ -201,7 +201,7 @@ export default function ResumeAnalysisCard({
             </button>
           </nav>
 
-          {/* Score indicator */}
+          {/* Score indicator - desktop only */}
           <div className="hidden md:block mt-8 pt-6 border-t border-slate-200">
             <div className="flex items-center justify-center mb-4">
               <div className="relative h-28 w-28">
@@ -245,7 +245,7 @@ export default function ResumeAnalysisCard({
             <p className="text-center text-sm text-slate-600">Overall Score</p>
           </div>
 
-          {/* Key strengths */}
+          {/* Key strengths - desktop only */}
           <div className="hidden md:block mt-6 px-4">
             <h4 className="text-sm font-medium text-[#1E3A8A] mb-2">
               Key Strengths
@@ -265,7 +265,65 @@ export default function ResumeAnalysisCard({
         </div>
 
         {/* Main content area */}
-        <div className="flex-1 p-6 overflow-auto">
+        <div className="flex-1 p-4 md:p-6 overflow-auto">
+          {/* Score and strengths for mobile - show above main card */}
+          <div className="block md:hidden mb-4">
+            <div className="flex justify-center mb-4">
+              <div className="relative h-20 w-20">
+                <svg className="h-full w-full" viewBox="0 0 100 100">
+                  <circle
+                    className="text-gray-200"
+                    strokeWidth="4"
+                    stroke="currentColor"
+                    fill="white"
+                    r="45"
+                    cx="50"
+                    cy="50"
+                  />
+                  <circle
+                    className="text-[#4ADE80]"
+                    strokeWidth="4"
+                    strokeDasharray={2 * Math.PI * 45}
+                    strokeDashoffset={
+                      2 * Math.PI * 45 * (1 - analysisData.overallScore / 100)
+                    }
+                    strokeLinecap="round"
+                    stroke="currentColor"
+                    fill="transparent"
+                    r="45"
+                    cx="50"
+                    cy="50"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span
+                    className="text-xl font-bold"
+                    style={{ color: getScoreColor(analysisData.overallScore) }}
+                  >
+                    {analysisData.overallScore}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <p className="text-center text-sm text-slate-600 mb-2">
+              Overall Score
+            </p>
+            <h4 className="text-sm font-medium text-[#1E3A8A] mb-2">
+              Key Strengths
+            </h4>
+            <ul className="space-y-1 mb-2">
+              {analysisData.strengths.slice(0, 3).map((strength, index) => (
+                <li
+                  key={index}
+                  className="text-sm text-slate-700 flex items-start"
+                >
+                  <span className="text-[#59B7F2] mr-2">•</span>
+                  <span>{strength}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
           {activeTab === "overview" && (
             <div className="space-y-6">
               <div className="md:hidden mb-6 flex justify-center">
