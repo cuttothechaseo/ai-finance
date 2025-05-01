@@ -130,10 +130,6 @@ export default function InterviewDashboardSidebar({
       ),
       subItems: [
         {
-          name: "Interview List",
-          path: "/interview-dashboard",
-        },
-        {
           name: "Generate Interview",
           path: "/interview-dashboard/interview-generation",
         },

@@ -54,6 +54,7 @@ export default function InterviewPage({
   const [sessionTranscript, setSessionTranscript] = useState<SavedMessage[]>(
     []
   );
+  const [isEndingCall, setIsEndingCall] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -97,67 +98,124 @@ export default function InterviewPage({
     const onCallStart = () => {
       setCallStatus(CallStatus.ACTIVE);
       console.log("[Vapi] Call started");
+      console.log("[Frontend] Current interview state:", interview);
     };
 
     const onCallEnd = async () => {
       setCallStatus(CallStatus.FINISHED);
       console.log("[Vapi] Call ended");
+      console.log("[Frontend] Current interview state at call end:", interview);
+
       // Store the interview session via API route
-      if (interview?.id) {
-        try {
-          const {
-            data: { session },
-            error: userError,
-          } = await supabase.auth.getSession();
-          if (userError || !session) {
-            throw new Error("Not authenticated");
-          }
-          const sentBody = {
-            interview_id: interview.id,
-            status: "completed",
-            transcript: sessionTranscript,
-          };
-          const response = await fetch("/api/interview/session", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${session.access_token}`,
-            },
-            body: JSON.stringify(sentBody),
-          });
-          if (!response.ok) {
-            let errorData = {};
-            try {
-              errorData = await response.json();
-            } catch (e) {
-              errorData = {
-                parseError: "Could not parse error response as JSON",
-              };
-            }
-            console.error("Failed to save interview session:", {
+      if (!interview) {
+        console.error("[Frontend] No interview object available:", {
+          interview,
+        });
+        return;
+      }
+
+      if (!interview.id) {
+        console.error("[Frontend] Interview object has no ID:", { interview });
+        return;
+      }
+
+      try {
+        console.log("[Frontend] Starting interview session storage", {
+          interviewId: interview.id,
+          transcriptLength: sessionTranscript.length,
+          transcriptSample: sessionTranscript.slice(0, 2), // Log first two messages as sample
+          fullInterview: interview, // Log the full interview object
+        });
+
+        const {
+          data: { session },
+          error: userError,
+        } = await supabase.auth.getSession();
+
+        if (userError || !session) {
+          console.error("[Frontend] Authentication error:", userError);
+          throw new Error("Not authenticated");
+        }
+
+        console.log("[Frontend] Authentication successful", {
+          userId: session.user?.id,
+          hasAccessToken: !!session.access_token,
+        });
+
+        const sentBody = {
+          interview_id: interview.id,
+          status: "completed",
+          transcript: sessionTranscript,
+        };
+
+        console.log("[Frontend] Preparing to send request", {
+          endpoint: "/api/interview/session",
+          bodyPreview: {
+            ...sentBody,
+            transcript: sentBody.transcript.slice(0, 2), // Log first two messages as sample
+          },
+        });
+
+        const response = await fetch("/api/interview/session", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify(sentBody),
+        });
+
+        console.log("[Frontend] Received API response", {
+          status: response.status,
+          ok: response.ok,
+          statusText: response.statusText,
+        });
+
+        if (!response.ok) {
+          let errorData = {};
+          try {
+            errorData = await response.json();
+            console.error("[Frontend] API error response:", {
               status: response.status,
               errorData,
-              sentBody,
+              sentBody: {
+                ...sentBody,
+                transcript: sentBody.transcript.slice(0, 2),
+              },
             });
-            let errorMessage =
-              "Failed to save interview session. Please try again.";
-            if (
-              errorData &&
-              typeof errorData === "object" &&
-              "error" in errorData &&
-              typeof (errorData as any).error === "string"
-            ) {
-              errorMessage = (errorData as any).error;
-            }
-            setError(errorMessage);
-            return;
+          } catch (e) {
+            console.error("[Frontend] Failed to parse error response:", e);
+            errorData = {
+              parseError: "Could not parse error response as JSON",
+              originalError: e instanceof Error ? e.message : String(e),
+            };
           }
-          const data = await response.json();
-          console.log("Interview session inserted via API:", data);
-        } catch (err) {
-          console.error("Error inserting interview session via API:", err);
-          setError("Failed to save interview session. Please try again.");
+          let errorMessage =
+            "Failed to save interview session. Please try again.";
+          if (
+            errorData &&
+            typeof errorData === "object" &&
+            "error" in errorData &&
+            typeof (errorData as any).error === "string"
+          ) {
+            errorMessage = (errorData as any).error;
+          }
+          console.error("[Frontend] Setting error state:", errorMessage);
+          setError(errorMessage);
+          return;
         }
+
+        const data = await response.json();
+        console.log("[Frontend] Interview session successfully saved:", {
+          responseData: data,
+          sessionId: data.session?.id,
+        });
+      } catch (err) {
+        console.error("[Frontend] Unexpected error in session storage:", {
+          error: err instanceof Error ? err.message : String(err),
+          fullError: err,
+        });
+        setError("Failed to save interview session. Please try again.");
       }
       router.push("/interview-dashboard/generated-interviews");
     };
@@ -225,7 +283,7 @@ export default function InterviewPage({
       vapi.off("speech-end", onSpeechEnd);
       vapi.off("error", onError);
     };
-  }, [router]);
+  }, [router, interview, sessionTranscript]);
 
   const handleStartCall = async () => {
     try {
@@ -321,9 +379,38 @@ Important:
     }
   };
 
-  const handleEndCall = () => {
-    setCallStatus(CallStatus.FINISHED);
-    vapi.stop();
+  const handleEndCall = async () => {
+    console.log("[Frontend] Starting call end process");
+    setIsEndingCall(true);
+
+    try {
+      // Check if interview data is loaded
+      if (!interview?.id) {
+        console.log("[Frontend] Waiting for interview data to load...");
+        await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait for 2 seconds
+
+        if (!interview?.id) {
+          console.error(
+            "[Frontend] Interview data still not available after waiting"
+          );
+          setError(
+            "Failed to end call: Interview data not available. Please try again."
+          );
+          setIsEndingCall(false);
+          return;
+        }
+      }
+
+      console.log("[Frontend] Interview data confirmed, stopping call", {
+        interviewId: interview.id,
+      });
+      setCallStatus(CallStatus.FINISHED);
+      vapi.stop();
+    } catch (error) {
+      console.error("[Frontend] Error ending call:", error);
+      setError("Failed to end call. Please try again.");
+      setIsEndingCall(false);
+    }
   };
 
   if (loading) {
@@ -434,23 +521,33 @@ Important:
         ) : (
           <button
             onClick={handleEndCall}
-            className="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-xl font-semibold text-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+            disabled={isEndingCall || !interview?.id}
+            className="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-xl font-semibold text-lg transition-colors duration-200 flex items-center justify-center space-x-2 disabled:opacity-50"
           >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-            <span>End Call</span>
+            {isEndingCall ? (
+              <div className="flex items-center space-x-2">
+                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+                <span>Ending call...</span>
+              </div>
+            ) : (
+              <>
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+                <span>End Call</span>
+              </>
+            )}
           </button>
         )}
       </div>

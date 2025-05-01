@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { getUserWithDetails } from "@/lib/auth";
+import InterviewAnalysis from "@/app/components/interview/InterviewAnalysis";
 
 interface Interview {
   id: string;
@@ -27,6 +28,10 @@ export default function GeneratedInterviewsPage() {
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [analyzingIds, setAnalyzingIds] = useState<string[]>([]);
+  const [selectedAnalysisId, setSelectedAnalysisId] = useState<string | null>(
+    null
+  );
   const router = useRouter();
 
   useEffect(() => {
@@ -87,6 +92,64 @@ export default function GeneratedInterviewsPage() {
     });
   };
 
+  const handleAnalyze = async (interview: Interview) => {
+    try {
+      setAnalyzingIds((prev) => [...prev, interview.id]);
+
+      // Get the latest session for this interview
+      const { data: sessions, error: sessionError } = await supabase
+        .from("interview_sessions")
+        .select("id")
+        .eq("interview_id", interview.id)
+        .eq("status", "completed")
+        .order("created_at", { ascending: false })
+        .limit(1);
+
+      if (sessionError) throw sessionError;
+      if (!sessions || sessions.length === 0) {
+        throw new Error("No completed session found");
+      }
+
+      const session_id = sessions[0].id;
+
+      // Call the analysis API
+      const response = await fetch("/api/interview/analyze", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${
+            (
+              await supabase.auth.getSession()
+            ).data.session?.access_token
+          }`,
+        },
+        body: JSON.stringify({ session_id }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to analyze interview");
+      }
+
+      // Refresh the interviews list to show updated status
+      const { data: updatedInterviews, error: refreshError } = await supabase
+        .from("generated_interviews")
+        .select("*")
+        .eq("user_id", (await getUserWithDetails()).id)
+        .order("created_at", { ascending: false });
+
+      if (refreshError) throw refreshError;
+      setInterviews(updatedInterviews || []);
+    } catch (error) {
+      console.error("Analysis error:", error);
+      alert(
+        error instanceof Error ? error.message : "Failed to analyze interview"
+      );
+    } finally {
+      setAnalyzingIds((prev) => prev.filter((id) => id !== interview.id));
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -133,7 +196,7 @@ export default function GeneratedInterviewsPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {interviews.map((interview) => (
+          {interviews.map((interview: Interview) => (
             <div
               key={interview.id}
               className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow"
@@ -192,7 +255,7 @@ export default function GeneratedInterviewsPage() {
                   </div>
                 </div>
 
-                <div className="flex space-x-3">
+                <div className="flex flex-col space-y-3">
                   {interview.status === "generated" && (
                     <Link
                       href={`/interview-dashboard/interview/${interview.id}`}
@@ -201,24 +264,62 @@ export default function GeneratedInterviewsPage() {
                       Start Interview
                     </Link>
                   )}
+                  {interview.status === "completed" && (
+                    <button
+                      onClick={() => handleAnalyze(interview)}
+                      disabled={analyzingIds.includes(interview.id)}
+                      className="flex-1 bg-red-600 hover:bg-red-700 text-white text-center py-2 rounded-lg font-medium transition-colors disabled:bg-red-400"
+                    >
+                      {analyzingIds.includes(interview.id) ? (
+                        <span className="flex items-center justify-center">
+                          <svg
+                            className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                          Analyzing...
+                        </span>
+                      ) : (
+                        "Analyze Interview"
+                      )}
+                    </button>
+                  )}
                   {interview.status === "analyzed" && (
-                    <Link
-                      href={`/interview-dashboard/results/${interview.id}`}
+                    <button
+                      onClick={() => setSelectedAnalysisId(interview.id)}
                       className="flex-1 bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 text-white text-center py-2 rounded-lg font-medium transition-colors"
                     >
                       View Results
-                    </Link>
-                  )}
-                  {interview.status === "completed" && (
-                    <div className="flex-1 bg-gray-100 text-gray-500 text-center py-2 rounded-lg font-medium">
-                      Analysis in Progress
-                    </div>
+                    </button>
                   )}
                 </div>
               </div>
             </div>
           ))}
         </div>
+      )}
+
+      {/* Interview Analysis Modal */}
+      {selectedAnalysisId && (
+        <InterviewAnalysis
+          analysisId={selectedAnalysisId}
+          onClose={() => setSelectedAnalysisId(null)}
+        />
       )}
     </div>
   );
