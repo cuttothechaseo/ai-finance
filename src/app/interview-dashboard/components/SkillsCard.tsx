@@ -2,11 +2,37 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getSkillsSummary } from "../data/mockData";
+import { InterviewAnalysis } from "../data/types";
 
-export default function SkillsCard() {
+type Props = {
+  analyses?: InterviewAnalysis[];
+  mockSkills: { strengths: string[]; weaknesses: string[] };
+};
+
+function aggregateSkills(analyses: InterviewAnalysis[]) {
+  const strengths: Record<string, number> = {};
+  const weaknesses: Record<string, number> = {};
+  analyses.forEach((a) => {
+    (a.strengths || []).forEach((s) => {
+      strengths[s] = (strengths[s] || 0) + 1;
+    });
+    (a.areas_for_improvement || []).forEach((w) => {
+      weaknesses[w] = (weaknesses[w] || 0) + 1;
+    });
+  });
+  const sortedStrengths = Object.entries(strengths)
+    .sort((a, b) => b[1] - a[1])
+    .map(([skill]) => skill);
+  const sortedWeaknesses = Object.entries(weaknesses)
+    .sort((a, b) => b[1] - a[1])
+    .map(([skill]) => skill);
+  return { strengths: sortedStrengths, weaknesses: sortedWeaknesses };
+}
+
+export default function SkillsCard({ analyses, mockSkills }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { strengths, weaknesses } = getSkillsSummary();
+  const { strengths, weaknesses } =
+    analyses && analyses.length > 0 ? aggregateSkills(analyses) : mockSkills;
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);

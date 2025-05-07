@@ -12,48 +12,70 @@ import {
   Area,
   ComposedChart,
 } from "recharts";
-import {
-  interviewScores,
-  getFilteredScores,
-  TimeRangeOption,
-} from "../data/mockData";
+import { InterviewAnalysis } from "../data/types";
+import { InterviewScore, TimeRangeOption } from "../data/mockData";
 
 // Custom tooltip for the latest score
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
-    const isLatestPoint =
-      label === interviewScores[interviewScores.length - 1].formattedDate;
-
     return (
       <div
-        className={`bg-white p-3 border ${
-          isLatestPoint ? "border-blue-400" : "border-slate-200"
-        } rounded-md shadow-md`}
+        className={`bg-white p-3 border border-slate-200 rounded-md shadow-md`}
       >
         <p className="font-semibold mb-1">{label}</p>
         <div className="flex items-center">
           <span className="inline-block w-3 h-3 bg-[#59B7F2] rounded-full mr-2"></span>
           <span className="text-sm">
-            {isLatestPoint ? "Latest score: " : "AI score: "}
-            <span className="font-semibold">{payload[0].value}</span>
+            AI score: <span className="font-semibold">{payload[0].value}</span>
           </span>
         </div>
       </div>
     );
   }
-
   return null;
 };
 
-export default function PerformanceChart() {
-  const [timeRange, setTimeRange] = useState<TimeRangeOption>("30");
-  const filteredData = getFilteredScores(timeRange);
+type Props = {
+  analyses?: InterviewAnalysis[];
+  mockScores: InterviewScore[];
+};
 
-  // Prepare data for chart display (using formatted dates)
-  const chartData = filteredData.map((item) => ({
-    date: item.formattedDate,
-    score: item.score,
-  }));
+export default function PerformanceChart({ analyses, mockScores }: Props) {
+  const [timeRange, setTimeRange] = useState<TimeRangeOption>("30");
+
+  // Prepare data for chart display
+  let chartData: { date: string; score: number }[] = [];
+  if (analyses && analyses.length > 0) {
+    // Prepare unsanitized data with rawDate for filtering/sorting
+    let unsanitized = analyses
+      .map((a) => ({
+        date: new Date(a.created_at).toLocaleDateString(undefined, {
+          month: "short",
+          day: "numeric",
+        }),
+        score: a.overall_score,
+        rawDate: a.created_at,
+      }))
+      .sort(
+        (a, b) => new Date(a.rawDate).getTime() - new Date(b.rawDate).getTime()
+      );
+    // Filter by timeRange
+    if (timeRange !== "all") {
+      const days = parseInt(timeRange, 10);
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - days);
+      unsanitized = unsanitized.filter(
+        (item) => new Date(item.rawDate) >= cutoff
+      );
+    }
+    chartData = unsanitized.map(({ date, score }) => ({ date, score }));
+  } else {
+    // Fallback to mock data
+    chartData = mockScores.map((item) => ({
+      date: item.formattedDate || item.date,
+      score: item.score,
+    }));
+  }
 
   // Get the latest score for the reference point
   const latestScore =

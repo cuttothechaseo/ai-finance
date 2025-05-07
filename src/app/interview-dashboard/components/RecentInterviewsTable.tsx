@@ -1,10 +1,56 @@
 "use client";
 
 import React from "react";
-import { recentInterviews } from "../data/mockData";
 import Link from "next/link";
+import { InterviewAnalysis } from "../data/types";
 
-export default function RecentInterviewsTable() {
+// For fallback
+import { InterviewSession } from "../data/mockData";
+
+type Props = {
+  analyses?: (InterviewAnalysis & {
+    session: {
+      interview: {
+        company: string;
+        role: string;
+        interview_type: string;
+      };
+      id: string;
+      created_at: string;
+    };
+  })[];
+  mockInterviews: InterviewSession[];
+};
+
+export default function RecentInterviewsTable({
+  analyses,
+  mockInterviews,
+}: Props) {
+  let rows: any[] = [];
+  if (analyses && analyses.length > 0) {
+    rows = analyses.map((a) => ({
+      id: a.session.id,
+      formattedDate: new Date(a.session.created_at).toLocaleDateString(
+        undefined,
+        {
+          month: "short",
+          day: "numeric",
+        }
+      ),
+      score: a.overall_score,
+      interviewType: a.session.interview.interview_type,
+      interviewPosition: a.session.interview.role,
+      categories: [
+        ...(a.technical_score !== undefined ? ["Technical"] : []),
+        ...(a.behavioral_score !== undefined ? ["Behavioral"] : []),
+        ...(a.communication_score !== undefined ? ["Communication"] : []),
+        ...(a.confidence_score !== undefined ? ["Confidence"] : []),
+      ],
+    }));
+  } else {
+    rows = mockInterviews;
+  }
+
   return (
     <div className="w-full bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
       <h2 className="text-xl font-semibold text-slate-800 p-6 border-b border-slate-200">
@@ -31,7 +77,7 @@ export default function RecentInterviewsTable() {
             </tr>
           </thead>
           <tbody>
-            {recentInterviews.map((interview) => (
+            {rows.map((interview) => (
               <tr
                 key={interview.id}
                 className="border-b border-slate-200 hover:bg-slate-50"
@@ -69,13 +115,13 @@ export default function RecentInterviewsTable() {
         </table>
       </div>
 
-      {recentInterviews.length > 0 && (
+      {rows.length > 0 && (
         <div className="px-6 py-3 text-center text-sm text-slate-500 border-t border-slate-200">
           Recent interviews
         </div>
       )}
 
-      {recentInterviews.length === 0 && (
+      {rows.length === 0 && (
         <div className="px-6 py-12 text-center">
           <p className="text-slate-500">No interview data available.</p>
         </div>
@@ -106,6 +152,12 @@ function getCategoryDisplay(categories: string[]): JSX.Element {
             break;
           case "Market Sizing":
             categoryClass = "bg-green-100 text-green-800";
+            break;
+          case "Communication":
+            categoryClass = "bg-yellow-100 text-yellow-800";
+            break;
+          case "Confidence":
+            categoryClass = "bg-pink-100 text-pink-800";
             break;
           default:
             categoryClass = "bg-slate-100 text-slate-800";

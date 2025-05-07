@@ -229,22 +229,43 @@ export default function InterviewDashboardSidebar({
       }`}
     >
       {/* Logo section */}
-      <div className="p-4 flex items-center space-x-4">
-        <Link href="/dashboard" className="flex items-center">
+      <div className="p-4 border-b border-[#B3E5FC]/30 flex items-center justify-between">
+        <Link href="/" className="flex items-center">
           <Image
-            src="/wallstreetai-logo.png"
+            src="/assets/logos/wallstreetai-logo.svg"
             alt="WallStreetAI Logo"
             width={32}
             height={32}
-            className="rounded-lg"
+            className="h-8 w-8"
           />
           <motion.span
             variants={logoTextVariants}
-            className="ml-2 text-xl font-semibold text-[#1E3A8A]"
+            className="ml-2 text-xl font-bold text-[#1E3A8A] transition-all duration-200"
           >
-            WallStreetAI
+            Wall Street AI
           </motion.span>
         </Link>
+        {isMobile && (
+          <button
+            onClick={toggleSidebar}
+            className="p-1 rounded-md hover:bg-[#B3E5FC]/20 text-[#1E3A8A]"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        )}
       </div>
 
       {/* Navigation section */}

@@ -2,11 +2,34 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getFeedbackHighlights } from "../data/mockData";
+import { InterviewAnalysis } from "../data/types";
 
-export default function FeedbackCard() {
+type Props = {
+  analyses?: InterviewAnalysis[];
+  mockFeedback: string[];
+};
+
+function aggregateFeedback(analyses: InterviewAnalysis[]) {
+  const feedbackSet = new Set<string>();
+  analyses.forEach((a) => {
+    if (a.analysis_summary) feedbackSet.add(a.analysis_summary);
+    if (a.detailed_feedback) {
+      Object.values(a.detailed_feedback).forEach((arr) => {
+        if (Array.isArray(arr)) {
+          (arr as string[]).forEach((msg) => feedbackSet.add(msg));
+        }
+      });
+    }
+  });
+  return Array.from(feedbackSet);
+}
+
+export default function FeedbackCard({ analyses, mockFeedback }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const feedbackPoints = getFeedbackHighlights();
+  const feedbackPoints =
+    analyses && analyses.length > 0
+      ? aggregateFeedback(analyses)
+      : mockFeedback;
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
