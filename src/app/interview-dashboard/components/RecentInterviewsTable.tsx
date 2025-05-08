@@ -118,14 +118,14 @@ export default function RecentInterviewsTable({
                   {onViewReport ? (
                     <button
                       onClick={() => onViewReport(interview.id)}
-                      className="inline-block px-4 py-2 rounded-md bg-blue-600 text-white font-medium shadow-sm hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+                      className="inline-block px-4 py-2 rounded-md bg-[#1E3A8A] text-white font-medium shadow-sm hover:bg-[#59B7F2] transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
                     >
                       View Report
                     </button>
                   ) : (
                     <Link
                       href={`/interview-dashboard/report/${interview.id}`}
-                      className="inline-block px-4 py-2 rounded-md bg-blue-600 text-white font-medium shadow-sm hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+                      className="inline-block px-4 py-2 rounded-md bg-[#1E3A8A] text-white font-medium shadow-sm hover:bg-[#59B7F2] transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
                     >
                       View Report
                     </Link>

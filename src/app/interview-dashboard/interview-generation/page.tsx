@@ -87,138 +87,152 @@ export default function InterviewGenerationPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-3xl">
-      <h1 className="text-3xl font-bold text-[#1E3A8A] mb-8">
-        Generate Interview
-      </h1>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Company Input */}
-        <div>
-          <label
-            htmlFor="company"
-            className="block text-sm font-medium text-gray-700 mb-2"
+    <div className="min-h-screen bg-[#59B7F2] flex flex-col py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto w-full">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-white">Generate Interview</h1>
+          <a
+            href="/interview-dashboard"
+            className="text-[#B3E5FC] hover:text-white transition-colors duration-200"
           >
-            Company
-          </label>
-          <input
-            type="text"
-            id="company"
-            placeholder="Goldman Sachs"
-            value={formData.company}
-            onChange={(e) =>
-              setFormData({ ...formData, company: e.target.value })
-            }
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#59B7F2] focus:border-transparent"
-            required
-          />
+            Back to Dashboard
+          </a>
         </div>
+        <div className="h-px bg-white/30 w-full mb-8 rounded-full"></div>
+        <div className="bg-white p-6 rounded-xl border border-white/10 shadow-sm">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Company Input */}
+            <div>
+              <label
+                htmlFor="company"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Company
+              </label>
+              <input
+                type="text"
+                id="company"
+                placeholder="Goldman Sachs"
+                value={formData.company}
+                onChange={(e) =>
+                  setFormData({ ...formData, company: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#59B7F2] focus:border-transparent"
+                required
+              />
+            </div>
 
-        {/* Role Selection */}
-        <div>
-          <label
-            htmlFor="role"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Role
-          </label>
-          <select
-            id="role"
-            value={formData.role}
-            onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#59B7F2] focus:border-transparent"
-            required
-          >
-            {roles.map((role) => (
-              <option key={role} value={role}>
-                {role}
-              </option>
-            ))}
-          </select>
+            {/* Role Selection */}
+            <div>
+              <label
+                htmlFor="role"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Role
+              </label>
+              <select
+                id="role"
+                value={formData.role}
+                onChange={(e) =>
+                  setFormData({ ...formData, role: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#59B7F2] focus:border-transparent"
+                required
+              >
+                {roles.map((role) => (
+                  <option key={role} value={role}>
+                    {role}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Job Description */}
+            <div>
+              <label
+                htmlFor="jobDescription"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Job Description (Optional)
+              </label>
+              <textarea
+                id="jobDescription"
+                placeholder="Paste the job description here"
+                value={formData.jobDescription}
+                onChange={(e) =>
+                  setFormData({ ...formData, jobDescription: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#59B7F2] focus:border-transparent h-32"
+              />
+            </div>
+
+            {/* Number of Questions */}
+            <div>
+              <label
+                htmlFor="questionCount"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Number of Questions
+              </label>
+              <select
+                id="questionCount"
+                value={formData.questionCount}
+                onChange={(e) =>
+                  setFormData({ ...formData, questionCount: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#59B7F2] focus:border-transparent"
+                required
+              >
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                  <option key={num} value={num}>
+                    {num} {num === 1 ? "Question" : "Questions"}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Interview Type */}
+            <div>
+              <label
+                htmlFor="type"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Interview Type
+              </label>
+              <select
+                id="type"
+                value={formData.type}
+                onChange={(e) =>
+                  setFormData({ ...formData, type: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#59B7F2] focus:border-transparent"
+                required
+              >
+                {types.map((type) => (
+                  <option key={type.value} value={type.value}>
+                    {type.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={`w-full py-3 px-4 rounded-lg text-white font-medium transition-colors
+                ${
+                  isLoading
+                    ? "bg-[#59B7F2]/50 cursor-not-allowed"
+                    : "bg-[#59B7F2] hover:bg-[#59B7F2]/90"
+                }
+              `}
+            >
+              {isLoading ? "Generating Interview..." : "Generate Interview"}
+            </button>
+          </form>
         </div>
-
-        {/* Job Description */}
-        <div>
-          <label
-            htmlFor="jobDescription"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Job Description (Optional)
-          </label>
-          <textarea
-            id="jobDescription"
-            placeholder="Paste the job description here"
-            value={formData.jobDescription}
-            onChange={(e) =>
-              setFormData({ ...formData, jobDescription: e.target.value })
-            }
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#59B7F2] focus:border-transparent h-32"
-          />
-        </div>
-
-        {/* Number of Questions */}
-        <div>
-          <label
-            htmlFor="questionCount"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Number of Questions
-          </label>
-          <select
-            id="questionCount"
-            value={formData.questionCount}
-            onChange={(e) =>
-              setFormData({ ...formData, questionCount: e.target.value })
-            }
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#59B7F2] focus:border-transparent"
-            required
-          >
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
-              <option key={num} value={num}>
-                {num} {num === 1 ? "Question" : "Questions"}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Interview Type */}
-        <div>
-          <label
-            htmlFor="type"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Interview Type
-          </label>
-          <select
-            id="type"
-            value={formData.type}
-            onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#59B7F2] focus:border-transparent"
-            required
-          >
-            {types.map((type) => (
-              <option key={type.value} value={type.value}>
-                {type.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={isLoading}
-          className={`w-full py-3 px-4 rounded-lg text-white font-medium transition-colors
-            ${
-              isLoading
-                ? "bg-[#59B7F2]/50 cursor-not-allowed"
-                : "bg-[#59B7F2] hover:bg-[#59B7F2]/90"
-            }
-          `}
-        >
-          {isLoading ? "Generating Interview..." : "Generate Interview"}
-        </button>
-      </form>
+      </div>
     </div>
   );
 }
