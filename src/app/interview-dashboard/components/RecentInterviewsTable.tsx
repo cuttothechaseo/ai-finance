@@ -11,6 +11,7 @@ type Props = {
   analyses?: (InterviewAnalysis & {
     session: {
       interview: {
+        id: string;
         company: string;
         role: string;
         interview_type: string;
@@ -20,18 +21,21 @@ type Props = {
     };
   })[];
   mockInterviews: InterviewSession[];
+  onViewReport?: (interviewId: string) => void;
 };
 
 export default function RecentInterviewsTable({
   analyses,
   mockInterviews,
+  onViewReport,
 }: Props) {
   let rows: any[] = [];
   if (analyses && analyses.length > 0) {
     rows = analyses.map((a) => ({
-      id: a.session.id,
+      id: a.session.interview.id,
+      sessionId: a.session.id,
       formattedDate: new Date(a.session.created_at).toLocaleDateString(
-        undefined,
+        "en-US",
         {
           month: "short",
           day: "numeric",
@@ -48,7 +52,16 @@ export default function RecentInterviewsTable({
       ],
     }));
   } else {
-    rows = mockInterviews;
+    rows = mockInterviews.map((interview) => ({
+      id: interview.id,
+      sessionId: interview.id,
+      date: interview.date,
+      formattedDate: interview.formattedDate,
+      score: interview.score,
+      interviewType: interview.interviewType,
+      interviewPosition: interview.interviewPosition,
+      categories: interview.categories,
+    }));
   }
 
   return (
@@ -79,7 +92,7 @@ export default function RecentInterviewsTable({
           <tbody>
             {rows.map((interview) => (
               <tr
-                key={interview.id}
+                key={interview.sessionId || interview.id}
                 className="border-b border-slate-200 hover:bg-slate-50"
               >
                 <td className="px-6 py-4 text-sm text-slate-700">
@@ -102,12 +115,21 @@ export default function RecentInterviewsTable({
                   {getCategoryDisplay(interview.categories)}
                 </td>
                 <td className="px-6 py-4 text-sm text-right">
-                  <Link
-                    href={`/interview-dashboard/report/${interview.id}`}
-                    className="text-blue-600 hover:text-blue-800 font-medium"
-                  >
-                    View Report
-                  </Link>
+                  {onViewReport ? (
+                    <button
+                      onClick={() => onViewReport(interview.id)}
+                      className="inline-block px-4 py-2 rounded-md bg-blue-600 text-white font-medium shadow-sm hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+                    >
+                      View Report
+                    </button>
+                  ) : (
+                    <Link
+                      href={`/interview-dashboard/report/${interview.id}`}
+                      className="inline-block px-4 py-2 rounded-md bg-blue-600 text-white font-medium shadow-sm hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+                    >
+                      View Report
+                    </Link>
+                  )}
                 </td>
               </tr>
             ))}

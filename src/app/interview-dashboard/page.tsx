@@ -19,6 +19,7 @@ import {
   GeneratedInterview,
 } from "./data/types";
 import { getUserWithDetails } from "@/lib/auth";
+import InterviewAnalysisModal from "@/app/components/interview/InterviewAnalysis";
 
 type AnalysisWithSession = InterviewAnalysis & {
   session: InterviewSession & { interview: GeneratedInterview };
@@ -30,6 +31,9 @@ export default function InterviewDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [selectedAnalysisId, setSelectedAnalysisId] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     setMounted(true);
@@ -69,6 +73,10 @@ export default function InterviewDashboard() {
 
   // Fallback to mock data if no real data
   const hasRealData = analyses && analyses.length > 0;
+
+  const handleViewReport = (sessionId: string) => {
+    setSelectedAnalysisId(sessionId);
+  };
 
   if (!mounted) return null;
   if (error) return <div>{error}</div>;
@@ -111,8 +119,17 @@ export default function InterviewDashboard() {
         <RecentInterviewsTable
           analyses={hasRealData ? analyses : undefined}
           mockInterviews={recentInterviews}
+          onViewReport={handleViewReport}
         />
       </div>
+
+      {/* Interview Analysis Modal */}
+      {selectedAnalysisId && (
+        <InterviewAnalysisModal
+          analysisId={selectedAnalysisId}
+          onClose={() => setSelectedAnalysisId(null)}
+        />
+      )}
     </DashboardLayout>
   );
 }

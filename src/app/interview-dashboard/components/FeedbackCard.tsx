@@ -16,7 +16,17 @@ function aggregateFeedback(analyses: InterviewAnalysis[]) {
     if (a.detailed_feedback) {
       Object.values(a.detailed_feedback).forEach((arr) => {
         if (Array.isArray(arr)) {
-          (arr as string[]).forEach((msg) => feedbackSet.add(msg));
+          arr.forEach((msg) => {
+            if (typeof msg === "string") {
+              feedbackSet.add(msg);
+            } else if (typeof msg === "object" && msg !== null) {
+              // Convert object feedback to a readable string
+              const summary = Object.entries(msg)
+                .map(([key, value]) => `${key}: ${value}`)
+                .join(" | ");
+              feedbackSet.add(summary);
+            }
+          });
         }
       });
     }
