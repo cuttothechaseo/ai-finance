@@ -5,6 +5,7 @@ import { motion, useAnimation } from "framer-motion";
 import dynamic from "next/dynamic";
 import SectionDivider from "@/app/components/ui/SectionDivider";
 import MockInterviewCard from "@/app/components/features/MockInterviewCard";
+import JoinWaitlist from "@/app/components/waitlist/Pricing";
 
 // Dynamically import components to avoid hydration issues
 const Navbar = dynamic(() => import("@/app/components/navbar/Navbar"), {
@@ -27,10 +28,9 @@ const HowItWorks = dynamic(
   () => import("@/app/components/how-it-works/HowItWorks"),
   { ssr: false }
 );
-const JoinWaitlist = dynamic(
-  () => import("@/app/components/waitlist/JoinWaitlist"),
-  { ssr: false }
-);
+const Pricing = dynamic(() => import("@/app/components/waitlist/Pricing"), {
+  ssr: false,
+});
 const SuccessStories = dynamic(
   () => import("@/app/components/testimonials/SuccessStories"),
   { ssr: false }
@@ -77,7 +77,7 @@ export default function Home() {
       <SectionDivider />
       <HowItWorks />
       <SectionDivider />
-      <JoinWaitlist />
+      <Pricing />
     </motion.main>
   );
 }

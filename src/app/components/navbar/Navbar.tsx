@@ -15,6 +15,7 @@ const navLinks = [
     id: "exclusive-resources",
   },
   { name: "How It Works", href: "#how-it-works", id: "how-it-works" },
+  { name: "Pricing", href: "#join-waitlist", id: "join-waitlist" },
 ];
 
 export default function Navbar() {
@@ -97,17 +98,22 @@ export default function Navbar() {
           ))}
         </div>
 
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          transition={{ type: "spring", stiffness: 400, damping: 10 }}
-        >
+        <div className="flex items-center space-x-3">
           <Link
             href="/login"
-            className="px-4 py-2 bg-white text-[#1E3A8A] text-sm font-medium rounded-lg shadow-sm hover:bg-white/90 hover:shadow-md transition-all duration-200 flex items-center"
+            className="px-4 py-2 bg-white text-[#1E3A8A] text-sm font-medium rounded-lg border border-[#1E3A8A] shadow-sm hover:bg-white/90 hover:shadow-md transition-all duration-200 flex items-center"
           >
-            <span className="relative z-10 flex items-center">Login</span>
+            <span className="relative z-10 flex items-center">Sign In</span>
           </Link>
-        </motion.div>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            onClick={() => scrollToSection("join-waitlist")}
+            className="px-5 py-2 bg-[#1E3A8A] text-white text-base font-semibold rounded-lg shadow-md hover:bg-[#1E3A8A]/90 transition-all duration-200 flex items-center border-2 border-[#1E3A8A]"
+          >
+            Get Instant Access
+          </motion.button>
+        </div>
       </div>
     </motion.nav>
   );
