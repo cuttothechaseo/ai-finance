@@ -97,69 +97,17 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div ref={dropdownRef} className="relative">
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 400, damping: 10 }}
+        >
+          <Link
+            href="/login"
+            className="px-4 py-2 bg-white text-[#1E3A8A] text-sm font-medium rounded-lg shadow-sm hover:bg-white/90 hover:shadow-md transition-all duration-200 flex items-center"
           >
-            <button
-              onClick={toggleDropdown}
-              className="px-4 py-2 bg-white text-[#1E3A8A] text-sm font-medium rounded-lg shadow-sm hover:bg-white/90 hover:shadow-md transition-all duration-200 flex items-center"
-            >
-              <span className="relative z-10 flex items-center">
-                🚀 Get Early Access
-                <svg
-                  className={`ml-1 h-4 w-4 transition-transform duration-200 ${
-                    isDropdownOpen ? "rotate-180" : ""
-                  }`}
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </span>
-            </button>
-          </motion.div>
-
-          {/* Dropdown Menu */}
-          {isDropdownOpen && (
-            <motion.div
-              className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white border border-white/20 z-50"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-            >
-              <div className="py-1" role="menu" aria-orientation="vertical">
-                <Link
-                  href="/login"
-                  className="block px-4 py-2 text-sm text-[#1E3A8A] hover:bg-[#E0F7FA] hover:text-[#1E3A8A] transition-colors duration-150"
-                  onClick={() => setIsDropdownOpen(false)}
-                >
-                  🔑 Sign In
-                </Link>
-                <Link
-                  href="/signup"
-                  className="block px-4 py-2 text-sm text-[#1E3A8A] hover:bg-[#E0F7FA] hover:text-[#1E3A8A] transition-colors duration-150"
-                  onClick={() => setIsDropdownOpen(false)}
-                >
-                  ✨ Create Account
-                </Link>
-                <button
-                  onClick={openWaitlistModal}
-                  className="block w-full text-left px-4 py-2 text-sm text-[#1E3A8A] hover:bg-[#E0F7FA] hover:text-[#1E3A8A] transition-colors duration-150"
-                >
-                  🚀 Join Waitlist
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </div>
+            <span className="relative z-10 flex items-center">Login</span>
+          </Link>
+        </motion.div>
       </div>
     </motion.nav>
   );

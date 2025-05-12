@@ -53,7 +53,7 @@ export default function Hero() {
 
             // Check if we've reached the "Breeze" part
             if (index >= breezeStartIndex) {
-              // We're typing "Breeze", so style it differently
+              // We're typing "Breeze", so style it the same as the rest
               const beforeBreeze = secondLine.slice(
                 0,
                 secondLine.length - breezeWord.length
@@ -63,7 +63,7 @@ export default function Hero() {
                 index - breezeStartIndex + 1
               );
 
-              heading.innerHTML = `${firstLine}<br>${beforeBreeze}<span class="text-[#B3E5FC]">${breezeTyped}</span>`;
+              heading.innerHTML = `${firstLine}<br>${beforeBreeze}${breezeTyped}`;
             } else {
               heading.innerHTML = `${firstLine}<br>${secondLineText}`;
             }
@@ -77,7 +77,7 @@ export default function Hero() {
             0,
             secondLine.length - breezeWord.length
           );
-          heading.innerHTML = `${firstLine}<br>${beforeBreeze}<span class="text-[#B3E5FC]">${breezeWord}</span>`;
+          heading.innerHTML = `${firstLine}<br>${beforeBreeze}${breezeWord}`;
           return; // Stop animation
         }
       }
@@ -224,7 +224,7 @@ export default function Hero() {
           {/* Initial content will be cleared and animated */}
           Make Finance
           <br />
-          Recruiting a <span className="text-[#B3E5FC]">Breeze.</span>
+          Recruiting a Breeze.
         </motion.h1>
 
         <motion.p
@@ -250,45 +250,11 @@ export default function Hero() {
               boxShadow: "0 4px 15px rgba(255, 255, 255, 0.25)",
             }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => (window.location.href = "/login")}
             className="py-4 px-8 bg-white text-[#1E3A8A] text-lg font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center"
           >
-            <span className="relative z-10">🚀 Secure Your Spot Now</span>
+            <span className="relative z-10">🚀 Get Started</span>
           </motion.button>
-        </motion.div>
-
-        {/* Urgency indicators */}
-        <motion.div
-          className="max-w-xs mx-auto"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.7 }}
-        >
-          {/* Live counter */}
-          <p className="text-white/80 text-xs sm:text-sm mb-3">
-            <span className="font-semibold text-white">142</span> students have
-            joined this week
-          </p>
-
-          {/* Progress bar */}
-          <div className="w-full mx-auto mb-2 bg-[#1E3A8A]/30 rounded-full h-2.5 overflow-hidden">
-            <motion.div
-              className="bg-white h-2.5 rounded-full"
-              initial={{ width: 0 }}
-              animate={{ width: "84%" }}
-              transition={{ duration: 1, delay: 0.8 }}
-            />
-          </div>
-          <p className="text-white/80 text-xs font-medium">
-            <motion.span
-              className="font-semibold text-white"
-              animate={{ opacity: [0.8, 1, 0.8] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              84%
-            </motion.span>{" "}
-            of early access spots are now filled
-          </p>
         </motion.div>
       </div>
     </section>

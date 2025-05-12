@@ -346,10 +346,39 @@ export default function NetworkingOutreachCard({
                   </div>
 
                   <p className="text-sm text-slate-600 mb-2">Message:</p>
-                  <div className="bg-[#F8FAFC] border border-[#E6E8F0] rounded-md p-5 whitespace-pre-wrap">
-                    <p className="text-[#1E293B]">
-                      {outreachData.linkedinExample.message}
-                    </p>
+                  <div className="relative">
+                    <div className="bg-[#F8FAFC] border border-[#E6E8F0] rounded-md p-5 whitespace-pre-wrap filter blur-sm select-none pointer-events-none">
+                      <p className="text-[#1E293B]">
+                        {outreachData.linkedinExample.message}
+                      </p>
+                    </div>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/70 rounded-md">
+                      <svg
+                        className="w-8 h-8 text-[#1E3A8A] mb-2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 17a2 2 0 002-2v-2a2 2 0 10-4 0v2a2 2 0 002 2zm6-2v-2a6 6 0 10-12 0v2a2 2 0 00-2 2v3a2 2 0 002 2h12a2 2 0 002-2v-3a2 2 0 00-2-2z"
+                        />
+                      </svg>
+                      <button
+                        className="bg-[#1E3A8A] text-white px-4 py-2 rounded-md font-semibold shadow hover:bg-[#1E3A8A]/90 transition-colors focus:outline-none focus:ring-2 focus:ring-[#59B7F2] mt-1"
+                        type="button"
+                        onClick={() => {
+                          const el = document.getElementById("join-waitlist");
+                          if (el) {
+                            el.scrollIntoView({ behavior: "smooth" });
+                          }
+                        }}
+                      >
+                        Unlock with Pro
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -358,40 +387,44 @@ export default function NetworkingOutreachCard({
                 <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                   Key Elements
                 </h3>
-                <ul className="space-y-2">
-                  <li className="flex items-start">
-                    <span className="text-[#59B7F2] mr-2">•</span>
-                    <span className="text-slate-700">
-                      <strong className="text-[#1E3A8A]">
-                        Personalization:
-                      </strong>{" "}
-                      Reference specific aspects of their profile
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-[#59B7F2] mr-2">•</span>
-                    <span className="text-slate-700">
-                      <strong className="text-[#1E3A8A]">Brevity:</strong> Keep
-                      messages under 150 words
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-[#59B7F2] mr-2">•</span>
-                    <span className="text-slate-700">
-                      <strong className="text-[#1E3A8A]">Clear request:</strong>{" "}
-                      Specific, reasonable ask (information, brief call)
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-[#59B7F2] mr-2">•</span>
-                    <span className="text-slate-700">
-                      <strong className="text-[#1E3A8A]">
-                        Professional tone:
-                      </strong>{" "}
-                      Formal but conversational language
-                    </span>
-                  </li>
-                </ul>
+                <div className="filter blur-sm select-none pointer-events-none">
+                  <ul className="space-y-2">
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span className="text-slate-700">
+                        <strong className="text-[#1E3A8A]">
+                          Personalization:
+                        </strong>{" "}
+                        Reference specific aspects of their profile
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span className="text-slate-700">
+                        <strong className="text-[#1E3A8A]">Brevity:</strong>{" "}
+                        Keep messages under 150 words
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span className="text-slate-700">
+                        <strong className="text-[#1E3A8A]">
+                          Clear request:
+                        </strong>{" "}
+                        Specific, reasonable ask (information, brief call)
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span className="text-slate-700">
+                        <strong className="text-[#1E3A8A]">
+                          Professional tone:
+                        </strong>{" "}
+                        Formal but conversational language
+                      </span>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           )}
@@ -409,10 +442,39 @@ export default function NetworkingOutreachCard({
                   </div>
 
                   <p className="text-sm text-slate-600 mb-2">Email Body:</p>
-                  <div className="bg-[#F8FAFC] border border-[#E6E8F0] rounded-md p-5 whitespace-pre-wrap">
-                    <p className="text-[#1E293B]">
-                      {outreachData.emailExample.message}
-                    </p>
+                  <div className="relative">
+                    <div className="bg-[#F8FAFC] border border-[#E6E8F0] rounded-md p-5 whitespace-pre-wrap filter blur-sm select-none pointer-events-none">
+                      <p className="text-[#1E293B]">
+                        {outreachData.emailExample.message}
+                      </p>
+                    </div>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/70 rounded-md">
+                      <svg
+                        className="w-8 h-8 text-[#1E3A8A] mb-2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 17a2 2 0 002-2v-2a2 2 0 10-4 0v2a2 2 0 002 2zm6-2v-2a6 6 0 10-12 0v2a2 2 0 00-2 2v3a2 2 0 002 2h12a2 2 0 002-2v-3a2 2 0 00-2-2z"
+                        />
+                      </svg>
+                      <button
+                        className="bg-[#1E3A8A] text-white px-4 py-2 rounded-md font-semibold shadow hover:bg-[#1E3A8A]/90 transition-colors focus:outline-none focus:ring-2 focus:ring-[#59B7F2] mt-1"
+                        type="button"
+                        onClick={() => {
+                          const el = document.getElementById("join-waitlist");
+                          if (el) {
+                            el.scrollIntoView({ behavior: "smooth" });
+                          }
+                        }}
+                      >
+                        Unlock with Pro
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -421,40 +483,44 @@ export default function NetworkingOutreachCard({
                 <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                   Email Structure
                 </h3>
-                <ul className="space-y-2">
-                  <li className="flex items-start">
-                    <span className="text-[#59B7F2] mr-2">•</span>
-                    <span className="text-slate-700">
-                      <strong className="text-[#1E3A8A]">Introduction:</strong>{" "}
-                      Who you are and purpose of email
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-[#59B7F2] mr-2">•</span>
-                    <span className="text-slate-700">
-                      <strong className="text-[#1E3A8A]">Body:</strong> Your
-                      relevant experience and specific qualifications
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-[#59B7F2] mr-2">•</span>
-                    <span className="text-slate-700">
-                      <strong className="text-[#1E3A8A]">
-                        Value proposition:
-                      </strong>{" "}
-                      What you can offer to the company
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-[#59B7F2] mr-2">•</span>
-                    <span className="text-slate-700">
-                      <strong className="text-[#1E3A8A]">
-                        Call to action:
-                      </strong>{" "}
-                      Request for conversation or next steps
-                    </span>
-                  </li>
-                </ul>
+                <div className="filter blur-sm select-none pointer-events-none">
+                  <ul className="space-y-2">
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span className="text-slate-700">
+                        <strong className="text-[#1E3A8A]">
+                          Introduction:
+                        </strong>{" "}
+                        Who you are and purpose of email
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span className="text-slate-700">
+                        <strong className="text-[#1E3A8A]">Body:</strong> Your
+                        relevant experience and specific qualifications
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span className="text-slate-700">
+                        <strong className="text-[#1E3A8A]">
+                          Value proposition:
+                        </strong>{" "}
+                        What you can offer to the company
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span className="text-slate-700">
+                        <strong className="text-[#1E3A8A]">
+                          Call to action:
+                        </strong>{" "}
+                        Request for conversation or next steps
+                      </span>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           )}
@@ -472,10 +538,39 @@ export default function NetworkingOutreachCard({
                   </div>
 
                   <p className="text-sm text-slate-600 mb-2">Cover Letter:</p>
-                  <div className="bg-[#F8FAFC] border border-[#E6E8F0] rounded-md p-5 whitespace-pre-wrap">
-                    <p className="text-[#1E293B]">
-                      {outreachData.coverLetterExample.message}
-                    </p>
+                  <div className="relative">
+                    <div className="bg-[#F8FAFC] border border-[#E6E8F0] rounded-md p-5 whitespace-pre-wrap filter blur-sm select-none pointer-events-none">
+                      <p className="text-[#1E293B]">
+                        {outreachData.coverLetterExample.message}
+                      </p>
+                    </div>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/70 rounded-md">
+                      <svg
+                        className="w-8 h-8 text-[#1E3A8A] mb-2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 17a2 2 0 002-2v-2a2 2 0 10-4 0v2a2 2 0 002 2zm6-2v-2a6 6 0 10-12 0v2a2 2 0 00-2 2v3a2 2 0 002 2h12a2 2 0 002-2v-3a2 2 0 00-2-2z"
+                        />
+                      </svg>
+                      <button
+                        className="bg-[#1E3A8A] text-white px-4 py-2 rounded-md font-semibold shadow hover:bg-[#1E3A8A]/90 transition-colors focus:outline-none focus:ring-2 focus:ring-[#59B7F2] mt-1"
+                        type="button"
+                        onClick={() => {
+                          const el = document.getElementById("join-waitlist");
+                          if (el) {
+                            el.scrollIntoView({ behavior: "smooth" });
+                          }
+                        }}
+                      >
+                        Unlock with Pro
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -484,80 +579,85 @@ export default function NetworkingOutreachCard({
                 <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                   Cover Letter Structure
                 </h3>
-                <ul className="space-y-2">
-                  <li className="flex items-start">
-                    <span className="text-[#59B7F2] mr-2">•</span>
-                    <span className="text-slate-700">
-                      <strong className="text-[#1E3A8A]">
-                        Opening paragraph:
-                      </strong>{" "}
-                      Specify the position you are applying for and express your
-                      interest
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-[#59B7F2] mr-2">•</span>
-                    <span className="text-slate-700">
-                      <strong className="text-[#1E3A8A]">
-                        Experience paragraphs:
-                      </strong>{" "}
-                      Highlight relevant experience with specific examples and
-                      achievements
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-[#59B7F2] mr-2">•</span>
-                    <span className="text-slate-700">
-                      <strong className="text-[#1E3A8A]">
-                        Education & skills:
-                      </strong>{" "}
-                      Summarize relevant education and transferable skills
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-[#59B7F2] mr-2">•</span>
-                    <span className="text-slate-700">
-                      <strong className="text-[#1E3A8A]">
-                        Closing paragraph:
-                      </strong>{" "}
-                      Express enthusiasm and include a call to action
-                    </span>
-                  </li>
-                </ul>
+                <div className="filter blur-sm select-none pointer-events-none">
+                  <ul className="space-y-2">
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span className="text-slate-700">
+                        <strong className="text-[#1E3A8A]">
+                          Opening paragraph:
+                        </strong>{" "}
+                        Specify the position you are applying for and express
+                        your interest
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span className="text-slate-700">
+                        <strong className="text-[#1E3A8A]">
+                          Experience paragraphs:
+                        </strong>{" "}
+                        Highlight relevant experience with specific examples and
+                        achievements
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span className="text-slate-700">
+                        <strong className="text-[#1E3A8A]">
+                          Education & skills:
+                        </strong>{" "}
+                        Summarize relevant education and transferable skills
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span className="text-slate-700">
+                        <strong className="text-[#1E3A8A]">
+                          Closing paragraph:
+                        </strong>{" "}
+                        Express enthusiasm and include a call to action
+                      </span>
+                    </li>
+                  </ul>
+                </div>
               </div>
 
               <div className="bg-white p-6 rounded-lg border border-slate-200">
                 <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                   Cover Letter Best Practices
                 </h3>
-                <ul className="space-y-2">
-                  <li className="flex items-start">
-                    <span className="text-[#59B7F2] mr-2">•</span>
-                    <span className="text-slate-700">
-                      Keep cover letters concise – aim for one page maximum
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-[#59B7F2] mr-2">•</span>
-                    <span className="text-slate-700">
-                      Address the letter to a specific person rather than
-                      &quot;To Whom It May Concern&quot;
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-[#59B7F2] mr-2">•</span>
-                    <span className="text-slate-700">
-                      Quantify achievements with specific numbers and
-                      percentages when possible
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-[#59B7F2] mr-2">•</span>
-                    <span className="text-slate-700">
-                      Tailor each cover letter to the specific company and role
-                    </span>
-                  </li>
-                </ul>
+                <div className="filter blur-sm select-none pointer-events-none">
+                  <ul className="space-y-2">
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span className="text-slate-700">
+                        Keep cover letters concise – aim for one page maximum
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span className="text-slate-700">
+                        Address the letter to a specific person rather than
+                        &quot;To Whom It May Concern&quot;
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span className="text-slate-700">
+                        Quantify achievements with specific numbers and
+                        percentages when possible
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span className="text-slate-700">
+                        Tailor each cover letter to the specific company and
+                        role
+                      </span>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           )}
@@ -573,82 +673,88 @@ export default function NetworkingOutreachCard({
                   chances of landing interviews at top finance firms. Follow
                   these best practices to make your messages stand out.
                 </p>
-                <ul className="space-y-2">
-                  {outreachData.tips.map((tip, index) => (
-                    <li key={index} className="flex items-start">
-                      <span className="text-[#59B7F2] mr-2">•</span>
-                      <span className="text-slate-700">{tip}</span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="filter blur-sm select-none pointer-events-none">
+                  <ul className="space-y-2">
+                    {outreachData.tips.map((tip, index) => (
+                      <li key={index} className="flex items-start">
+                        <span className="text-[#59B7F2] mr-2">•</span>
+                        <span className="text-slate-700">{tip}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
 
               <div className="bg-white p-6 rounded-lg border border-slate-200">
                 <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
-                  Dos and Donts
+                  Do's and Don'ts
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <h4 className="font-semibold text-green-600 mb-2">Do:</h4>
-                    <ul className="space-y-2">
-                      <li className="flex items-start">
-                        <span className="text-green-600 mr-2">✓</span>
-                        <span className="text-slate-700">
-                          Research the person and company thoroughly before
-                          reaching out
-                        </span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="text-green-600 mr-2">✓</span>
-                        <span className="text-slate-700">
-                          Make a specific connection to the recipient's
-                          background
-                        </span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="text-green-600 mr-2">✓</span>
-                        <span className="text-slate-700">
-                          Offer something of value when possible
-                        </span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="text-green-600 mr-2">✓</span>
-                        <span className="text-slate-700">
-                          Proofread multiple times for grammar and spelling
-                        </span>
-                      </li>
-                    </ul>
+                    <div className="filter blur-sm select-none pointer-events-none">
+                      <ul className="space-y-2">
+                        <li className="flex items-start">
+                          <span className="text-green-600 mr-2">✓</span>
+                          <span className="text-slate-700">
+                            Research the person and company thoroughly before
+                            reaching out
+                          </span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-green-600 mr-2">✓</span>
+                          <span className="text-slate-700">
+                            Make a specific connection to the recipient's
+                            background
+                          </span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-green-600 mr-2">✓</span>
+                          <span className="text-slate-700">
+                            Offer something of value when possible
+                          </span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-green-600 mr-2">✓</span>
+                          <span className="text-slate-700">
+                            Proofread multiple times for grammar and spelling
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                   <div>
                     <h4 className="font-semibold text-red-600 mb-2">Do not:</h4>
-                    <ul className="space-y-2">
-                      <li className="flex items-start">
-                        <span className="text-red-600 mr-2">✗</span>
-                        <span className="text-slate-700">
-                          Send generic messages that could apply to anyone
-                        </span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="text-red-600 mr-2">✗</span>
-                        <span className="text-slate-700">
-                          Make unreasonable requests (like lengthy calls) in
-                          first contact
-                        </span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="text-red-600 mr-2">✗</span>
-                        <span className="text-slate-700">
-                          Forget to follow up after initial contact
-                        </span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="text-red-600 mr-2">✗</span>
-                        <span className="text-slate-700">
-                          Use overly casual language or slang in professional
-                          communication
-                        </span>
-                      </li>
-                    </ul>
+                    <div className="filter blur-sm select-none pointer-events-none">
+                      <ul className="space-y-2">
+                        <li className="flex items-start">
+                          <span className="text-red-600 mr-2">✗</span>
+                          <span className="text-slate-700">
+                            Send generic messages that could apply to anyone
+                          </span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-red-600 mr-2">✗</span>
+                          <span className="text-slate-700">
+                            Make unreasonable requests (like lengthy calls) in
+                            first contact
+                          </span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-red-600 mr-2">✗</span>
+                          <span className="text-slate-700">
+                            Forget to follow up after initial contact
+                          </span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-red-600 mr-2">✗</span>
+                          <span className="text-slate-700">
+                            Use overly casual language or slang in professional
+                            communication
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -39,12 +39,14 @@ interface InterviewAnalysisProps {
   analysisId: string;
   onClose: () => void;
   initialData?: InterviewAnalysisResult;
+  isPreview?: boolean;
 }
 
 export default function InterviewAnalysis({
   analysisId: interviewId,
   onClose,
   initialData,
+  isPreview = false,
 }: InterviewAnalysisProps) {
   const [analysis, setAnalysis] = useState<InterviewAnalysisResult | null>(
     initialData || null
@@ -102,8 +104,9 @@ export default function InterviewAnalysis({
     const circumference = 2 * Math.PI * 45; // r = 45
     const offset = circumference - (score / 100) * circumference;
 
+    // Use green for >= 80, yellow for 60-79, red for < 60
     const scoreColorClass =
-      score >= 85
+      score >= 80
         ? "text-[#4ADE80]"
         : score >= 60
         ? "text-[#FACC15]"
@@ -317,6 +320,165 @@ export default function InterviewAnalysis({
         return null;
     }
   };
+
+  // If isPreview, render the full card layout (not modal)
+  if (isPreview && analysis) {
+    return (
+      <div className="bg-white rounded-xl shadow-xl w-full overflow-hidden border border-slate-200">
+        <div className="flex flex-col md:flex-row">
+          {/* Sidebar */}
+          <div className="w-full md:w-64 bg-[#1E3A8A]/5 md:min-h-[600px] border-r border-slate-200 flex-shrink-0">
+            <nav className="space-y-1 p-4">
+              {analysis &&
+                getSections(analysis).map((section) => (
+                  <div
+                    key={section.id}
+                    className={`w-full text-left px-4 py-2 rounded-lg flex items-center transition-colors ${
+                      section.id === "overview"
+                        ? "bg-[#59B7F2] text-white"
+                        : "text-[#1E3A8A]"
+                    }`}
+                  >
+                    <div>
+                      <div>{section.label}</div>
+                      {section.question && (
+                        <div className="text-xs mt-1 line-clamp-2 opacity-80">
+                          {section.question}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+            </nav>
+            <div className="mt-8 pt-6 border-t border-slate-200 px-4">
+              <div className="flex items-center justify-center mb-4">
+                {renderScoreRing(analysis.overall_score)}
+              </div>
+              <p className="text-center text-sm text-slate-600 mb-6">
+                Overall Score
+              </p>
+              {/* Key Metrics */}
+              <div className="space-y-6">
+                {/* Strengths */}
+                <div>
+                  <h4 className="text-sm font-medium text-[#1E3A8A] mb-2 flex items-center">
+                    <svg
+                      className="w-4 h-4 mr-1 text-green-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 10l7-7m0 0l7 7m-7-7v18"
+                      />
+                    </svg>
+                    Key Strengths
+                  </h4>
+                  <ul className="space-y-1">
+                    {analysis.strengths.slice(0, 3).map((strength, index) => (
+                      <li
+                        key={index}
+                        className="text-sm text-slate-700 flex items-start"
+                      >
+                        <span className="text-[#59B7F2] mr-2">•</span>
+                        <span className="line-clamp-2">{strength}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                {/* Areas for Improvement */}
+                <div>
+                  <h4 className="text-sm font-medium text-[#1E3A8A] mb-2 flex items-center">
+                    <svg
+                      className="w-4 h-4 mr-1 text-amber-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                      />
+                    </svg>
+                    Areas to Improve
+                  </h4>
+                  <ul className="space-y-1">
+                    {analysis.areas_for_improvement
+                      .slice(0, 3)
+                      .map((area, index) => (
+                        <li
+                          key={index}
+                          className="text-sm text-slate-700 flex items-start"
+                        >
+                          <span className="text-[#59B7F2] mr-2">•</span>
+                          <span className="line-clamp-2">{area}</span>
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+                {/* Performance Metrics */}
+                <div>
+                  <h4 className="text-sm font-medium text-[#1E3A8A] mb-2 flex items-center">
+                    <svg
+                      className="w-4 h-4 mr-1 text-blue-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                      />
+                    </svg>
+                    Performance
+                  </h4>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="text-center p-2 bg-white rounded-lg shadow-sm">
+                      <div className="text-sm font-semibold text-[#1E3A8A]">
+                        {analysis.technical_score}
+                      </div>
+                      <div className="text-xs text-slate-600">Technical</div>
+                    </div>
+                    <div className="text-center p-2 bg-white rounded-lg shadow-sm">
+                      <div className="text-sm font-semibold text-[#1E3A8A]">
+                        {analysis.behavioral_score}
+                      </div>
+                      <div className="text-xs text-slate-600">Behavioral</div>
+                    </div>
+                    <div className="text-center p-2 bg-white rounded-lg shadow-sm">
+                      <div className="text-sm font-semibold text-[#1E3A8A]">
+                        {analysis.communication_score}
+                      </div>
+                      <div className="text-xs text-slate-600">Comm.</div>
+                    </div>
+                    <div className="text-center p-2 bg-white rounded-lg shadow-sm">
+                      <div className="text-sm font-semibold text-[#1E3A8A]">
+                        {analysis.confidence_score}
+                      </div>
+                      <div className="text-xs text-slate-600">Confidence</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Main content */}
+          <div className="flex-1 overflow-auto p-6">
+            <AnimatePresence mode="wait">
+              {renderSectionContent("overview")}
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

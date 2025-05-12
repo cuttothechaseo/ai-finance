@@ -19,16 +19,22 @@ import { InterviewScore, TimeRangeOption } from "../data/mockData";
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div
-        className={`bg-white p-3 border border-slate-200 rounded-md shadow-md`}
-      >
-        <p className="font-semibold mb-1">{label}</p>
+      <div className="bg-white p-3 border border-slate-200 rounded-md shadow-md">
+        <p className="font-semibold mb-1 text-slate-900">{label}</p>
         <div className="flex items-center">
           <span className="inline-block w-3 h-3 bg-[#59B7F2] rounded-full mr-2"></span>
-          <span className="text-sm">
+          <span className="text-sm text-slate-900">
             AI score: <span className="font-semibold">{payload[0].value}</span>
           </span>
         </div>
+      </div>
+    );
+  }
+  // Always show the date, even if no payload
+  if (active && label) {
+    return (
+      <div className="bg-white p-3 border border-slate-200 rounded-md shadow-md">
+        <p className="font-semibold mb-1 text-slate-900">{label}</p>
       </div>
     );
   }
@@ -92,7 +98,7 @@ export default function PerformanceChart({ analyses, mockScores }: Props) {
           <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value as TimeRangeOption)}
-            className="appearance-none bg-white border border-slate-200 rounded-md px-4 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="appearance-none bg-white border border-slate-200 rounded-md px-4 py-2 pr-8 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="7">Last 7 days</option>
             <option value="30">Last 30 days</option>

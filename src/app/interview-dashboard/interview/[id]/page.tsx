@@ -436,7 +436,7 @@ Important:
       {/* Header */}
       <div className="max-w-4xl mx-auto mb-12 text-center">
         <h1 className="text-3xl font-bold text-white mb-2">
-          Interview Generation
+          {interview.company} - {interview.role} Interview
         </h1>
       </div>
 
@@ -514,7 +514,7 @@ Important:
                     d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                   />
                 </svg>
-                <span>Call</span>
+                <span>Start Interview</span>
               </>
             )}
           </button>
@@ -555,14 +555,14 @@ Important:
       {/* Interview Info */}
       <div className="max-w-4xl mx-auto mt-6 flex justify-between items-center px-4">
         <div className="text-white/80">
-          <p>
+          <p className="text-lg">
             {interview.company} - {interview.role}
           </p>
-          <p className="text-sm">
+          <p className="text-lg">
             {interview.questions.length} questions • {interview.interview_type}
           </p>
         </div>
-        <span className="px-3 py-1 rounded-full text-sm font-medium bg-white/10 text-white">
+        <span className="px-3 py-1 rounded-full text-lg font-medium bg-white/10 text-white">
           {interview.interview_type.charAt(0).toUpperCase() +
             interview.interview_type.slice(1)}
         </span>
