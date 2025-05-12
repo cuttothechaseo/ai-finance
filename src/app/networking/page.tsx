@@ -28,6 +28,7 @@ export default function NetworkingPage() {
   });
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState("message");
+  const [activeGuidanceTab, setActiveGuidanceTab] = useState(0);
   const router = useRouter();
 
   useEffect(() => {
@@ -827,267 +828,341 @@ export default function NetworkingPage() {
           </div>
         </div>
 
-        {/* Guidance Sections */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-          {/* Key Elements */}
-          <div className="bg-white p-6 rounded-xl border border-white/10 shadow-sm">
-            <h2 className="text-xl font-bold text-[#1E3A8A] mb-4">
-              Key Elements
-            </h2>
-            <ul className="space-y-2 text-slate-700">
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2">•</span>
-                <span>
-                  <strong className="text-[#1E3A8A]">Personalization:</strong>{" "}
-                  Reference specific aspects of their profile
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2">•</span>
-                <span>
-                  <strong className="text-[#1E3A8A]">Brevity:</strong> Keep
-                  messages under 150 words
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2">•</span>
-                <span>
-                  <strong className="text-[#1E3A8A]">Clear request:</strong>{" "}
-                  Specific, reasonable ask (information, brief call)
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2">•</span>
-                <span>
-                  <strong className="text-[#1E3A8A]">Professional tone:</strong>{" "}
-                  Formal but conversational language
-                </span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Email Structure */}
-          <div className="bg-white p-6 rounded-xl border border-white/10 shadow-sm">
-            <h2 className="text-xl font-bold text-[#1E3A8A] mb-4">
-              Email Structure
-            </h2>
-            <ul className="space-y-2 text-slate-700">
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2">•</span>
-                <span>
-                  <strong className="text-[#1E3A8A]">Introduction:</strong> Who
-                  you are and purpose of email
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2">•</span>
-                <span>
-                  <strong className="text-[#1E3A8A]">Body:</strong> Your
-                  relevant experience and specific qualifications
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2">•</span>
-                <span>
-                  <strong className="text-[#1E3A8A]">Value proposition:</strong>{" "}
-                  What you can offer to the company
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2">•</span>
-                <span>
-                  <strong className="text-[#1E3A8A]">Call to action:</strong>{" "}
-                  Request for conversation or next steps
-                </span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Cover Letter Structure */}
-          <div className="bg-white p-6 rounded-xl border border-white/10 shadow-sm">
-            <h2 className="text-xl font-bold text-[#1E3A8A] mb-4">
-              Cover Letter Structure
-            </h2>
-            <ul className="space-y-2 text-slate-700">
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2">•</span>
-                <span>
-                  <strong className="text-[#1E3A8A]">Opening paragraph:</strong>{" "}
-                  Specify the position you are applying for and express your
-                  interest
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2">•</span>
-                <span>
-                  <strong className="text-[#1E3A8A]">
-                    Experience paragraphs:
-                  </strong>{" "}
-                  Highlight relevant experience with specific examples and
-                  achievements
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2">•</span>
-                <span>
-                  <strong className="text-[#1E3A8A]">
-                    Education & skills:
-                  </strong>{" "}
-                  Summarize relevant education and transferable skills
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2">•</span>
-                <span>
-                  <strong className="text-[#1E3A8A]">Closing paragraph:</strong>{" "}
-                  Express enthusiasm and include a call to action
-                </span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Cover Letter Best Practices */}
-          <div className="bg-white p-6 rounded-xl border border-white/10 shadow-sm">
-            <h2 className="text-xl font-bold text-[#1E3A8A] mb-4">
-              Cover Letter Best Practices
-            </h2>
-            <ul className="space-y-2 text-slate-700">
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2">•</span>
-                <span>
-                  Keep cover letters concise – aim for one page maximum
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2">•</span>
-                <span>
-                  Address the letter to a specific person rather than &quot;To
-                  Whom It May Concern&quot;
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2">•</span>
-                <span>
-                  Quantify achievements with specific numbers and percentages
-                  when possible
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2">•</span>
-                <span>
-                  Tailor each cover letter to the specific company and role
-                </span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Best Practices for Networking Outreach */}
-          <div className="bg-white p-6 rounded-xl border border-white/10 shadow-sm">
-            <h2 className="text-xl font-bold text-[#1E3A8A] mb-4">
-              Best Practices for Networking Outreach
-            </h2>
-            <p className="text-slate-700 mb-4">
-              Effective networking outreach can dramatically increase your
-              chances of landing interviews at top finance firms. Follow these
-              best practices to make your messages stand out.
-            </p>
-            <ul className="space-y-2 text-slate-700">
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2">•</span>
-                <span>
-                  Personalize each message with specific details about the
-                  company and role
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2">•</span>
-                <span>Keep LinkedIn messages concise and under 150 words</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2">•</span>
-                <span>
-                  Follow up politely if you do not hear back within 1-2 weeks
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2">•</span>
-                <span>
-                  Highlight relevant experience and skills that match the
-                  position
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2">•</span>
-                <span>
-                  Always include a clear call to action in your message
-                </span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Dos and Donts */}
-          <div className="bg-white p-6 rounded-xl border border-white/10 shadow-sm">
-            <h2 className="text-xl font-bold text-[#1E3A8A] mb-4">
-              Do's and Don'ts
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="font-semibold text-green-600 mb-2">Do:</h3>
-                <ul className="space-y-2 text-slate-700">
-                  <li className="flex items-start">
-                    <span className="text-green-600 mr-2">✓</span>
-                    <span>
-                      Research the person and company thoroughly before reaching
-                      out
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-600 mr-2">✓</span>
-                    <span>
-                      Make a specific connection to the recipient's background
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-600 mr-2">✓</span>
-                    <span>Offer something of value when possible</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-600 mr-2">✓</span>
-                    <span>
-                      Proofread multiple times for grammar and spelling
-                    </span>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold text-red-600 mb-2">Do not:</h3>
-                <ul className="space-y-2 text-slate-700">
-                  <li className="flex items-start">
-                    <span className="text-red-600 mr-2">✗</span>
-                    <span>
-                      Send generic messages that could apply to anyone
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-red-600 mr-2">✗</span>
-                    <span>
-                      Make unreasonable requests (like lengthy calls) in first
-                      contact
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-red-600 mr-2">✗</span>
-                    <span>Forget to follow up after initial contact</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-red-600 mr-2">✗</span>
-                    <span>
-                      Use overly casual language or slang in professional
-                      communication
-                    </span>
-                  </li>
-                </ul>
-              </div>
+        {/* Guidance Module with Sidebar */}
+        <div className="mt-12 w-full">
+          <div className="bg-white rounded-xl shadow-xl border border-slate-200 flex flex-col md:flex-row w-full">
+            {/* Sidebar */}
+            <div className="w-full md:w-64 bg-[#1E3A8A]/5 border-b md:border-b-0 md:border-r border-slate-200 p-4 flex flex-row md:flex-col space-x-2 md:space-x-0 md:space-y-2">
+              {[
+                "Guidelines",
+                "Key Elements",
+                "Email Structure",
+                "Cover Letter Structure",
+                "Cover Letter Best Practices",
+                "Best Practices for Networking Outreach",
+                "Do's and Don'ts",
+              ].map((section, idx) => (
+                <button
+                  key={section}
+                  className={`whitespace-nowrap md:whitespace-normal text-left px-4 py-2 rounded-lg flex items-center transition-colors font-medium text-sm ${
+                    activeGuidanceTab === idx
+                      ? "bg-[#59B7F2] text-white"
+                      : "text-[#1E3A8A] hover:bg-[#1E3A8A]/10"
+                  }`}
+                  onClick={() => setActiveGuidanceTab(idx)}
+                >
+                  {section}
+                </button>
+              ))}
+            </div>
+            {/* Main Content */}
+            <div className="flex-1 p-4 md:p-8">
+              {activeGuidanceTab === 0 && (
+                // Tips
+                <div>
+                  <h2 className="text-xl font-bold text-[#1E3A8A] mb-4">
+                    Guidelines
+                  </h2>
+                  <ul className="space-y-3 text-slate-700">
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      Use the following guidelines as a reference point to keep
+                      your messages concise and professional
+                    </li>
+                  </ul>
+                </div>
+              )}
+              {activeGuidanceTab === 1 && (
+                // Key Elements
+                <div>
+                  <h2 className="text-xl font-bold text-[#1E3A8A] mb-4">
+                    Key Elements
+                  </h2>
+                  <ul className="space-y-2 text-slate-700">
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>
+                        <strong className="text-[#1E3A8A]">
+                          Personalization:
+                        </strong>{" "}
+                        Reference specific aspects of their profile
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>
+                        <strong className="text-[#1E3A8A]">Brevity:</strong>{" "}
+                        Keep messages under 150 words
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>
+                        <strong className="text-[#1E3A8A]">
+                          Clear request:
+                        </strong>{" "}
+                        Specific, reasonable ask (information, brief call)
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>
+                        <strong className="text-[#1E3A8A]">
+                          Professional tone:
+                        </strong>{" "}
+                        Formal but conversational language
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              )}
+              {activeGuidanceTab === 2 && (
+                // Email Structure
+                <div>
+                  <h2 className="text-xl font-bold text-[#1E3A8A] mb-4">
+                    Email Structure
+                  </h2>
+                  <ul className="space-y-2 text-slate-700">
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>
+                        <strong className="text-[#1E3A8A]">
+                          Introduction:
+                        </strong>{" "}
+                        Who you are and purpose of email
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>
+                        <strong className="text-[#1E3A8A]">Body:</strong> Your
+                        relevant experience and specific qualifications
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>
+                        <strong className="text-[#1E3A8A]">
+                          Value proposition:
+                        </strong>{" "}
+                        What you can offer to the company
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>
+                        <strong className="text-[#1E3A8A]">
+                          Call to action:
+                        </strong>{" "}
+                        Request for conversation or next steps
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              )}
+              {activeGuidanceTab === 3 && (
+                // Cover Letter Structure
+                <div>
+                  <h2 className="text-xl font-bold text-[#1E3A8A] mb-4">
+                    Cover Letter Structure
+                  </h2>
+                  <ul className="space-y-2 text-slate-700">
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>
+                        <strong className="text-[#1E3A8A]">
+                          Opening paragraph:
+                        </strong>{" "}
+                        Specify the position you are applying for and express
+                        your interest
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>
+                        <strong className="text-[#1E3A8A]">
+                          Experience paragraphs:
+                        </strong>{" "}
+                        Highlight relevant experience with specific examples and
+                        achievements
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>
+                        <strong className="text-[#1E3A8A]">
+                          Education & skills:
+                        </strong>{" "}
+                        Summarize relevant education and transferable skills
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>
+                        <strong className="text-[#1E3A8A]">
+                          Closing paragraph:
+                        </strong>{" "}
+                        Express enthusiasm and include a call to action
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              )}
+              {activeGuidanceTab === 4 && (
+                // Cover Letter Best Practices
+                <div>
+                  <h2 className="text-xl font-bold text-[#1E3A8A] mb-4">
+                    Cover Letter Best Practices
+                  </h2>
+                  <ul className="space-y-2 text-slate-700">
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>
+                        Keep cover letters concise – aim for one page maximum
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>
+                        Address the letter to a specific person rather than "To
+                        Whom It May Concern"
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>
+                        Quantify achievements with specific numbers and
+                        percentages when possible
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>
+                        Tailor each cover letter to the specific company and
+                        role
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              )}
+              {activeGuidanceTab === 5 && (
+                // Best Practices for Networking Outreach
+                <div>
+                  <h2 className="text-xl font-bold text-[#1E3A8A] mb-4">
+                    Best Practices for Networking Outreach
+                  </h2>
+                  <p className="text-slate-700 mb-4">
+                    Effective networking outreach can dramatically increase your
+                    chances of landing interviews at top finance firms. Follow
+                    these best practices to make your messages stand out.
+                  </p>
+                  <ul className="space-y-2 text-slate-700">
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>
+                        Personalize each message with specific details about the
+                        company and role
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>
+                        Keep LinkedIn messages concise and under 150 words
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>
+                        Follow up politely if you do not hear back within 1-2
+                        weeks
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>
+                        Highlight relevant experience and skills that match the
+                        position
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span>
+                        Always include a clear call to action in your message
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              )}
+              {activeGuidanceTab === 6 && (
+                // Do's and Don'ts
+                <div>
+                  <h2 className="text-xl font-bold text-[#1E3A8A] mb-4">
+                    Do's and Don'ts
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <h3 className="font-semibold text-green-600 mb-2">Do:</h3>
+                      <ul className="space-y-2 text-slate-700">
+                        <li className="flex items-start">
+                          <span className="text-green-600 mr-2">✓</span>
+                          <span>
+                            Research the person and company thoroughly before
+                            reaching out
+                          </span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-green-600 mr-2">✓</span>
+                          <span>
+                            Make a specific connection to the recipient's
+                            background
+                          </span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-green-600 mr-2">✓</span>
+                          <span>Offer something of value when possible</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-green-600 mr-2">✓</span>
+                          <span>
+                            Proofread multiple times for grammar and spelling
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-red-600 mb-2">
+                        Do not:
+                      </h3>
+                      <ul className="space-y-2 text-slate-700">
+                        <li className="flex items-start">
+                          <span className="text-red-600 mr-2">✗</span>
+                          <span>
+                            Send generic messages that could apply to anyone
+                          </span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-red-600 mr-2">✗</span>
+                          <span>
+                            Make unreasonable requests (like lengthy calls) in
+                            first contact
+                          </span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-red-600 mr-2">✗</span>
+                          <span>Forget to follow up after initial contact</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-red-600 mr-2">✗</span>
+                          <span>
+                            Use overly casual language or slang in professional
+                            communication
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

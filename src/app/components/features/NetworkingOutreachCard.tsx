@@ -52,6 +52,30 @@ export default function NetworkingOutreachCard({
     }, 0);
   };
 
+  // Cloud overlay SVGs
+  const cloudOverlay = (
+    <div className="absolute inset-0 z-0 pointer-events-none">
+      <svg
+        className="absolute top-0 right-0 w-64 h-64 opacity-20"
+        viewBox="0 0 200 200"
+        fill="white"
+      >
+        <circle cx="60" cy="60" r="50" />
+        <circle cx="100" cy="70" r="60" />
+        <circle cx="140" cy="60" r="50" />
+      </svg>
+      <svg
+        className="absolute bottom-0 left-10 w-72 h-72 opacity-5"
+        viewBox="0 0 200 200"
+        fill="white"
+      >
+        <circle cx="60" cy="60" r="50" />
+        <circle cx="100" cy="70" r="60" />
+        <circle cx="140" cy="60" r="50" />
+      </svg>
+    </div>
+  );
+
   // If preview mode is enabled, show the card only
   if (isPreview) {
     return (
@@ -91,7 +115,8 @@ export default function NetworkingOutreachCard({
 
   // Full outreach view
   return (
-    <div className="bg-white rounded-xl shadow-xl w-full border border-slate-200">
+    <div className="relative bg-white rounded-xl shadow-xl w-full border border-slate-200">
+      {cloudOverlay}
       <div className="flex flex-col md:flex-row">
         {/* Sidebar with tabs */}
         <div className="w-full md:w-64 bg-[#1E3A8A]/5 md:min-h-[600px] border-r border-slate-200">
@@ -682,6 +707,33 @@ export default function NetworkingOutreachCard({
                       </li>
                     ))}
                   </ul>
+                </div>
+                <div className="flex flex-col items-center justify-center mt-4">
+                  <svg
+                    className="w-8 h-8 text-[#1E3A8A] mb-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 17a2 2 0 002-2v-2a2 2 0 10-4 0v2a2 2 0 002 2zm6-2v-2a6 6 0 10-12 0v2a2 2 0 00-2 2v3a2 2 0 002 2h12a2 2 0 002-2v-3a2 2 0 00-2-2z"
+                    />
+                  </svg>
+                  <button
+                    className="bg-[#1E3A8A] text-white px-4 py-2 rounded-md font-semibold shadow hover:bg-[#1E3A8A]/90 transition-colors focus:outline-none focus:ring-2 focus:ring-[#59B7F2]"
+                    type="button"
+                    onClick={() => {
+                      const el = document.getElementById("join-waitlist");
+                      if (el) {
+                        el.scrollIntoView({ behavior: "smooth" });
+                      }
+                    }}
+                  >
+                    Unlock with Pro
+                  </button>
                 </div>
               </div>
 
