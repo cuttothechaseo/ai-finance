@@ -4,7 +4,7 @@ import Stripe from 'stripe';
 
 // Initialize Stripe with your secret key (replace with env var in production)
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: '2025-01-27.acacia',
+  apiVersion: '2025-04-30.basil',
 });
 
 const PRICE_ID = 'price_1ROp1EFMxJP6Tixp9VTclFjD'; // $119 one-time
@@ -12,7 +12,7 @@ const PRICE_ID = 'price_1ROp1EFMxJP6Tixp9VTclFjD'; // $119 one-time
 export async function POST(req: NextRequest) {
   try {
     // Optionally, you can require authentication here and get user info
-    // const { user } = await getUserFromRequest(req);
+    // const { user } = await getUserFromRequest(req); test
 
     const origin = req.headers.get('origin') || 'http://localhost:3000';
     const success_url = `${origin}/success?session_id={CHECKOUT_SESSION_ID}`;
