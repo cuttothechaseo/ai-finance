@@ -201,90 +201,30 @@ export default function InterviewAnalysis({
                 <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                   Strengths
                 </h3>
-                <div className="filter blur-sm select-none pointer-events-none">
-                  <ul className="space-y-2">
-                    {analysis.strengths.map(
-                      (strength: string, index: number) => (
-                        <li key={index} className="flex items-start">
-                          <span className="text-[#59B7F2] mr-2">•</span>
-                          <span className="text-slate-700">{strength}</span>
-                        </li>
-                      )
-                    )}
-                  </ul>
-                </div>
-                <div className="flex flex-col items-center justify-center mt-4">
-                  <svg
-                    className="w-8 h-8 text-[#1E3A8A] mb-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 17a2 2 0 002-2v-2a2 2 0 10-4 0v2a2 2 0 002 2zm6-2v-2a6 6 0 10-12 0v2a2 2 0 00-2 2v3a2 2 0 002 2h12a2 2 0 002-2v-3a2 2 0 00-2-2z"
-                    />
-                  </svg>
-                  <button
-                    className="bg-[#1E3A8A] text-white px-4 py-2 rounded-md font-semibold shadow hover:bg-[#1E3A8A]/90 transition-colors focus:outline-none focus:ring-2 focus:ring-[#59B7F2]"
-                    type="button"
-                    onClick={() => {
-                      const el = document.getElementById("join-waitlist");
-                      if (el) {
-                        el.scrollIntoView({ behavior: "smooth" });
-                      }
-                    }}
-                  >
-                    Unlock with Pro
-                  </button>
-                </div>
+                <ul className="space-y-2">
+                  {analysis.strengths.map((strength: string, index: number) => (
+                    <li key={index} className="flex items-start">
+                      <span className="text-[#59B7F2] mr-2">•</span>
+                      <span className="text-slate-700">{strength}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
 
               <div className="flex flex-col h-full justify-between bg-white p-6 rounded-lg border border-slate-200">
                 <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                   Areas for Improvement
                 </h3>
-                <div className="filter blur-sm select-none pointer-events-none">
-                  <ul className="space-y-2">
-                    {analysis.areas_for_improvement.map(
-                      (area: string, index: number) => (
-                        <li key={index} className="flex items-start">
-                          <span className="text-[#59B7F2] mr-2">•</span>
-                          <span className="text-slate-700">{area}</span>
-                        </li>
-                      )
-                    )}
-                  </ul>
-                </div>
-                <div className="flex flex-col items-center justify-center mt-4">
-                  <svg
-                    className="w-8 h-8 text-[#1E3A8A] mb-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 17a2 2 0 002-2v-2a2 2 0 10-4 0v2a2 2 0 002 2zm6-2v-2a6 6 0 10-12 0v2a2 2 0 00-2 2v3a2 2 0 002 2h12a2 2 0 002-2v-3a2 2 0 00-2-2z"
-                    />
-                  </svg>
-                  <button
-                    className="bg-[#1E3A8A] text-white px-4 py-2 rounded-md font-semibold shadow hover:bg-[#1E3A8A]/90 transition-colors focus:outline-none focus:ring-2 focus:ring-[#59B7F2]"
-                    type="button"
-                    onClick={() => {
-                      const el = document.getElementById("join-waitlist");
-                      if (el) {
-                        el.scrollIntoView({ behavior: "smooth" });
-                      }
-                    }}
-                  >
-                    Unlock with Pro
-                  </button>
-                </div>
+                <ul className="space-y-2">
+                  {analysis.areas_for_improvement.map(
+                    (area: string, index: number) => (
+                      <li key={index} className="flex items-start">
+                        <span className="text-[#59B7F2] mr-2">•</span>
+                        <span className="text-slate-700">{area}</span>
+                      </li>
+                    )
+                  )}
+                </ul>
               </div>
             </div>
 
@@ -293,44 +233,36 @@ export default function InterviewAnalysis({
                 <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                   Technical Proficiency
                 </h3>
-                <div className="filter blur-sm select-none pointer-events-none">
-                  <p className="text-slate-700">
-                    {analysis.detailed_feedback.technical_proficiency}
-                  </p>
-                </div>
+                <p className="text-slate-700">
+                  {analysis.detailed_feedback.technical_proficiency}
+                </p>
               </div>
 
               <div className="bg-white p-6 rounded-lg border border-slate-200">
                 <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                   Behavioral Insights
                 </h3>
-                <div className="filter blur-sm select-none pointer-events-none">
-                  <p className="text-slate-700">
-                    {analysis.detailed_feedback.behavioral_insights}
-                  </p>
-                </div>
+                <p className="text-slate-700">
+                  {analysis.detailed_feedback.behavioral_insights}
+                </p>
               </div>
 
               <div className="bg-white p-6 rounded-lg border border-slate-200">
                 <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                   Communication Analysis
                 </h3>
-                <div className="filter blur-sm select-none pointer-events-none">
-                  <p className="text-slate-700">
-                    {analysis.detailed_feedback.communication_analysis}
-                  </p>
-                </div>
+                <p className="text-slate-700">
+                  {analysis.detailed_feedback.communication_analysis}
+                </p>
               </div>
 
               <div className="bg-white p-6 rounded-lg border border-slate-200">
                 <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                   Transcript Quality
                 </h3>
-                <div className="filter blur-sm select-none pointer-events-none">
-                  <p className="text-slate-700">
-                    {analysis.detailed_feedback.transcript_quality_notes}
-                  </p>
-                </div>
+                <p className="text-slate-700">
+                  {analysis.detailed_feedback.transcript_quality_notes}
+                </p>
               </div>
             </div>
           </motion.div>
@@ -445,19 +377,17 @@ export default function InterviewAnalysis({
                     </svg>
                     Key Strengths
                   </h4>
-                  <div className="filter blur-sm select-none pointer-events-none">
-                    <ul className="space-y-2">
-                      {analysis.strengths.slice(0, 3).map((strength, index) => (
-                        <li
-                          key={index}
-                          className="text-sm text-slate-700 flex items-start"
-                        >
-                          <span className="text-[#59B7F2] mr-2">•</span>
-                          <span className="line-clamp-2">{strength}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  <ul className="space-y-2">
+                    {analysis.strengths.slice(0, 3).map((strength, index) => (
+                      <li
+                        key={index}
+                        className="text-sm text-slate-700 flex items-start"
+                      >
+                        <span className="text-[#59B7F2] mr-2">•</span>
+                        <span className="line-clamp-2">{strength}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
                 {/* Areas for Improvement */}
                 <div>
@@ -477,21 +407,19 @@ export default function InterviewAnalysis({
                     </svg>
                     Areas to Improve
                   </h4>
-                  <div className="filter blur-sm select-none pointer-events-none">
-                    <ul className="space-y-2">
-                      {analysis.areas_for_improvement
-                        .slice(0, 3)
-                        .map((area, index) => (
-                          <li
-                            key={index}
-                            className="text-sm text-slate-700 flex items-start"
-                          >
-                            <span className="text-[#59B7F2] mr-2">•</span>
-                            <span className="line-clamp-2">{area}</span>
-                          </li>
-                        ))}
-                    </ul>
-                  </div>
+                  <ul className="space-y-2">
+                    {analysis.areas_for_improvement
+                      .slice(0, 3)
+                      .map((area, index) => (
+                        <li
+                          key={index}
+                          className="text-sm text-slate-700 flex items-start"
+                        >
+                          <span className="text-[#59B7F2] mr-2">•</span>
+                          <span className="line-clamp-2">{area}</span>
+                        </li>
+                      ))}
+                  </ul>
                 </div>
                 {/* Performance Metrics */}
                 <div>
@@ -683,19 +611,17 @@ export default function InterviewAnalysis({
                     </svg>
                     Key Strengths
                   </h4>
-                  <div className="filter blur-sm select-none pointer-events-none">
-                    <ul className="space-y-2">
-                      {analysis.strengths.slice(0, 3).map((strength, index) => (
-                        <li
-                          key={index}
-                          className="text-sm text-slate-700 flex items-start"
-                        >
-                          <span className="text-[#59B7F2] mr-2">•</span>
-                          <span className="line-clamp-2">{strength}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  <ul className="space-y-2">
+                    {analysis.strengths.slice(0, 3).map((strength, index) => (
+                      <li
+                        key={index}
+                        className="text-sm text-slate-700 flex items-start"
+                      >
+                        <span className="text-[#59B7F2] mr-2">•</span>
+                        <span className="line-clamp-2">{strength}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
 
                 {/* Areas for Improvement */}
@@ -716,21 +642,19 @@ export default function InterviewAnalysis({
                     </svg>
                     Areas to Improve
                   </h4>
-                  <div className="filter blur-sm select-none pointer-events-none">
-                    <ul className="space-y-2">
-                      {analysis.areas_for_improvement
-                        .slice(0, 3)
-                        .map((area, index) => (
-                          <li
-                            key={index}
-                            className="text-sm text-slate-700 flex items-start"
-                          >
-                            <span className="text-[#59B7F2] mr-2">•</span>
-                            <span className="line-clamp-2">{area}</span>
-                          </li>
-                        ))}
-                    </ul>
-                  </div>
+                  <ul className="space-y-2">
+                    {analysis.areas_for_improvement
+                      .slice(0, 3)
+                      .map((area, index) => (
+                        <li
+                          key={index}
+                          className="text-sm text-slate-700 flex items-start"
+                        >
+                          <span className="text-[#59B7F2] mr-2">•</span>
+                          <span className="line-clamp-2">{area}</span>
+                        </li>
+                      ))}
+                  </ul>
                 </div>
 
                 {/* Performance Metrics */}

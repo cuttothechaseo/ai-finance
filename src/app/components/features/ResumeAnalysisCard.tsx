@@ -406,43 +406,14 @@ export default function ResumeAnalysisCard({
                     <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                       Strengths
                     </h3>
-                    <div className="filter blur-sm select-none pointer-events-none">
-                      <ul className="space-y-2">
-                        {analysisData.strengths.map((item, index) => (
-                          <li key={index} className="flex items-start">
-                            <span className="text-[#59B7F2] mr-2">•</span>
-                            <span className="text-slate-700">{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-center justify-center mt-4">
-                    <svg
-                      className="w-8 h-8 text-[#1E3A8A] mb-2"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 17a2 2 0 002-2v-2a2 2 0 10-4 0v2a2 2 0 002 2zm6-2v-2a6 6 0 10-12 0v2a2 2 0 00-2 2v3a2 2 0 002 2h12a2 2 0 002-2v-3a2 2 0 00-2-2z"
-                      />
-                    </svg>
-                    <button
-                      className="bg-[#1E3A8A] text-white px-4 py-2 rounded-md font-semibold shadow hover:bg-[#1E3A8A]/90 transition-colors focus:outline-none focus:ring-2 focus:ring-[#59B7F2]"
-                      type="button"
-                      onClick={() => {
-                        const el = document.getElementById("join-waitlist");
-                        if (el) {
-                          el.scrollIntoView({ behavior: "smooth" });
-                        }
-                      }}
-                    >
-                      Unlock with Pro
-                    </button>
+                    <ul className="space-y-2">
+                      {analysisData.strengths.map((item, index) => (
+                        <li key={index} className="flex items-start">
+                          <span className="text-[#59B7F2] mr-2">•</span>
+                          <span className="text-slate-700">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
                 <div className="flex flex-col h-full justify-between bg-white p-6 rounded-lg border border-slate-200">
@@ -450,43 +421,14 @@ export default function ResumeAnalysisCard({
                     <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                       Areas for Improvement
                     </h3>
-                    <div className="filter blur-sm select-none pointer-events-none">
-                      <ul className="space-y-2">
-                        {analysisData.improvements.map((item, index) => (
-                          <li key={index} className="flex items-start">
-                            <span className="text-[#59B7F2] mr-2">•</span>
-                            <span className="text-slate-700">{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-center justify-center mt-4">
-                    <svg
-                      className="w-8 h-8 text-[#1E3A8A] mb-2"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 17a2 2 0 002-2v-2a2 2 0 10-4 0v2a2 2 0 002 2zm6-2v-2a6 6 0 10-12 0v2a2 2 0 00-2 2v3a2 2 0 002 2h12a2 2 0 002-2v-3a2 2 0 00-2-2z"
-                      />
-                    </svg>
-                    <button
-                      className="bg-[#1E3A8A] text-white px-4 py-2 rounded-md font-semibold shadow hover:bg-[#1E3A8A]/90 transition-colors focus:outline-none focus:ring-2 focus:ring-[#59B7F2]"
-                      type="button"
-                      onClick={() => {
-                        const el = document.getElementById("join-waitlist");
-                        if (el) {
-                          el.scrollIntoView({ behavior: "smooth" });
-                        }
-                      }}
-                    >
-                      Unlock with Pro
-                    </button>
+                    <ul className="space-y-2">
+                      {analysisData.improvements.map((item, index) => (
+                        <li key={index} className="flex items-start">
+                          <span className="text-[#59B7F2] mr-2">•</span>
+                          <span className="text-slate-700">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -552,58 +494,29 @@ export default function ResumeAnalysisCard({
                 <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                   Improvement Suggestions
                 </h3>
-                <div className="filter blur-sm select-none pointer-events-none">
-                  <ul className="space-y-2">
-                    <li className="flex items-start">
-                      <span className="text-[#59B7F2] mr-2">•</span>
-                      <span className="text-slate-700">
-                        Add specific metrics and achievements to showcase your
-                        impact
-                      </span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-[#59B7F2] mr-2">•</span>
-                      <span className="text-slate-700">
-                        Enhance role descriptions to focus more on your
-                        contributions
-                      </span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-[#59B7F2] mr-2">•</span>
-                      <span className="text-slate-700">
-                        Tailor your experience to align with the requirements of
-                        target positions
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="flex flex-col items-center justify-center mt-4">
-                  <svg
-                    className="w-8 h-8 text-[#1E3A8A] mb-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 17a2 2 0 002-2v-2a2 2 0 10-4 0v2a2 2 0 002 2zm6-2v-2a6 6 0 10-12 0v2a2 2 0 00-2 2v3a2 2 0 002 2h12a2 2 0 002-2v-3a2 2 0 00-2-2z"
-                    />
-                  </svg>
-                  <button
-                    className="bg-[#1E3A8A] text-white px-4 py-2 rounded-md font-semibold shadow hover:bg-[#1E3A8A]/90 transition-colors focus:outline-none focus:ring-2 focus:ring-[#59B7F2]"
-                    type="button"
-                    onClick={() => {
-                      const el = document.getElementById("join-waitlist");
-                      if (el) {
-                        el.scrollIntoView({ behavior: "smooth" });
-                      }
-                    }}
-                  >
-                    Unlock with Pro
-                  </button>
-                </div>
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <span className="text-[#59B7F2] mr-2">•</span>
+                    <span className="text-slate-700">
+                      Add specific metrics and achievements to showcase your
+                      impact
+                    </span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-[#59B7F2] mr-2">•</span>
+                    <span className="text-slate-700">
+                      Enhance role descriptions to focus more on your
+                      contributions
+                    </span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-[#59B7F2] mr-2">•</span>
+                    <span className="text-slate-700">
+                      Tailor your experience to align with the requirements of
+                      target positions
+                    </span>
+                  </li>
+                </ul>
               </div>
             </div>
           )}
@@ -645,65 +558,36 @@ export default function ResumeAnalysisCard({
                 <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                   Improvement Suggestions
                 </h3>
-                <div className="filter blur-sm select-none pointer-events-none">
-                  <ul className="space-y-2">
-                    <li className="flex items-start">
-                      <span className="text-[#59B7F2] mr-2">•</span>
-                      <span className="text-slate-700">
-                        Restructure content with clear section headings and
-                        consistent formatting
-                      </span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-[#59B7F2] mr-2">•</span>
-                      <span className="text-slate-700">
-                        Use bullet points consistently with action verbs at the
-                        beginning of each point
-                      </span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-[#59B7F2] mr-2">•</span>
-                      <span className="text-slate-700">
-                        Balance white space and create clear visual separation
-                        between sections
-                      </span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-[#59B7F2] mr-2">•</span>
-                      <span className="text-slate-700">
-                        Consider using a modern resume template with
-                        professional formatting
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="flex flex-col items-center justify-center mt-4">
-                  <svg
-                    className="w-8 h-8 text-[#1E3A8A] mb-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 17a2 2 0 002-2v-2a2 2 0 10-4 0v2a2 2 0 002 2zm6-2v-2a6 6 0 10-12 0v2a2 2 0 00-2 2v3a2 2 0 002 2h12a2 2 0 002-2v-3a2 2 0 00-2-2z"
-                    />
-                  </svg>
-                  <button
-                    className="bg-[#1E3A8A] text-white px-4 py-2 rounded-md font-semibold shadow hover:bg-[#1E3A8A]/90 transition-colors focus:outline-none focus:ring-2 focus:ring-[#59B7F2]"
-                    type="button"
-                    onClick={() => {
-                      const el = document.getElementById("join-waitlist");
-                      if (el) {
-                        el.scrollIntoView({ behavior: "smooth" });
-                      }
-                    }}
-                  >
-                    Unlock with Pro
-                  </button>
-                </div>
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <span className="text-[#59B7F2] mr-2">•</span>
+                    <span className="text-slate-700">
+                      Restructure content with clear section headings and
+                      consistent formatting
+                    </span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-[#59B7F2] mr-2">•</span>
+                    <span className="text-slate-700">
+                      Use bullet points consistently with action verbs at the
+                      beginning of each point
+                    </span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-[#59B7F2] mr-2">•</span>
+                    <span className="text-slate-700">
+                      Balance white space and create clear visual separation
+                      between sections
+                    </span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-[#59B7F2] mr-2">•</span>
+                    <span className="text-slate-700">
+                      Consider using a modern resume template with professional
+                      formatting
+                    </span>
+                  </li>
+                </ul>
               </div>
             </div>
           )}
@@ -744,55 +628,26 @@ export default function ResumeAnalysisCard({
                 <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                   Improvement Suggestions
                 </h3>
-                <div className="filter blur-sm select-none pointer-events-none">
-                  <ul className="space-y-2">
-                    <li className="flex items-start">
-                      <span className="text-[#59B7F2] mr-2">•</span>
-                      <span className="text-slate-700">
-                        Highlight industry-specific keywords and skills
-                      </span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-[#59B7F2] mr-2">•</span>
-                      <span className="text-slate-700">
-                        Showcase relevant technical skills for finance roles
-                      </span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-[#59B7F2] mr-2">•</span>
-                      <span className="text-slate-700">
-                        Emphasize your educational qualifications in finance
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="flex flex-col items-center justify-center mt-4">
-                  <svg
-                    className="w-8 h-8 text-[#1E3A8A] mb-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 17a2 2 0 002-2v-2a2 2 0 10-4 0v2a2 2 0 002 2zm6-2v-2a6 6 0 10-12 0v2a2 2 0 00-2 2v3a2 2 0 002 2h12a2 2 0 002-2v-3a2 2 0 00-2-2z"
-                    />
-                  </svg>
-                  <button
-                    className="bg-[#1E3A8A] text-white px-4 py-2 rounded-md font-semibold shadow hover:bg-[#1E3A8A]/90 transition-colors focus:outline-none focus:ring-2 focus:ring-[#59B7F2]"
-                    type="button"
-                    onClick={() => {
-                      const el = document.getElementById("join-waitlist");
-                      if (el) {
-                        el.scrollIntoView({ behavior: "smooth" });
-                      }
-                    }}
-                  >
-                    Unlock with Pro
-                  </button>
-                </div>
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <span className="text-[#59B7F2] mr-2">•</span>
+                    <span className="text-slate-700">
+                      Highlight industry-specific keywords and skills
+                    </span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-[#59B7F2] mr-2">•</span>
+                    <span className="text-slate-700">
+                      Showcase relevant technical skills for finance roles
+                    </span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-[#59B7F2] mr-2">•</span>
+                    <span className="text-slate-700">
+                      Emphasize your educational qualifications in finance
+                    </span>
+                  </li>
+                </ul>
               </div>
             </div>
           )}
@@ -831,57 +686,28 @@ export default function ResumeAnalysisCard({
                 <h3 className="text-lg font-bold text-[#1E3A8A] mb-3">
                   Improvement Suggestions
                 </h3>
-                <div className="filter blur-sm select-none pointer-events-none">
-                  <ul className="space-y-2">
-                    <li className="flex items-start">
-                      <span className="text-[#59B7F2] mr-2">•</span>
-                      <span className="text-slate-700">
-                        Add more quantifiable results like portfolio size and
-                        return percentages
-                      </span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-[#59B7F2] mr-2">•</span>
-                      <span className="text-slate-700">
-                        Highlight leadership contributions and initiative-taking
-                      </span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-[#59B7F2] mr-2">•</span>
-                      <span className="text-slate-700">
-                        Demonstrate problem-solving abilities and how you
-                        overcame challenges
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="flex flex-col items-center justify-center mt-4">
-                  <svg
-                    className="w-8 h-8 text-[#1E3A8A] mb-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 17a2 2 0 002-2v-2a2 2 0 10-4 0v2a2 2 0 002 2zm6-2v-2a6 6 0 10-12 0v2a2 2 0 00-2 2v3a2 2 0 002 2h12a2 2 0 002-2v-3a2 2 0 00-2-2z"
-                    />
-                  </svg>
-                  <button
-                    className="bg-[#1E3A8A] text-white px-4 py-2 rounded-md font-semibold shadow hover:bg-[#1E3A8A]/90 transition-colors focus:outline-none focus:ring-2 focus:ring-[#59B7F2]"
-                    type="button"
-                    onClick={() => {
-                      const el = document.getElementById("join-waitlist");
-                      if (el) {
-                        el.scrollIntoView({ behavior: "smooth" });
-                      }
-                    }}
-                  >
-                    Unlock with Pro
-                  </button>
-                </div>
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <span className="text-[#59B7F2] mr-2">•</span>
+                    <span className="text-slate-700">
+                      Add more quantifiable results like portfolio size and
+                      return percentages
+                    </span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-[#59B7F2] mr-2">•</span>
+                    <span className="text-slate-700">
+                      Highlight leadership contributions and initiative-taking
+                    </span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-[#59B7F2] mr-2">•</span>
+                    <span className="text-slate-700">
+                      Demonstrate problem-solving abilities and how you overcame
+                      challenges
+                    </span>
+                  </li>
+                </ul>
               </div>
             </div>
           )}
@@ -939,40 +765,11 @@ export default function ResumeAnalysisCard({
                       <p className="text-sm text-slate-600 mb-1">
                         Improved Text:
                       </p>
-                      <div className="filter blur-sm select-none pointer-events-none">
-                        <div className="bg-[#59B7F2]/10 border border-[#B3E5FC] p-3 rounded text-[#1E3A8A] text-sm">
-                          &quot;Financial modeling (DCF, LBO, M&amp;A), Python
-                          for data analysis, Excel/VBA, company valuation, pitch
-                          book creation, IPO execution process, SQL, Bloomberg
-                          Terminal&quot;
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-center justify-center mt-4">
-                        <svg
-                          className="w-8 h-8 text-[#1E3A8A] mb-2"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 17a2 2 0 002-2v-2a2 2 0 10-4 0v2a2 2 0 002 2zm6-2v-2a6 6 0 10-12 0v2a2 2 0 00-2 2v3a2 2 0 002 2h12a2 2 0 002-2v-3a2 2 0 00-2-2z"
-                          />
-                        </svg>
-                        <button
-                          className="bg-[#1E3A8A] text-white px-4 py-2 rounded-md font-semibold shadow hover:bg-[#1E3A8A]/90 transition-colors focus:outline-none focus:ring-2 focus:ring-[#59B7F2]"
-                          type="button"
-                          onClick={() => {
-                            const el = document.getElementById("join-waitlist");
-                            if (el) {
-                              el.scrollIntoView({ behavior: "smooth" });
-                            }
-                          }}
-                        >
-                          Unlock with Pro
-                        </button>
+                      <div className="bg-[#59B7F2]/10 border border-[#B3E5FC] p-3 rounded text-[#1E3A8A] text-sm">
+                        &quot;Financial modeling (DCF, LBO, M&amp;A), Python for
+                        data analysis, Excel/VBA, company valuation, pitch book
+                        creation, IPO execution process, SQL, Bloomberg
+                        Terminal&quot;
                       </div>
                     </div>
                   </div>
@@ -995,43 +792,14 @@ export default function ResumeAnalysisCard({
                       <p className="text-sm text-slate-600 mb-1">
                         Improved Text:
                       </p>
-                      <div className="filter blur-sm select-none pointer-events-none">
-                        <div className="bg-[#59B7F2]/10 border border-[#B3E5FC] p-3 rounded text-[#1E3A8A] text-sm">
-                          &quot;CORNELL UNIVERSITY | Ithaca, NY
-                          <br />
-                          Bachelor of Science in Finance, Minor in Computer
-                          Science | GPA: 3.8/4.0 | May 2026
-                          <br />• Relevant Coursework: Corporate Finance,
-                          Investment Banking, Financial Modeling, Data
-                          Structures, Algorithms, Database Systems&quot;
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-center justify-center mt-4">
-                        <svg
-                          className="w-8 h-8 text-[#1E3A8A] mb-2"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 17a2 2 0 002-2v-2a2 2 0 10-4 0v2a2 2 0 002 2zm6-2v-2a6 6 0 10-12 0v2a2 2 0 00-2 2v3a2 2 0 002 2h12a2 2 0 002-2v-3a2 2 0 00-2-2z"
-                          />
-                        </svg>
-                        <button
-                          className="bg-[#1E3A8A] text-white px-4 py-2 rounded-md font-semibold shadow hover:bg-[#1E3A8A]/90 transition-colors focus:outline-none focus:ring-2 focus:ring-[#59B7F2]"
-                          type="button"
-                          onClick={() => {
-                            const el = document.getElementById("join-waitlist");
-                            if (el) {
-                              el.scrollIntoView({ behavior: "smooth" });
-                            }
-                          }}
-                        >
-                          Unlock with Pro
-                        </button>
+                      <div className="bg-[#59B7F2]/10 border border-[#B3E5FC] p-3 rounded text-[#1E3A8A] text-sm">
+                        &quot;CORNELL UNIVERSITY | Ithaca, NY
+                        <br />
+                        Bachelor of Science in Finance, Minor in Computer
+                        Science | GPA: 3.8/4.0 | May 2026
+                        <br />• Relevant Coursework: Corporate Finance,
+                        Investment Banking, Financial Modeling, Data Structures,
+                        Algorithms, Database Systems&quot;
                       </div>
                     </div>
                   </div>
