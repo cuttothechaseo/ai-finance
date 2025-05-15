@@ -313,7 +313,6 @@ export default function Sidebar({
                     {item.name}
                   </motion.span>
                 </Link>
-
                 {/* Tooltip for collapsed state */}
                 <Tooltip
                   show={!isOpen && !isMobile && activeTooltip === item.name}

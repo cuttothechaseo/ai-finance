@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 const CheckIcon = () => (
   <svg
@@ -15,6 +16,27 @@ const CheckIcon = () => (
 );
 
 export default function Pricing() {
+  const [loading, setLoading] = useState(false);
+
+  const handleCheckout = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/stripe", {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Failed to create checkout session.");
+      }
+    } catch (err) {
+      alert("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section
       id="join-waitlist"
@@ -101,8 +123,10 @@ export default function Pricing() {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             className="w-full py-4 bg-[#1E3A8A] text-white text-lg font-semibold rounded-full shadow hover:bg-[#1E3A8A]/90 transition mb-2"
+            onClick={handleCheckout}
+            disabled={loading}
           >
-            Get Instant Access
+            {loading ? "Redirecting..." : "Get Instant Access"}
           </motion.button>
           <p className="text-xs text-[#1E3A8A]/70 text-center mt-2">
             One-time payment. Instant access forever.
