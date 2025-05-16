@@ -93,11 +93,17 @@ export default function Hero() {
     <section className="relative min-h-screen flex items-center justify-center bg-[#59B7F2] overflow-hidden pt-20">
       {/* Cloud elements using CSS */}
       <div className="absolute inset-0 z-0 overflow-hidden">
-        {/* Top Right Cloud */}
+        {/* Top Right Cloud - right to left */}
         <motion.div
           className="absolute top-0 right-0 w-64 h-64"
-          animate={{ y: [0, -8, 0], x: [0, 5, 0] }}
-          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+          initial={{ x: "110vw" }}
+          animate={{ x: "-30vw" }}
+          transition={{
+            duration: 40,
+            repeat: Infinity,
+            repeatType: "loop",
+            ease: "linear",
+          }}
         >
           <div className="cloud-shape opacity-20">
             <div className="cloud-circle cloud-circle-1"></div>
@@ -106,15 +112,17 @@ export default function Hero() {
           </div>
         </motion.div>
 
-        {/* Middle Left Cloud */}
+        {/* Middle Left Cloud - left to right */}
         <motion.div
           className="absolute top-[30%] left-0 w-56 h-56"
-          animate={{ y: [0, 10, 0], x: [0, 8, 0] }}
+          initial={{ x: "-30vw" }}
+          animate={{ x: "110vw" }}
           transition={{
-            duration: 20,
+            duration: 55,
             repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1,
+            repeatType: "loop",
+            ease: "linear",
+            delay: 10,
           }}
         >
           <div className="cloud-shape opacity-20">
@@ -124,15 +132,17 @@ export default function Hero() {
           </div>
         </motion.div>
 
-        {/* Bottom Left Cloud */}
+        {/* Bottom Left Cloud - left to right */}
         <motion.div
           className="absolute bottom-0 left-0 w-72 h-72"
-          animate={{ y: [0, -12, 0], x: [0, 10, 0] }}
+          initial={{ x: "-30vw" }}
+          animate={{ x: "110vw" }}
           transition={{
-            duration: 22,
+            duration: 60,
             repeat: Infinity,
-            ease: "easeInOut",
-            delay: 2,
+            repeatType: "loop",
+            ease: "linear",
+            delay: 20,
           }}
         >
           <div className="cloud-shape opacity-20">
@@ -142,15 +152,17 @@ export default function Hero() {
           </div>
         </motion.div>
 
-        {/* Small Bottom Right Cloud */}
+        {/* Small Bottom Right Cloud - right to left */}
         <motion.div
           className="absolute bottom-[20%] right-[10%] w-40 h-40"
-          animate={{ y: [0, 8, 0], x: [0, -5, 0] }}
+          initial={{ x: "110vw" }}
+          animate={{ x: "-30vw" }}
           transition={{
-            duration: 15,
+            duration: 35,
             repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1.5,
+            repeatType: "loop",
+            ease: "linear",
+            delay: 15,
           }}
         >
           <div className="cloud-shape opacity-20">
@@ -160,15 +172,17 @@ export default function Hero() {
           </div>
         </motion.div>
 
-        {/* Small Top Left Cloud */}
+        {/* Small Top Left Cloud - left to right */}
         <motion.div
           className="absolute top-[15%] left-[20%] w-32 h-32"
-          animate={{ y: [0, 6, 0], x: [0, 6, 0] }}
+          initial={{ x: "-30vw" }}
+          animate={{ x: "110vw" }}
           transition={{
-            duration: 16,
+            duration: 45,
             repeat: Infinity,
-            ease: "easeInOut",
-            delay: 0.5,
+            repeatType: "loop",
+            ease: "linear",
+            delay: 5,
           }}
         >
           <div className="cloud-shape opacity-20">
