@@ -313,7 +313,7 @@ export default function InterviewPage({
       await vapi.start({
         name: "Finance Interviewer",
         firstMessage:
-          "Hello! I'm your finance interviewer today. I'll be asking you questions about your experience and knowledge in finance. Are you ready to begin the interview?",
+          "Hello! I'm your AI interviewer. Are you ready to begin the interview?",
         transcriber: {
           provider: "deepgram",
           model: "nova-2",
@@ -559,7 +559,7 @@ Important:
             {interview.company} - {interview.role}
           </p>
           <p className="text-lg">
-            {interview.questions.length} questions • {interview.interview_type}
+            {interview.questions.length} Questions • {interview.interview_type}
           </p>
         </div>
         <span className="px-3 py-1 rounded-full text-lg font-medium bg-white/10 text-white">

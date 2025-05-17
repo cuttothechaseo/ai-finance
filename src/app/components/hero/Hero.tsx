@@ -96,7 +96,7 @@ export default function Hero() {
         {/* Top Right Cloud - right to left */}
         <motion.div
           className="absolute top-0 right-0 w-64 h-64"
-          initial={{ x: "110vw" }}
+          initial={{ x: 0 }}
           animate={{ x: "-30vw" }}
           transition={{
             duration: 40,
@@ -115,7 +115,7 @@ export default function Hero() {
         {/* Middle Left Cloud - left to right */}
         <motion.div
           className="absolute top-[30%] left-0 w-56 h-56"
-          initial={{ x: "-30vw" }}
+          initial={{ x: 0 }}
           animate={{ x: "110vw" }}
           transition={{
             duration: 55,
@@ -135,7 +135,7 @@ export default function Hero() {
         {/* Bottom Left Cloud - left to right */}
         <motion.div
           className="absolute bottom-0 left-0 w-72 h-72"
-          initial={{ x: "-30vw" }}
+          initial={{ x: 0 }}
           animate={{ x: "110vw" }}
           transition={{
             duration: 60,
@@ -155,7 +155,7 @@ export default function Hero() {
         {/* Small Bottom Right Cloud - right to left */}
         <motion.div
           className="absolute bottom-[20%] right-[10%] w-40 h-40"
-          initial={{ x: "110vw" }}
+          initial={{ x: 0 }}
           animate={{ x: "-30vw" }}
           transition={{
             duration: 35,
@@ -175,7 +175,7 @@ export default function Hero() {
         {/* Small Top Left Cloud - left to right */}
         <motion.div
           className="absolute top-[15%] left-[20%] w-32 h-32"
-          initial={{ x: "-30vw" }}
+          initial={{ x: 0 }}
           animate={{ x: "110vw" }}
           transition={{
             duration: 45,
