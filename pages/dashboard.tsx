@@ -115,7 +115,7 @@ export default function Dashboard() {
   const renderSection = () => {
     switch (activeTab) {
       case "profile":
-        return <ProfileSection user={user} />;
+        return <ProfileSection />;
       case "resume":
         return <ResumeSection user={user} />;
       case "networking":
@@ -125,7 +125,7 @@ export default function Dashboard() {
       case "settings":
         return <SettingsSection user={user} />;
       default:
-        return <ProfileSection user={user} />;
+        return <ProfileSection />;
     }
   };
 
