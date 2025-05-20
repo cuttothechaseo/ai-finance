@@ -116,7 +116,7 @@ export default function DashboardLayout({
         className={`flex-1 transition-all duration-300 relative z-10`}
       >
         {/* Navbar for mobile and desktop */}
-        <Navbar user={user} onLogout={onLogout} toggleSidebar={toggleSidebar} />
+        <Navbar toggleSidebar={toggleSidebar} />
 
         {/* Main Content Area with animated transitions */}
         <main className="px-4 sm:px-6 lg:px-8 py-6 overflow-auto h-[calc(100vh-64px)]">
