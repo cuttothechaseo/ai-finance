@@ -20,8 +20,8 @@ export default function Navbar({
 
   // Use provided user or fallback to mock data if not available
   const user = propUser || {
-    name: "Chase Ottimo",
-    email: "chaseottimo@gmail.com",
+    name: "user",
+    email: "",
   };
 
   // Close dropdown when clicking outside

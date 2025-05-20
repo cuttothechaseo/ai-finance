@@ -64,8 +64,8 @@ export default function Dashboard() {
         // Create a properly typed user object with the data from Supabase
         const typedUserData: UserData = {
           ...userData,
-          name: userData.name || "Chase Ottimo", // Ensure name is set with a fallback
-          email: userData.email || "chaseottimo@gmail.com", // Ensure email is set with a fallback
+          name: userData.name || "user", // Ensure name is set with a fallback
+          email: userData.email || "", // Ensure email is set with a fallback
           resumes: userData.resumes || [],
           resumeCount: userData.resumes ? userData.resumes.length : 0,
           analysesCount: userData.analysesCount || 0,
@@ -78,8 +78,8 @@ export default function Dashboard() {
         // If error fetching user, set default user data instead of redirecting
         const defaultUser: UserData = {
           id: "default",
-          name: "Chase Ottimo",
-          email: "chaseottimo@gmail.com",
+          name: "user",
+          email: "",
           resumes: [],
           resumeCount: 0,
           analysesCount: 0,

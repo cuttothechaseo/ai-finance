@@ -52,8 +52,8 @@ export default function InterviewDashboardNavbar({
 
   // Mock user data (to be replaced with actual authentication)
   const user = {
-    name: "Chase Ottimo",
-    email: "chaseottimo@gmail.com",
+    name: "user",
+    email: "",
   };
 
   const getUserInitials = () => {
