@@ -68,6 +68,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
+    window.history.scrollRestoration = "manual";
+  }
+
   return (
     <html lang="en">
       <head>

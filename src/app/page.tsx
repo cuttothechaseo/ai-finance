@@ -41,7 +41,12 @@ export default function Home() {
 
   useEffect(() => {
     // Scroll to top when page loads
-    window.scrollTo(0, 0);
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "manual";
+      }
+    }
 
     controls.start("visible");
   }, [controls]);

@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useContext, useState, useRef, useEffect } from "react";
 import { WaitlistContext } from "@/app/contexts/WaitlistContext";
 import Link from "next/link";
+import { useUser } from "@/components/AuthProvider";
+import { logOut } from "@lib/auth";
 
 const navLinks = [
   { name: "AI-Powered Features", href: "#features", id: "features" },
@@ -22,6 +24,7 @@ export default function Navbar() {
   const { setIsModalOpen } = useContext(WaitlistContext);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { user, loading } = useUser();
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -41,6 +44,11 @@ export default function Navbar() {
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleLogout = async () => {
+    await logOut();
+    window.location.href = "/";
   };
 
   // Close dropdown when clicking outside
@@ -99,20 +107,39 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center space-x-3">
-          <Link
-            href="/login"
-            className="px-4 py-2 bg-white text-[#1E3A8A] text-sm font-medium rounded-lg border border-[#1E3A8A] shadow-sm hover:bg-white/90 hover:shadow-md transition-all duration-200 flex items-center"
-          >
-            <span className="relative z-10 flex items-center">Sign In</span>
-          </Link>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            onClick={() => scrollToSection("join-waitlist")}
-            className="px-5 py-2 bg-[#1E3A8A] text-white text-base font-semibold rounded-lg shadow-md hover:bg-[#1E3A8A]/90 transition-all duration-200 flex items-center border-2 border-[#1E3A8A]"
-          >
-            Get Instant Access
-          </motion.button>
+          {!loading && user ? (
+            <>
+              <Link
+                href="/dashboard"
+                className="px-4 py-2 bg-[#1E3A8A] text-white text-base font-semibold rounded-lg shadow-md hover:bg-[#1E3A8A]/90 transition-all duration-200 flex items-center border-2 border-[#1E3A8A] mr-2"
+              >
+                Go to Dashboard
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 bg-white text-[#1E3A8A] text-base font-semibold rounded-lg border border-[#1E3A8A] shadow-sm hover:bg-white/90 hover:shadow-md transition-all duration-200 flex items-center"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="px-4 py-2 bg-white text-[#1E3A8A] text-sm font-semibold rounded-lg border border-[#1E3A8A] shadow-sm hover:bg-white/90 hover:shadow-md transition-all duration-200 flex items-center"
+              >
+                <span className="relative z-10 flex items-center">Sign In</span>
+              </Link>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                onClick={() => scrollToSection("join-waitlist")}
+                className="px-5 py-2 bg-[#1E3A8A] text-white text-base font-semibold rounded-lg shadow-md hover:bg-[#1E3A8A]/90 transition-all duration-200 flex items-center border-2 border-[#1E3A8A]"
+              >
+                Get Instant Access
+              </motion.button>
+            </>
+          )}
         </div>
       </div>
     </motion.nav>

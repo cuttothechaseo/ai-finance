@@ -44,8 +44,8 @@ export default function Login() {
     try {
       setIsLoading(true);
       await signIn(formData.email, formData.password);
-      // Redirect to dashboard on successful login
-      router.push("/dashboard");
+      // Redirect to home page on successful login
+      router.push("/");
     } catch (err: any) {
       console.error("Login error:", err);
       setError(err.message || "Invalid email or password");
