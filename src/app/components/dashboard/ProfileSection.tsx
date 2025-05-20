@@ -1,63 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
+import {
+  IoNewspaperOutline,
+  IoPeopleOutline,
+  IoChatbubblesOutline,
+} from "react-icons/io5";
 
 export default function ProfileSection() {
-  useEffect(() => {
-    // Dynamically load Ionicons script if not already present
-    if (!document.getElementById("ionicons-script")) {
-      const script = document.createElement("script");
-      script.type = "module";
-      script.src =
-        "https://unpkg.com/ionicons@7.2.2/dist/ionicons/ionicons.esm.js";
-      script.id = "ionicons-script";
-      document.body.appendChild(script);
-      const scriptNoModule = document.createElement("script");
-      scriptNoModule.noModule = true;
-      scriptNoModule.src =
-        "https://unpkg.com/ionicons@7.2.2/dist/ionicons/ionicons.js";
-      scriptNoModule.id = "ionicons-script-nomodule";
-      document.body.appendChild(scriptNoModule);
-    }
-  }, []);
-
   const cards = [
     {
       href: "/resume/analyses",
-      icon: (
-        <ion-icon
-          name="newspaper-outline"
-          class="w-10 h-10 text-[#59B7F2] mb-4"
-          aria-hidden="true"
-        ></ion-icon>
-      ) as any,
+      icon: <IoNewspaperOutline className="w-10 h-10 text-[#59B7F2] mb-4" />,
       title: "Resume Analyses",
       desc: "Get AI-powered feedback and improvement suggestions for your resume.",
       cta: "View Analyses",
     },
     {
       href: "/networking/messages",
-      icon: (
-        <ion-icon
-          name="people-outline"
-          class="w-10 h-10 text-[#59B7F2] mb-4"
-          aria-hidden="true"
-        ></ion-icon>
-      ) as any,
+      icon: <IoPeopleOutline className="w-10 h-10 text-[#59B7F2] mb-4" />,
       title: "Networking Messages",
       desc: "Generate and manage personalized networking messages for finance roles.",
       cta: "Go to Networking",
     },
     {
       href: "/interview-dashboard",
-      icon: (
-        <ion-icon
-          name="chatbubbles-outline"
-          class="w-10 h-10 text-[#59B7F2] mb-4"
-          aria-hidden="true"
-        ></ion-icon>
-      ) as any,
+      icon: <IoChatbubblesOutline className="w-10 h-10 text-[#59B7F2] mb-4" />,
       title: "Mock Interviews",
       desc: "Practice with AI-powered mock interviews tailored for finance positions.",
       cta: "Start Practicing",
