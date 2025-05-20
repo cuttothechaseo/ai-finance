@@ -1,51 +1,28 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-// Direct API call function as fallback
-async function callClaudeAPI(prompt: string) {
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': process.env.ANTHROPIC_API_KEY!,
-      'anthropic-version': '2023-06-01'
-    },
-    body: JSON.stringify({
-      model: 'claude-3-opus-20240229',
-      max_tokens: 1500,
-      temperature: 0.7,
-      messages: [
-        {
-          role: 'user',
-          content: prompt
-        }
-      ]
-    })
-  });
+// Initialize Gemini
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY || "");
+const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-001" });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error('Claude API error response:', errorText);
-    throw new Error(`Claude API error: ${response.status} ${response.statusText}`);
-  }
-
+// Gemini API call function
+async function callGeminiAPI(prompt: string) {
   try {
-    const result = await response.json();
-    
-    if (!result.content || !result.content.length || result.content[0].type !== 'text') {
-      console.error('Unexpected Claude API response format:', result);
-      throw new Error('Invalid response format from Claude API');
-    }
-    
-    return result.content[0].text;
-  } catch (parseError) {
-    console.error('Error parsing Claude API response:', parseError);
-    throw new Error('Failed to parse Claude API response');
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    let text = response.text();
+    // Remove markdown code block if present
+    text = text.replace(/```json\n|```/g, "").trim();
+    return text;
+  } catch (error) {
+    console.error("Gemini API error:", error);
+    throw new Error("Failed to generate message");
   }
 }
 
@@ -95,19 +72,25 @@ export async function POST(request: Request) {
     // Create prompt based on message type
     let prompt = '';
     if (messageType === 'linkedin_message') {
-      prompt = `Write a professional LinkedIn message to connect with someone at ${companyName} for a ${role} position. ${contactName ? `The contact's name is ${contactName}${contactRole ? ` and they are a ${contactRole}` : ''}.` : ''} Here's my resume information: ${resumeText}`;
+      prompt = `Write a single, concise, and professional LinkedIn connection request message to connect with someone at ${companyName} for a ${role} position.${contactName ? ` The contact's name is ${contactName}${contactRole ? ` and they are a ${contactRole}` : ''}.` : ''} Here is my resume information: ${resumeText}.
+
+Only output the message body. Do not include multiple options, explanations, or any extra commentary.`;
     } else if (messageType === 'intro_email') {
-      prompt = `Write a professional introduction email to someone at ${companyName} for a ${role} position. ${contactName ? `The email is addressed to ${contactName}${contactRole ? ` who is a ${contactRole}` : ''}.` : ''} Here's my background: ${resumeText}`;
+      prompt = `Write a single, thorough, and professional introduction email to someone at ${companyName} for a ${role} position.${contactName ? ` The email is addressed to ${contactName}${contactRole ? ` who is a ${contactRole}` : ''}.` : ''} Here is my background: ${resumeText}.
+
+Only output the email body. Do not include the subject line, multiple options, explanations, or any extra commentary.`;
     } else if (messageType === 'cover_letter') {
-      prompt = `Write a professional cover letter for a ${role} position at ${companyName}. ${contactName ? `The letter is addressed to ${contactName}${contactRole ? ` who is a ${contactRole}` : ''}.` : ''} Here's my resume information: ${resumeText}`;
+      prompt = `Write a single, thorough, and professional cover letter for a ${role} position at ${companyName}.${contactName ? ` The letter is addressed to ${contactName}${contactRole ? ` who is a ${contactRole}` : ''}.` : ''} Here is my resume information: ${resumeText}.
+
+Only output the cover letter body. Do not include multiple options, explanations, or any extra commentary.`;
     }
 
-    // Generate the message using direct API call
+    // Generate the message using Gemini
     let generatedMessage = '';
     try {
-      generatedMessage = await callClaudeAPI(prompt);
+      generatedMessage = await callGeminiAPI(prompt);
     } catch (apiError: any) {
-      console.error('Error calling Claude API:', apiError);
+      console.error('Error calling Gemini API:', apiError);
       return NextResponse.json(
         { error: apiError.message || 'Failed to generate message' },
         { status: 500 }

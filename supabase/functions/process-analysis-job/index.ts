@@ -149,16 +149,16 @@ async function processJob(supabase, jobId) {
       return { error: `Error processing file: ${fileError.message}` };
     }
     
-    // 6. Call Claude API to analyze the resume
+    // 6. Call Gemini API to analyze the resume
     try {
-      console.log(`Calling Claude API for analysis...`);
+      console.log(`Calling Gemini API for analysis...`);
       const analysisResult = await analyzeResume(resumeText, {
         jobRole: job.job_role,
         industry: job.industry,
         experienceLevel: job.experience_level
       });
       
-      console.log(`Claude analysis complete`);
+      console.log(`Gemini analysis complete`);
       
       // 7. Update job as completed
       await supabase
@@ -195,7 +195,7 @@ async function processJob(supabase, jobId) {
       
       return { success: true, jobId };
     } catch (analysisError) {
-      console.error(`Error in Claude analysis:`, analysisError);
+      console.error(`Error in Gemini analysis:`, analysisError);
       await updateJobFailed(supabase, jobId, `Analysis error: ${analysisError.message}`);
       return { error: `Analysis error: ${analysisError.message}` };
     }
@@ -223,37 +223,49 @@ async function updateJobFailed(supabase, jobId, errorMessage) {
   }
 }
 
-// Helper function to call Claude API
+// Helper function to call Gemini API (replaces Claude)
 async function analyzeResume(resumeText, options) {
-  if (!ANTHROPIC_API_KEY) {
-    throw new Error('Anthropic API key is missing');
+  const GEMINI_API_KEY = Deno.env.get("GOOGLE_GENERATIVE_AI_API_KEY");
+  if (!GEMINI_API_KEY) {
+    throw new Error('Gemini API key is missing');
   }
 
-  console.log(`Preparing Claude API request with text length: ${resumeText.length}`);
+  console.log(`Preparing Gemini API request with text length: ${resumeText.length}`);
 
-  // Call the Claude API
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01"
+  // Construct the system prompt
+  const systemPrompt = constructSystemPrompt(options);
+
+  // Gemini expects a 'system_instruction' and 'contents' array
+  const requestBody = {
+    system_instruction: {
+      parts: [{ text: systemPrompt }]
     },
-    body: JSON.stringify({
-      model: "claude-3-opus-20240229",
-      max_tokens: 4000,
-      temperature: 0,
-      system: constructSystemPrompt(options),
-      messages: [
-        {
-          role: "user",
-          content: resumeText
-        }
-      ]
-    })
-  });
+    contents: [
+      {
+        role: "user",
+        parts: [{ text: resumeText }]
+      }
+    ],
+    generationConfig: {
+      temperature: 0.0,
+      maxOutputTokens: 4000,
+      topP: 0.95
+    }
+  };
 
-  console.log(`Claude API response status: ${response.status} ${response.statusText}`);
+  // Call the Gemini API
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(requestBody)
+    }
+  );
+
+  console.log(`Gemini API response status: ${response.status} ${response.statusText}`);
 
   if (!response.ok) {
     let errorDetails = "";
@@ -263,22 +275,21 @@ async function analyzeResume(resumeText, options) {
     } catch (e) {
       // Ignore error reading response body
     }
-    
-    throw new Error(`Claude API error: ${response.status} ${response.statusText}${errorDetails}`);
+    throw new Error(`Gemini API error: ${response.status} ${response.statusText}${errorDetails}`);
   }
 
   const result = await response.json();
-  console.log(`Claude API response received successfully`);
-  
+  console.log(`Gemini API response received successfully`);
+
   try {
-    const content = result.content[0].text;
-    console.log(`Raw Claude response: ${content.substring(0, 200)}...`);
-    
+    // Gemini's response: result.candidates[0].content.parts[0].text
+    const content = result.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!content) throw new Error("No content in Gemini response");
+    console.log(`Raw Gemini response: ${content.substring(0, 200)}...`);
+
     // Try to extract JSON if it's wrapped in markdown code blocks or has extra text
     let jsonContent = content;
-    
-    // Check if response contains markdown JSON code blocks
-    const jsonBlockMatch = content.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
+    const jsonBlockMatch = content.match(/```(?:json)?\\s*(\{[\s\S]*?\})\\s*```/);
     if (jsonBlockMatch && jsonBlockMatch[1]) {
       console.log("Found JSON in code block, extracting...");
       jsonContent = jsonBlockMatch[1];
@@ -290,18 +301,15 @@ async function analyzeResume(resumeText, options) {
         jsonContent = jsonObjectMatch[1];
       }
     }
-    
     try {
       return JSON.parse(jsonContent);
     } catch (innerParseError) {
       console.error("Failed to parse extracted JSON, attempting fallback extraction");
-      
-      // Last resort: try to construct a valid response
       return constructFallbackResponse(content);
     }
   } catch (parseError) {
-    console.error(`Error parsing Claude response:`, parseError);
-    throw new Error(`Failed to parse Claude response: ${parseError.message}`);
+    console.error(`Error parsing Gemini response:`, parseError);
+    throw new Error(`Failed to parse Gemini response: ${parseError.message}`);
   }
 }
 
