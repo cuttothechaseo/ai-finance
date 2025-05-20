@@ -20,6 +20,7 @@ import {
 } from "./data/types";
 import { getUserWithDetails } from "@/lib/auth";
 import InterviewAnalysisModal from "@/app/components/interview/InterviewAnalysis";
+import Link from "next/link";
 
 type AnalysisWithSession = InterviewAnalysis & {
   session: InterviewSession & { interview: GeneratedInterview };
@@ -84,6 +85,21 @@ export default function InterviewDashboard() {
 
   return (
     <DashboardLayout>
+      {/* Action Buttons */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-6 justify-start">
+        <Link
+          href="/interview-dashboard/interview-generation"
+          className="bg-[#1E3A8A] hover:bg-[#59B7F2] text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm text-center"
+        >
+          Generate Interview
+        </Link>
+        <Link
+          href="/interview-dashboard/generated-interviews"
+          className="bg-white border border-[#1E3A8A] text-[#1E3A8A] hover:bg-[#59B7F2] hover:text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm text-center"
+        >
+          Generated Interviews
+        </Link>
+      </div>
       {/* Performance Chart */}
       <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
         <h2 className="text-lg font-semibold text-[#1e3a8a] mb-4">

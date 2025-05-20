@@ -183,14 +183,8 @@ export default function GeneratedInterviewsPage() {
           </h1>
           <div className="flex flex-col items-end gap-2">
             <Link
-              href="/interview-dashboard/interview-generation"
-              className="bg-[#1E3A8A] hover:bg-[#59B7F2] text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm"
-            >
-              Generate New Interview
-            </Link>
-            <Link
               href="/interview-dashboard"
-              className="text-[#B3E5FC] hover:text-white transition-colors duration-200 text-sm mt-1"
+              className="text-[#B3E5FC] hover:text-white transition-colors duration-200 text-lg mt-1"
             >
               Back to Dashboard
             </Link>

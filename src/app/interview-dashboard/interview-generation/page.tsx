@@ -93,7 +93,7 @@ export default function InterviewGenerationPage() {
           <h1 className="text-3xl font-bold text-white">Generate Interview</h1>
           <a
             href="/interview-dashboard"
-            className="text-[#B3E5FC] hover:text-white transition-colors duration-200"
+            className="text-[#B3E5FC] hover:text-white transition-colors duration-200 text-lg"
           >
             Back to Dashboard
           </a>
