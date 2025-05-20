@@ -103,13 +103,15 @@ export async function getUserWithDetails(): Promise<UserWithDetails> {
     }
     
     // Return user data along with resumes and counts
-    return { 
+    const result = { 
         ...user.user,
         resumes: resumes || [],  // Return empty array if no resumes are found
         resumeCount: resumes?.length || 0,
         analysesCount: analysesCount || 0,
         networkingCount: networkingCount || 0
     };
+    console.log('getUserWithDetails result:', result);
+    return result;
 }
 
 // Simple user function (legacy support)

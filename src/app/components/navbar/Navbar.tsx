@@ -25,6 +25,8 @@ export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { user, loading } = useUser();
+  console.log("Navbar user object:", user);
+  const firstName = user?.name ? user.name.split(" ")[0] : "";
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -139,6 +141,11 @@ export default function Navbar() {
                 Get Instant Access
               </motion.button>
             </>
+          )}
+          {firstName && (
+            <div className="h-9 w-9 rounded-full bg-[#59B7F2] text-white flex items-center justify-center">
+              <span className="text-sm font-semibold px-2">{firstName}</span>
+            </div>
           )}
         </div>
       </div>

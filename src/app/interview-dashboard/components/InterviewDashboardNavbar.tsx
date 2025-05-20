@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { logOut } from "@lib/auth";
 
 interface NavbarProps {
   toggleSidebar: () => void;
@@ -50,11 +51,13 @@ export default function InterviewDashboardNavbar({
     },
   };
 
-  // Mock user data (to be replaced with actual authentication)
+  // TODO: Replace with real user context/prop
   const user = {
-    name: "user",
-    email: "",
-  };
+    name: "Chase Ottimo",
+    email: "chaseottimo@gmail.com",
+    avatar_url: undefined,
+  }; // TEMP: Replace with real user
+  const firstInitial = user?.name ? user.name.charAt(0).toUpperCase() : "U";
 
   const getUserInitials = () => {
     if (!user?.name) return "U";
@@ -67,9 +70,9 @@ export default function InterviewDashboardNavbar({
     ).toUpperCase();
   };
 
-  const handleLogout = () => {
-    console.log("Logout clicked");
-    // Implement actual logout functionality
+  const handleLogout = async () => {
+    await logOut();
+    window.location.href = "/";
   };
 
   return (
@@ -98,7 +101,7 @@ export default function InterviewDashboardNavbar({
             </button>
             <div className="hidden md:flex items-center">
               <span className="text-xl font-bold text-[#1E3A8A]">
-                Mock Interview Dashboard
+                Dashboard
               </span>
             </div>
           </div>
@@ -139,11 +142,17 @@ export default function InterviewDashboardNavbar({
                   aria-haspopup="true"
                 >
                   <span className="sr-only">Open user menu</span>
-                  <div className="h-9 w-9 rounded-full bg-[#59B7F2] text-white flex items-center justify-center">
-                    <span className="text-sm font-medium">
-                      {getUserInitials()}
-                    </span>
-                  </div>
+                  {user?.avatar_url ? (
+                    <img
+                      src={user.avatar_url}
+                      alt={user.name || "User"}
+                      className="h-9 w-9 rounded-full object-cover border-2 border-[#59B7F2]"
+                    />
+                  ) : (
+                    <div className="h-9 w-9 rounded-full bg-[#59B7F2] text-white flex items-center justify-center">
+                      <span className="text-lg font-bold">{firstInitial}</span>
+                    </div>
+                  )}
                 </motion.button>
               </div>
 
@@ -169,60 +178,6 @@ export default function InterviewDashboardNavbar({
                         {user?.email || "user@example.com"}
                       </p>
                     </div>
-
-                    <Link
-                      href="/dashboard"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#F8FAFC] hover:text-[#59B7F2] transition-colors"
-                      role="menuitem"
-                      onClick={() => setIsDropdownOpen(false)}
-                    >
-                      <div className="flex items-center">
-                        <svg
-                          className="mr-3 h-4 w-4 text-gray-500"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                          />
-                        </svg>
-                        Your Profile
-                      </div>
-                    </Link>
-
-                    <Link
-                      href="/settings"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#F8FAFC] hover:text-[#59B7F2] transition-colors"
-                      role="menuitem"
-                      onClick={() => setIsDropdownOpen(false)}
-                    >
-                      <div className="flex items-center">
-                        <svg
-                          className="mr-3 h-4 w-4 text-gray-500"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                          />
-                        </svg>
-                        Settings
-                      </div>
-                    </Link>
 
                     <div className="border-t border-gray-100 mt-1"></div>
 

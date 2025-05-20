@@ -14,7 +14,7 @@ export default function ProfileSection() {
       icon: <IoNewspaperOutline className="w-10 h-10 text-[#59B7F2] mb-4" />,
       title: "Resume Analyses",
       desc: "Get AI-powered feedback and improvement suggestions for your resume.",
-      cta: "View Analyses",
+      cta: "Analyze Resume",
     },
     {
       href: "/networking/messages",

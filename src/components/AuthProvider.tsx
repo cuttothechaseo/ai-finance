@@ -48,6 +48,7 @@ export default function AuthProvider({
     setLoading(true);
     try {
       const userData = await getUserWithDetails();
+      console.log("AuthProvider fetched userData:", userData);
       setUser(userData);
     } catch (err) {
       setUser(null);
