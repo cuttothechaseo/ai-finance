@@ -102,13 +102,24 @@ export async function getUserWithDetails(): Promise<UserWithDetails> {
         // Don't throw error, just set count to 0
     }
     
+    // Fetch pro_access from users table
+    const { data: userRow, error: userRowError } = await supabase
+        .from('users')
+        .select('pro_access')
+        .eq('id', userId)
+        .single();
+    if (userRowError) {
+        console.error('Error fetching pro_access:', userRowError);
+    }
+    
     // Return user data along with resumes and counts
     const result = { 
         ...user.user,
         resumes: resumes || [],  // Return empty array if no resumes are found
         resumeCount: resumes?.length || 0,
         analysesCount: analysesCount || 0,
-        networkingCount: networkingCount || 0
+        networkingCount: networkingCount || 0,
+        pro_access: userRow?.pro_access ?? false
     };
     console.log('getUserWithDetails result:', result);
     return result;

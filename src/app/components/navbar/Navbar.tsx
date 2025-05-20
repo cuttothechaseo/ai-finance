@@ -53,6 +53,20 @@ export default function Navbar() {
     window.location.href = "/";
   };
 
+  const handleGetPro = async () => {
+    try {
+      const res = await fetch("/api/stripe", { method: "POST" });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert(data.error || "Failed to start checkout.");
+      }
+    } catch (err) {
+      alert("Failed to start checkout.");
+    }
+  };
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -111,12 +125,23 @@ export default function Navbar() {
         <div className="flex items-center space-x-3">
           {!loading && user ? (
             <>
-              <Link
-                href="/dashboard"
-                className="px-4 py-2 bg-[#1E3A8A] text-white text-base font-semibold rounded-lg shadow-md hover:bg-[#1E3A8A]/90 transition-all duration-200 flex items-center border-2 border-[#1E3A8A] mr-2"
-              >
-                Go to Dashboard
-              </Link>
+              {user.pro_access ? (
+                <Link
+                  href="/dashboard"
+                  className="px-4 py-2 bg-[#1E3A8A] text-white text-base font-semibold rounded-lg shadow-md hover:bg-[#1E3A8A]/90 transition-all duration-200 flex items-center border-2 border-[#1E3A8A] mr-2"
+                >
+                  Go to Dashboard
+                </Link>
+              ) : (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                  onClick={handleGetPro}
+                  className="px-5 py-2 bg-[#1E3A8A] text-white text-base font-semibold rounded-lg shadow-md hover:bg-[#1E3A8A]/90 transition-all duration-200 flex items-center border-2 border-[#1E3A8A] mr-2"
+                >
+                  Get Pro
+                </motion.button>
+              )}
               <button
                 onClick={handleLogout}
                 className="px-4 py-2 bg-white text-[#1E3A8A] text-base font-semibold rounded-lg border border-[#1E3A8A] shadow-sm hover:bg-white/90 hover:shadow-md transition-all duration-200 flex items-center"

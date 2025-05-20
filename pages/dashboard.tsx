@@ -46,6 +46,7 @@ interface UserData {
   resumeCount?: number;
   analysesCount?: number;
   networkingCount?: number;
+  pro_access: boolean;
   [key: string]: any; // For any additional fields from Supabase
 }
 
@@ -60,22 +61,19 @@ export default function Dashboard() {
     const fetchUserData = async () => {
       try {
         const userData = await getUserWithDetails();
-
-        // Create a properly typed user object with the data from Supabase
         const typedUserData: UserData = {
           ...userData,
-          name: userData.name || "user", // Ensure name is set with a fallback
-          email: userData.email || "", // Ensure email is set with a fallback
+          name: userData.name || "user",
+          email: userData.email || "",
           resumes: userData.resumes || [],
           resumeCount: userData.resumes ? userData.resumes.length : 0,
           analysesCount: userData.analysesCount || 0,
           networkingCount: userData.networkingCount || 0,
+          pro_access: userData.pro_access || false,
         };
-
         setUser(typedUserData);
       } catch (error) {
         console.error("Error fetching user:", error);
-        // If error fetching user, set default user data instead of redirecting
         const defaultUser: UserData = {
           id: "default",
           name: "user",
@@ -84,15 +82,21 @@ export default function Dashboard() {
           resumeCount: 0,
           analysesCount: 0,
           networkingCount: 0,
+          pro_access: false,
         };
         setUser(defaultUser);
       } finally {
         setLoading(false);
       }
     };
-
     fetchUserData();
   }, [router]);
+
+  useEffect(() => {
+    if (!loading && user && !user.pro_access) {
+      router.replace("/");
+    }
+  }, [loading, user, router]);
 
   const handleSignOut = async () => {
     try {

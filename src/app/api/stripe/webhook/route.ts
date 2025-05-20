@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { createClient } from '@supabase/supabase-js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2025-04-30.basil',
@@ -7,9 +8,15 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET as string;
 
-export async function POST(req: NextRequest) {
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+export async function POST(req: Request) {
   const sig = req.headers.get('stripe-signature');
-  const body = await req.text();
+  const buf = await req.arrayBuffer();
+  const body = Buffer.from(buf);
 
   let event: Stripe.Event;
   try {
@@ -30,22 +37,16 @@ export async function POST(req: NextRequest) {
       return new NextResponse('No email found in session.', { status: 400 });
     }
 
-    // Update pro_access in Supabase for this user
+    // Update pro_access in Supabase for this user using Supabase client
     try {
-      const response = await fetch(process.env.INTERNAL_MCP_URL as string + '/supabase/execute_sql', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          project_id: 'ybfbbmzztjuvpdlosfic',
-          query: `UPDATE public.users SET pro_access = true WHERE email = '${email}';`
-        })
-      });
-      const result = await response.json();
-      console.log('✅ Supabase update response:', result);
-      if (!response.ok) {
-        throw new Error(result.error || 'Unknown error updating Supabase');
+      const { error, data } = await supabase
+        .from('users')
+        .update({ pro_access: true })
+        .eq('email', email);
+      if (error) {
+        throw error;
       }
-      console.log(`✅ Granted pro access to user with email: ${email}`);
+      console.log(`✅ Granted pro access to user with email: ${email}`, data);
     } catch (err) {
       console.error('❌ Failed to update pro_access in Supabase:', err);
       return new NextResponse('Failed to update user access.', { status: 500 });
