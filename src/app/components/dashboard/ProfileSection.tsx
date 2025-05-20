@@ -31,10 +31,10 @@ export default function ProfileSection() {
           class="w-10 h-10 text-[#59B7F2] mb-4"
           aria-hidden="true"
         ></ion-icon>
-      ),
+      ) as any,
       title: "Resume Analyses",
       desc: "Get AI-powered feedback and improvement suggestions for your resume.",
-      cta: "Analyze Resume",
+      cta: "View Analyses",
     },
     {
       href: "/networking/messages",
@@ -44,7 +44,7 @@ export default function ProfileSection() {
           class="w-10 h-10 text-[#59B7F2] mb-4"
           aria-hidden="true"
         ></ion-icon>
-      ),
+      ) as any,
       title: "Networking Messages",
       desc: "Generate and manage personalized networking messages for finance roles.",
       cta: "Go to Networking",
@@ -57,7 +57,7 @@ export default function ProfileSection() {
           class="w-10 h-10 text-[#59B7F2] mb-4"
           aria-hidden="true"
         ></ion-icon>
-      ),
+      ) as any,
       title: "Mock Interviews",
       desc: "Practice with AI-powered mock interviews tailored for finance positions.",
       cta: "Start Practicing",
