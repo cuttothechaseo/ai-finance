@@ -5,7 +5,7 @@ import ResumeAnalysisCard from "./ResumeAnalysisCard";
 import NetworkingOutreachCard from "./NetworkingOutreachCard";
 import React from "react";
 
-// Feature type definition
+// Feature type definitions
 type Feature = {
   id: string;
   title: string;
