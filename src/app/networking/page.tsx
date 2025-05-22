@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { supabase } from "../../lib/supabase";
+import { supabase } from "@/lib/supabaseClient";
 import { getUserWithDetails } from "../../lib/auth";
 import { useRouter } from "next/navigation";
 

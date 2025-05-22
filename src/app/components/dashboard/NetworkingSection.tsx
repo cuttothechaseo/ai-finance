@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import { supabase } from "../../../../lib/supabase";
+import { supabase } from "@/lib/supabaseClient";
 import { getUserWithDetails } from "../../../../lib/auth";
 import { useRouter } from "next/navigation";
 

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { use } from "react";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabaseClient";
 import { getUserWithDetails } from "@/lib/auth";
 import { vapi } from "@/lib/vapi.sdk";
 import { interviewer } from "@/lib/interview/constants";

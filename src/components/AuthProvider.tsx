@@ -1,22 +1,19 @@
 "use client";
 
-import { createBrowserClient } from "@supabase/ssr";
+import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 import { getUserWithDetails } from "@/lib/auth";
 
 interface AuthContextType {
-  supabase: ReturnType<typeof createBrowserClient>;
+  supabase: typeof supabase;
   user: any;
   loading: boolean;
   refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
-  supabase: createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  ),
+  supabase,
   user: null,
   loading: true,
   refreshUser: async () => {},
@@ -36,10 +33,6 @@ export default function AuthProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -70,7 +63,7 @@ export default function AuthProvider({
     return () => {
       subscription.unsubscribe();
     };
-  }, [router, supabase]);
+  }, [router]);
 
   return (
     <AuthContext.Provider

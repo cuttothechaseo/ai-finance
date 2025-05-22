@@ -13,6 +13,7 @@ import {
   getFeedbackHighlights,
 } from "@/app/interview-dashboard/data/mockData";
 import InterviewAnalysis from "@/app/components/interview/InterviewAnalysis";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function MockInterviewCard() {
   return (

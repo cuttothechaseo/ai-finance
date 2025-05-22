@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabaseClient";
 import { InterviewAnalysis, InterviewSession, GeneratedInterview } from "./types";
 
 // Fetches all interview analyses for a user, including session and interview metadata

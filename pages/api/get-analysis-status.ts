@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/lib/supabaseClient';
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,18 +18,6 @@ export default async function handler(
     console.groupEnd();
     return res.status(400).json({ error: 'Job ID is required' });
   }
-  
-  // Create Supabase client
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-    process.env.SUPABASE_SERVICE_ROLE_KEY || '',
-    {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-      }
-    }
-  );
   
   try {
     console.log('API: Authenticating user request');

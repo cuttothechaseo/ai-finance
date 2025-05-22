@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabaseClient";
 import { getUserWithDetails } from "@/lib/auth";
 import InterviewAnalysis from "@/app/components/interview/InterviewAnalysis";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, ChangeEvent } from "react";
-import { supabase } from "../lib/supabase";
+import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import ResumeAnalysis from "../src/app/components/resume/ResumeAnalysis";
