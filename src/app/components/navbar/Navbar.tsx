@@ -7,6 +7,7 @@ import { WaitlistContext } from "@/app/contexts/WaitlistContext";
 import Link from "next/link";
 import { useUser } from "@/components/AuthProvider";
 import { logOut } from "@lib/auth";
+import { supabase } from "@/lib/supabaseClient";
 
 const navLinks = [
   { name: "AI-Powered Features", href: "#features", id: "features" },
@@ -54,8 +55,25 @@ export default function Navbar() {
   };
 
   const handleGetPro = async () => {
+    console.log("handleGetPro called"); // Debug log at function start
     try {
-      const res = await fetch("/api/stripe", { method: "POST" });
+      // Use the shared Supabase client
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      console.log("Session after getSession:", session); // Debug log after session retrieval
+      const access_token = session?.access_token;
+      console.log("Supabase access_token:", access_token); // Debug log
+      if (!access_token) {
+        alert("You must be logged in to purchase Pro.");
+        return;
+      }
+      const res = await fetch("/api/stripe", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
       const data = await res.json();
       if (data.url) {
         window.location.href = data.url;
@@ -63,6 +81,7 @@ export default function Navbar() {
         alert(data.error || "Failed to start checkout.");
       }
     } catch (err) {
+      console.error("Error in handleGetPro:", err); // Debug log for errors
       alert("Failed to start checkout.");
     }
   };

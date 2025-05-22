@@ -6,7 +6,6 @@ import dynamic from "next/dynamic";
 import SectionDivider from "@/app/components/ui/SectionDivider";
 import MockInterviewCard from "@/app/components/features/MockInterviewCard";
 import JoinWaitlist from "@/app/components/waitlist/Pricing";
-import { supabase } from "@/lib/supabaseClient";
 
 // Dynamically import components to avoid hydration issues
 const Navbar = dynamic(() => import("@/app/components/navbar/Navbar"), {

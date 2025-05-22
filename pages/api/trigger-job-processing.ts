@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { supabase } from '@/lib/supabaseClient';
+import { createClient } from '@supabase/supabase-js';
 
 export default async function handler(
   req: NextApiRequest,
@@ -20,6 +20,18 @@ export default async function handler(
     console.groupEnd();
     return res.status(401).json({ error: 'Unauthorized: Invalid API key' });
   }
+  
+  // Create Supabase client with service role key
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+    process.env.SUPABASE_SERVICE_ROLE_KEY || '',
+    {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      }
+    }
+  );
   
   try {
     console.log('API: Invoking job-scheduler Edge Function');
