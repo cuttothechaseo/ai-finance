@@ -7,6 +7,7 @@ import { WaitlistContext } from "@/app/contexts/WaitlistContext";
 import Link from "next/link";
 import { useUser } from "@/components/AuthProvider";
 import { logOut } from "@lib/auth";
+import { createBrowserClient } from "@supabase/ssr";
 
 const navLinks = [
   { name: "AI-Powered Features", href: "#features", id: "features" },
@@ -55,7 +56,25 @@ export default function Navbar() {
 
   const handleGetPro = async () => {
     try {
-      const res = await fetch("/api/stripe", { method: "POST" });
+      // Get the Supabase access token
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const access_token = session?.access_token;
+      if (!access_token) {
+        alert("You must be logged in to purchase Pro.");
+        return;
+      }
+      const res = await fetch("/api/stripe", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
       const data = await res.json();
       if (data.url) {
         window.location.href = data.url;
