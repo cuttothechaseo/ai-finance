@@ -64,7 +64,9 @@ export default function Navbar() {
       const {
         data: { session },
       } = await supabase.auth.getSession();
+      console.log("Supabase session:", session); // Debug log
       const access_token = session?.access_token;
+      console.log("Supabase access_token:", access_token); // Debug log
       if (!access_token) {
         alert("You must be logged in to purchase Pro.");
         return;
