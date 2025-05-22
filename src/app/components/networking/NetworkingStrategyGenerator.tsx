@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { supabase } from "../../../lib/supabase";
+import { supabase } from "@/lib/supabaseClient";
 
 export interface NetworkingStrategyGeneratorProps {
   onClose: () => void;

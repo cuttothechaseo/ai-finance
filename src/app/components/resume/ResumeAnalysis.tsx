@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { supabase } from "../../../../lib/supabase";
+import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 
 // Define type directly since we can't import from lib/claude.ts

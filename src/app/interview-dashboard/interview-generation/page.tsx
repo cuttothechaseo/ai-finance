@@ -54,6 +54,7 @@ export default function InterviewGenerationPage() {
         data: { session },
         error: userError,
       } = await supabase.auth.getSession();
+      console.log("Supabase session:", session, "Error:", userError);
 
       if (userError || !session) {
         throw new Error("Not authenticated");

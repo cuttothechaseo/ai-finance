@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import { supabase } from "../../../../lib/supabase";
+import { supabase } from "@/lib/supabaseClient";
 
 const ResumeAnalysis = dynamic(() => import("../resume/ResumeAnalysis"), {
   ssr: false,

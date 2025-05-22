@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { supabase } from '@/lib/supabaseClient';
 import { User } from "@supabase/supabase-js";
 
 interface Resume {

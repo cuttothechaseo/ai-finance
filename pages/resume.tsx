@@ -35,6 +35,7 @@ export default function ResumeUpload() {
 
     // Get authenticated user
     const { data: user, error: userError } = await supabase.auth.getUser();
+    console.log("Supabase user:", user, "Error:", userError); // DEBUG LOG
     if (userError || !user) {
       setMessage("User authentication failed.");
       setMessageType("error");
