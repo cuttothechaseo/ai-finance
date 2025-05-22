@@ -7,7 +7,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2025-04-30.basil',
 });
 
-const PRICE_ID = 'price_1ROp1EFMxJP6Tixp9VTclFjD'; // $119 one-time
+const PRICE_ID = process.env.STRIPE_PRICE_ID as string; // Use env var for price ID
 
 export async function POST(req: NextRequest) {
   try {
