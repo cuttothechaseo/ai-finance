@@ -5,6 +5,8 @@ import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import ResumeAnalysis from "../src/app/components/resume/ResumeAnalysis";
+import Sidebar from "@/app/components/dashboard/Sidebar";
+import InterviewDashboardNavbar from "@/app/interview-dashboard/components/InterviewDashboardNavbar";
 
 export default function ResumeUpload() {
   const [file, setFile] = useState<File | null>(null);
@@ -14,6 +16,20 @@ export default function ResumeUpload() {
   const [showAnalysis, setShowAnalysis] = useState<boolean>(false);
   const [uploadedResumeId, setUploadedResumeId] = useState<string | null>(null);
   const router = useRouter();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+      setSidebarOpen(window.innerWidth >= 1024);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const toggleSidebar = () => setSidebarOpen((open) => !open);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] || null;
@@ -95,113 +111,151 @@ export default function ResumeUpload() {
   };
 
   return (
-    <div className="min-h-screen bg-[#59B7F2] flex flex-col py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto w-full">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-white">Upload Your Resume</h1>
-          <Link
-            href="/dashboard"
-            className="text-[#B3E5FC] hover:text-white transition-colors duration-200"
+    <div className="flex min-h-screen bg-[#59B7F2]">
+      <Sidebar
+        isOpen={sidebarOpen}
+        toggleSidebar={toggleSidebar}
+        isMobile={isMobile}
+      />
+      <div
+        className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${
+          sidebarOpen ? "md:pl-64" : "md:pl-20"
+        } ${isMobile ? "pl-0" : ""}`}
+      >
+        <InterviewDashboardNavbar toggleSidebar={toggleSidebar} />
+        <main className="flex-1 overflow-y-auto bg-[#59B7F2] p-6">
+          {/* Header Section with SVG Cloud Overlays (Features.tsx style) */}
+          <div
+            className="relative w-full flex flex-col items-center justify-center pt-16 pb-12 mb-8"
+            style={{ minHeight: "220px" }}
           >
-            Back to Dashboard
-          </Link>
-        </div>
-
-        {/* White line divider */}
-        <div className="h-px bg-white/30 w-full mb-8 rounded-full"></div>
-
-        <div className="bg-white p-6 rounded-xl border border-white/10 shadow-sm mb-8">
-          <div className="mb-6">
-            <p className="text-slate-700 mb-4">
-              Upload your resume to get personalized finance interview questions
-              and feedback. We support PDF, DOCX, and TXT formats up to 5MB.
+            {/* Top Right SVG Cloud */}
+            <svg
+              className="absolute top-0 right-0 w-64 h-64 opacity-20 z-0 pointer-events-none select-none"
+              viewBox="0 0 200 200"
+              fill="white"
+            >
+              <circle cx="60" cy="60" r="50" />
+              <circle cx="100" cy="70" r="60" />
+              <circle cx="140" cy="60" r="50" />
+            </svg>
+            {/* Bottom Left SVG Cloud */}
+            <svg
+              className="absolute bottom-0 left-10 w-72 h-72 opacity-5 z-0 pointer-events-none select-none"
+              viewBox="0 0 200 200"
+              fill="white"
+            >
+              <circle cx="60" cy="60" r="50" />
+              <circle cx="100" cy="70" r="60" />
+              <circle cx="140" cy="60" r="50" />
+            </svg>
+            <h1 className="text-3xl md:text-4xl font-bold text-white mb-2 z-10 text-center">
+              Resume Analysis
+            </h1>
+            <p className="text-white text-lg z-10 text-center max-w-2xl">
+              Get detailed AI-powered feedback on your resume to stand out to
+              finance recruiters.
             </p>
+          </div>
+          <div className="max-w-4xl mx-auto w-full">
+            <div className="bg-white p-6 rounded-xl border border-white/10 shadow-sm mb-8">
+              <div className="mb-6">
+                <p className="text-slate-700 mb-4">
+                  Upload your resume to get personalized finance interview
+                  questions and feedback. We support PDF, DOCX, and TXT formats
+                  up to 5MB.
+                </p>
 
-            {message && (
-              <div
-                className={`p-4 rounded-lg ${
-                  messageType === "success"
-                    ? "bg-green-100 border border-green-300 text-green-700"
-                    : "bg-red-100 border border-red-300 text-red-700"
-                }`}
-              >
-                {message}
+                {message && (
+                  <div
+                    className={`p-4 rounded-lg ${
+                      messageType === "success"
+                        ? "bg-green-100 border border-green-300 text-green-700"
+                        : "bg-red-100 border border-red-300 text-red-700"
+                    }`}
+                  >
+                    {message}
+                  </div>
+                )}
               </div>
-            )}
+
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-[#1E3A8A] mb-2">
+                  Select your resume file
+                </label>
+                <input
+                  type="file"
+                  accept=".pdf,.docx,.doc,.txt"
+                  onChange={handleFileChange}
+                  className="block w-full text-sm text-slate-700
+                                    file:mr-4 file:py-2 file:px-4
+                                    file:rounded-md file:border-0
+                                    file:text-sm file:font-semibold
+                                    file:bg-[#1E3A8A]/10 file:text-[#1E3A8A]
+                                    hover:file:bg-[#B3E5FC] hover:file:text-[#1E3A8A]
+                                    file:cursor-pointer file:transition-colors
+                                    cursor-pointer"
+                />
+                {file && (
+                  <p className="mt-2 text-sm text-slate-600">
+                    Selected: {file.name} (
+                    {(file.size / 1024 / 1024).toFixed(2)} MB)
+                  </p>
+                )}
+              </div>
+
+              <button
+                onClick={uploadResume}
+                disabled={uploading || !file}
+                className="w-full flex items-center justify-center px-4 py-3 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-[#1E3A8A] hover:bg-[#59B7F2] focus:outline-none focus:ring-2 focus:ring-[#B3E5FC] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {uploading ? "Uploading..." : "Upload Resume"}
+              </button>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl border border-white/10 shadow-sm">
+              <h2 className="text-xl font-bold text-[#1E3A8A] mb-4">
+                Resume Tips
+              </h2>
+              <ul className="space-y-3 text-slate-700">
+                <li className="flex items-start">
+                  <span className="text-[#59B7F2] mr-2">•</span>
+                  Keep your resume to one page for finance roles.
+                </li>
+                <li className="flex items-start">
+                  <span className="text-[#59B7F2] mr-2">•</span>
+                  Quantify your achievements with numbers and percentages.
+                </li>
+                <li className="flex items-start">
+                  <span className="text-[#59B7F2] mr-2">•</span>
+                  Include relevant finance-specific skills and certifications.
+                </li>
+                <li className="flex items-start">
+                  <span className="text-[#59B7F2] mr-2">•</span>
+                  Tailor your resume to the specific finance role you&apos;re
+                  applying for.
+                </li>
+                <li className="flex items-start">
+                  <span className="text-[#59B7F2] mr-2">•</span>
+                  Proofread carefully - attention to detail is critical in
+                  finance.
+                </li>
+              </ul>
+            </div>
           </div>
 
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-[#1E3A8A] mb-2">
-              Select your resume file
-            </label>
-            <input
-              type="file"
-              accept=".pdf,.docx,.doc,.txt"
-              onChange={handleFileChange}
-              className="block w-full text-sm text-slate-700
-                                file:mr-4 file:py-2 file:px-4
-                                file:rounded-md file:border-0
-                                file:text-sm file:font-semibold
-                                file:bg-[#1E3A8A]/10 file:text-[#1E3A8A]
-                                hover:file:bg-[#B3E5FC] hover:file:text-[#1E3A8A]
-                                file:cursor-pointer file:transition-colors
-                                cursor-pointer"
+          {showAnalysis && uploadedResumeId && (
+            <ResumeAnalysis
+              resumeId={uploadedResumeId}
+              onClose={() => {
+                setShowAnalysis(false);
+                setUploadedResumeId(null);
+                router.push("/dashboard");
+              }}
             />
-            {file && (
-              <p className="mt-2 text-sm text-slate-600">
-                Selected: {file.name} ({(file.size / 1024 / 1024).toFixed(2)}{" "}
-                MB)
-              </p>
-            )}
-          </div>
-
-          <button
-            onClick={uploadResume}
-            disabled={uploading || !file}
-            className="w-full flex items-center justify-center px-4 py-3 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-[#1E3A8A] hover:bg-[#59B7F2] focus:outline-none focus:ring-2 focus:ring-[#B3E5FC] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {uploading ? "Uploading..." : "Upload Resume"}
-          </button>
-        </div>
-
-        <div className="bg-white p-6 rounded-xl border border-white/10 shadow-sm">
-          <h2 className="text-xl font-bold text-[#1E3A8A] mb-4">Resume Tips</h2>
-          <ul className="space-y-3 text-slate-700">
-            <li className="flex items-start">
-              <span className="text-[#59B7F2] mr-2">•</span>
-              Keep your resume to one page for finance roles.
-            </li>
-            <li className="flex items-start">
-              <span className="text-[#59B7F2] mr-2">•</span>
-              Quantify your achievements with numbers and percentages.
-            </li>
-            <li className="flex items-start">
-              <span className="text-[#59B7F2] mr-2">•</span>
-              Include relevant finance-specific skills and certifications.
-            </li>
-            <li className="flex items-start">
-              <span className="text-[#59B7F2] mr-2">•</span>
-              Tailor your resume to the specific finance role you&apos;re
-              applying for.
-            </li>
-            <li className="flex items-start">
-              <span className="text-[#59B7F2] mr-2">•</span>
-              Proofread carefully - attention to detail is critical in finance.
-            </li>
-          </ul>
-        </div>
+          )}
+        </main>
       </div>
-
-      {showAnalysis && uploadedResumeId && (
-        <ResumeAnalysis
-          resumeId={uploadedResumeId}
-          onClose={() => {
-            setShowAnalysis(false);
-            setUploadedResumeId(null);
-            router.push("/dashboard");
-          }}
-        />
-      )}
     </div>
   );
 }

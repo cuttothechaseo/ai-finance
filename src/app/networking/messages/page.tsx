@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { getUserWithDetails } from "../../../../lib/auth";
+import Sidebar from "@/app/components/dashboard/Sidebar";
+import InterviewDashboardNavbar from "@/app/interview-dashboard/components/InterviewDashboardNavbar";
 
 // Types for networking messages
 interface NetworkingMessage {
@@ -142,6 +144,20 @@ export default function NetworkingMessagesPage() {
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [filterType, setFilterType] = useState<string>("all");
   const router = useRouter();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+      setSidebarOpen(window.innerWidth >= 1024);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const toggleSidebar = () => setSidebarOpen((open) => !open);
 
   // Fetch networking messages for the current user
   useEffect(() => {
@@ -276,216 +292,175 @@ export default function NetworkingMessagesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#59B7F2] flex flex-col py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto w-full">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-white">Networking Messages</h1>
-          <Link
-            href="/dashboard"
-            className="text-[#B3E5FC] hover:text-white transition-colors duration-200"
-          >
-            Back to Dashboard
-          </Link>
-        </div>
-
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={fadeIn}
-          className="bg-white/80 backdrop-blur-md shadow-md rounded-lg overflow-hidden border border-white/20 mb-8"
-        >
-          <div className="px-6 py-5 border-b border-[#E6E8F0]">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-bold text-[#1E3A8A]">
-                Your Networking Message History
-              </h2>
-              <Link
-                href="/networking"
-                className="px-4 py-2 bg-[#1E3A8A] text-white text-sm font-medium rounded-lg hover:bg-[#59B7F2] transition-colors duration-200"
-              >
-                Generate New Message
-              </Link>
-            </div>
-          </div>
-
-          {/* Filter bar */}
-          <div className="bg-[#F8FAFC] px-6 py-3 border-b border-[#E6E8F0]">
-            <div className="flex items-center space-x-2 overflow-x-auto">
-              <span className="text-sm text-[#64748B] whitespace-nowrap">
-                Filter by type:
-              </span>
-              {messageTypes.map((type) => (
-                <button
-                  key={type}
-                  onClick={() => setFilterType(type)}
-                  className={`px-3 py-1 text-xs font-medium rounded-full whitespace-nowrap ${
-                    filterType === type
-                      ? "bg-[#1E3A8A] text-white"
-                      : "bg-white text-[#64748B] hover:bg-[#E2E8F0] border border-[#E6E8F0]"
-                  }`}
-                >
-                  {type === "all" ? "All Messages" : getMessageTypeLabel(type)}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="p-6">
-            {loading ? (
-              <div className="flex justify-center items-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#59B7F2]"></div>
-              </div>
-            ) : error ? (
-              <div className="bg-red-100 border border-red-300 text-red-700 p-4 rounded-lg">
-                {error}
-              </div>
-            ) : filteredMessages.length > 0 ? (
-              <motion.div
-                variants={staggerItems}
-                className="grid grid-cols-1 md:grid-cols-2 gap-6"
-              >
-                {filteredMessages.map((message) => (
-                  <motion.div
-                    key={message.id}
-                    variants={itemFade}
-                    className="bg-white rounded-lg border border-[#E6E8F0] shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden cursor-pointer"
-                    onClick={() => handleViewMessage(message)}
-                  >
-                    <div className="p-5">
-                      <div className="flex justify-between items-start mb-3">
-                        <div className="flex-1">
-                          <h3 className="font-medium text-lg text-[#1E293B] truncate">
-                            {message.role} at {message.company_name}
-                          </h3>
-                          <p className="text-sm text-[#64748B]">
-                            Generated on {formatDate(message.created_at)}
-                          </p>
-                        </div>
-                        <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getMessageTypeBadgeClass(
-                            message.message_type
-                          )}`}
-                        >
-                          {getMessageTypeLabel(message.message_type)}
-                        </span>
-                      </div>
-
-                      <div className="mt-3 text-sm text-[#475569] line-clamp-3">
-                        {message.generated_message.substring(0, 150)}...
-                      </div>
-
-                      {message.contact_name && (
-                        <div className="mt-3 flex items-center">
-                          <span className="text-xs font-medium text-[#64748B] mr-1">
-                            Recipient:
-                          </span>
-                          <span className="text-sm text-[#1E293B]">
-                            {message.contact_name}
-                            {message.contact_role &&
-                              ` (${message.contact_role})`}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="bg-[#F8FAFC] px-5 py-3 border-t border-[#E6E8F0] text-sm text-[#59B7F2] font-medium">
-                      View full message
-                    </div>
-                  </motion.div>
-                ))}
-              </motion.div>
-            ) : (
-              <div className="text-center py-12">
-                <svg
-                  className="mx-auto h-16 w-16 text-[#94A3B8]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-                  />
-                </svg>
-                <h3 className="mt-2 text-lg font-medium text-[#1E293B]">
-                  No messages yet
-                </h3>
-                <p className="mt-1 text-[#475569]">
-                  Generate personalized networking messages for your job search.
-                </p>
-                <div className="mt-6">
+    <div className="flex min-h-screen bg-[#59B7F2]">
+      <Sidebar
+        isOpen={sidebarOpen}
+        toggleSidebar={toggleSidebar}
+        isMobile={isMobile}
+      />
+      <div
+        className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${
+          sidebarOpen ? "md:pl-64" : "md:pl-20"
+        } ${isMobile ? "pl-0" : ""}`}
+      >
+        <InterviewDashboardNavbar toggleSidebar={toggleSidebar} />
+        <main className="flex-1 overflow-y-auto bg-[#59B7F2] p-6">
+          <div className="max-w-7xl mx-auto w-full">
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={fadeIn}
+              className="bg-white/80 backdrop-blur-md shadow-md rounded-lg overflow-hidden border border-white/20 mb-8"
+            >
+              <div className="px-6 py-5 border-b border-[#E6E8F0]">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-xl font-bold text-[#1E3A8A]">
+                    Your Networking Message History
+                  </h2>
                   <Link
                     href="/networking"
-                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#1E3A8A] hover:bg-[#59B7F2] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1E3A8A]"
+                    className="px-4 py-2 bg-[#1E3A8A] text-white text-sm font-medium rounded-lg hover:bg-[#59B7F2] transition-colors duration-200"
                   >
-                    Generate Message
+                    Generate New Message
                   </Link>
                 </div>
               </div>
+
+              {/* Filter bar */}
+              <div className="bg-[#F8FAFC] px-6 py-3 border-b border-[#E6E8F0]">
+                <div className="flex items-center space-x-2 overflow-x-auto">
+                  <span className="text-sm text-[#64748B] whitespace-nowrap">
+                    Filter by type:
+                  </span>
+                  {messageTypes.map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => setFilterType(type)}
+                      className={`px-3 py-1 text-xs font-medium rounded-full whitespace-nowrap ${
+                        filterType === type
+                          ? "bg-[#1E3A8A] text-white"
+                          : "bg-white text-[#64748B] hover:bg-[#E2E8F0] border border-[#E6E8F0]"
+                      }`}
+                    >
+                      {type === "all"
+                        ? "All Messages"
+                        : getMessageTypeLabel(type)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-6">
+                {loading ? (
+                  <div className="flex justify-center items-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#59B7F2]"></div>
+                  </div>
+                ) : error ? (
+                  <div className="bg-red-100 border border-red-300 text-red-700 p-4 rounded-lg">
+                    {error}
+                  </div>
+                ) : filteredMessages.length > 0 ? (
+                  <motion.div
+                    variants={staggerItems}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                  >
+                    {filteredMessages.map((message) => (
+                      <motion.div
+                        key={message.id}
+                        variants={itemFade}
+                        className="bg-white rounded-lg border border-[#E6E8F0] shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden cursor-pointer"
+                        onClick={() => handleViewMessage(message)}
+                      >
+                        <div className="p-5">
+                          <div className="flex justify-between items-start mb-3">
+                            <div className="flex-1">
+                              <h3 className="font-medium text-lg text-[#1E3A8A] truncate">
+                                {message.role} at {message.company_name}
+                              </h3>
+                              <p className="text-sm text-[#64748B]">
+                                Generated on {formatDate(message.created_at)}
+                              </p>
+                            </div>
+                            <span
+                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getMessageTypeBadgeClass(
+                                message.message_type
+                              )}`}
+                            >
+                              {getMessageTypeLabel(message.message_type)}
+                            </span>
+                          </div>
+
+                          <div className="mt-3 text-sm text-[#475569] line-clamp-3">
+                            {message.generated_message.substring(0, 150)}...
+                          </div>
+
+                          {message.contact_name && (
+                            <div className="mt-3 flex items-center">
+                              <span className="text-xs font-medium text-[#64748B] mr-1">
+                                Recipient:
+                              </span>
+                              <span className="text-sm text-[#1E293B]">
+                                {message.contact_name}
+                                {message.contact_role &&
+                                  ` (${message.contact_role})`}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="bg-[#F8FAFC] px-5 py-3 border-t border-[#E6E8F0] text-sm text-[#59B7F2] font-medium">
+                          View full message
+                        </div>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                ) : (
+                  <div className="text-center py-12">
+                    <svg
+                      className="mx-auto h-16 w-16 text-[#94A3B8]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                      />
+                    </svg>
+                    <h3 className="mt-2 text-lg font-medium text-[#1E293B]">
+                      No messages yet
+                    </h3>
+                    <p className="mt-1 text-[#475569]">
+                      Generate personalized networking messages for your job
+                      search.
+                    </p>
+                    <div className="mt-6">
+                      <Link
+                        href="/networking"
+                        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#1E3A8A] hover:bg-[#59B7F2] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1E3A8A]"
+                      >
+                        Generate Message
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Message Modal */}
+          <AnimatePresence>
+            {showMessageModal && selectedMessage && (
+              <MessageView
+                message={selectedMessage}
+                onClose={closeMessageModal}
+              />
             )}
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={fadeIn}
-          className="bg-white/80 backdrop-blur-md shadow-md rounded-lg overflow-hidden border border-white/20"
-        >
-          <div className="px-6 py-5 border-b border-[#E6E8F0]">
-            <h2 className="text-xl font-bold text-[#1E293B]">
-              Networking Tips
-            </h2>
-          </div>
-          <div className="p-6">
-            <ul className="space-y-3">
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2 mt-1">•</span>
-                <span className="text-[#475569]">
-                  <strong className="text-[#1E293B]">
-                    Personalize each message
-                  </strong>{" "}
-                  with specific details about the company and role.
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2 mt-1">•</span>
-                <span className="text-[#475569]">
-                  <strong className="text-[#1E293B]">Follow up politely</strong>{" "}
-                  if you don&apos;t hear back within 1-2 weeks.
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2 mt-1">•</span>
-                <span className="text-[#475569]">
-                  <strong className="text-[#1E293B]">
-                    Keep LinkedIn messages
-                  </strong>{" "}
-                  concise and professional - under 150 words is ideal.
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-[#59B7F2] mr-2 mt-1">•</span>
-                <span className="text-[#475569]">
-                  <strong className="text-[#1E293B]">
-                    Track your outreach
-                  </strong>{" "}
-                  to maintain organized follow-ups and build relationships.
-                </span>
-              </li>
-            </ul>
-          </div>
-        </motion.div>
+          </AnimatePresence>
+        </main>
       </div>
-
-      {/* Message Modal */}
-      <AnimatePresence>
-        {showMessageModal && selectedMessage && (
-          <MessageView message={selectedMessage} onClose={closeMessageModal} />
-        )}
-      </AnimatePresence>
     </div>
   );
 }

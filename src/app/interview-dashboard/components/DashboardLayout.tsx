@@ -1,8 +1,8 @@
 "use client";
 
 import React, { ReactNode, useState, useEffect } from "react";
-import InterviewDashboardSidebar from "./InterviewDashboardSidebar";
 import InterviewDashboardNavbar from "./InterviewDashboardNavbar";
+import Sidebar from "@/app/components/dashboard/Sidebar";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -36,7 +36,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="flex min-h-screen bg-[#59B7F2]">
       {/* Sidebar */}
-      <InterviewDashboardSidebar
+      <Sidebar
         isOpen={sidebarOpen}
         toggleSidebar={toggleSidebar}
         isMobile={isMobile}

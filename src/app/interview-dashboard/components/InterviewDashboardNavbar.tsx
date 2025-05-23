@@ -100,9 +100,7 @@ export default function InterviewDashboardNavbar({
               </svg>
             </button>
             <div className="hidden md:flex items-center">
-              <span className="text-xl font-bold text-[#1E3A8A]">
-                Dashboard
-              </span>
+              <span className="text-xl font-bold text-[#1E3A8A]">Overview</span>
             </div>
           </div>
 
