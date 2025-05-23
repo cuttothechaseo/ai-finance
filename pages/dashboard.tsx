@@ -18,12 +18,6 @@ const ResumeSection = dynamic(
 const NetworkingSection = dynamic(
   () => import("../src/app/components/dashboard/NetworkingSection")
 );
-const InterviewsSection = dynamic(
-  () => import("../src/app/components/dashboard/InterviewsSection")
-);
-const SettingsSection = dynamic(
-  () => import("../src/app/components/dashboard/SettingsSection")
-);
 
 // Define types
 interface Resume {
@@ -124,10 +118,6 @@ export default function Dashboard() {
         return <ResumeSection user={user} />;
       case "networking":
         return <NetworkingSection user={user} />;
-      case "interviews":
-        return <InterviewsSection user={user} />;
-      case "settings":
-        return <SettingsSection user={user} />;
       default:
         return <ProfileSection />;
     }
