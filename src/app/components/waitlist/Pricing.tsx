@@ -1,7 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabaseClient";
 
 const CheckIcon = () => (
   <svg
@@ -17,18 +19,47 @@ const CheckIcon = () => (
 
 export default function Pricing() {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    // If we just logged in and want to start checkout, trigger it automatically
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem("startCheckout") === "true"
+    ) {
+      localStorage.removeItem("startCheckout");
+      handleCheckout();
+    }
+    // eslint-disable-next-line
+  }, []);
 
   const handleCheckout = async () => {
     setLoading(true);
     try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const access_token = session?.access_token;
+      if (!access_token) {
+        // Set flag and redirect to login with redirect param
+        if (typeof window !== "undefined") {
+          localStorage.setItem("startCheckout", "true");
+          window.location.href = "/login?redirect=checkout";
+        }
+        setLoading(false);
+        return;
+      }
       const res = await fetch("/api/stripe", {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
       });
       const data = await res.json();
       if (data.url) {
         window.location.href = data.url;
       } else {
-        alert("Failed to create checkout session.");
+        alert(data.error || "Failed to create checkout session.");
       }
     } catch (err) {
       alert("An error occurred. Please try again.");
