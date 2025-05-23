@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { use } from "react";
@@ -55,7 +55,20 @@ export default function InterviewPage({
     []
   );
   const [isEndingCall, setIsEndingCall] = useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [chatHistory, setChatHistory] = useState<
+    { role: "assistant" | "user"; content: string }[]
+  >([]);
+  const [isListening, setIsListening] = useState(false);
+  const [userAnswer, setUserAnswer] = useState<string>("");
+  const [reminderTimeout, setReminderTimeout] = useState<NodeJS.Timeout | null>(
+    null
+  );
+  const [showReminder, setShowReminder] = useState(false);
+  const [interviewStarted, setInterviewStarted] = useState(false);
+  const recordingRef = useRef<any>(null);
   const router = useRouter();
+  const [pendingQuestion, setPendingQuestion] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchInterview = async () => {
@@ -210,6 +223,32 @@ export default function InterviewPage({
           responseData: data,
           sessionId: data.session?.id,
         });
+
+        // Automatically trigger analysis after session completion
+        if (data.session?.id) {
+          try {
+            const analysisResponse = await fetch("/api/interview/analyze", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session.access_token}`,
+              },
+              body: JSON.stringify({ session_id: data.session.id }),
+            });
+
+            if (!analysisResponse.ok) {
+              const error = await analysisResponse.json();
+              console.error(
+                "Failed to analyze interview automatically:",
+                error
+              );
+            } else {
+              console.log("Interview analysis triggered automatically.");
+            }
+          } catch (err) {
+            console.error("Error triggering automatic analysis:", err);
+          }
+        }
       } catch (err) {
         console.error("[Frontend] Unexpected error in session storage:", {
           error: err instanceof Error ? err.message : String(err),
@@ -413,6 +452,68 @@ Important:
     }
   };
 
+  // Helper: Start listening for user answer
+  const startListening = () => {
+    setIsListening(true);
+    setShowReminder(false);
+    // Start voice recording here (integrate with vapi or your voice SDK)
+    if (recordingRef.current) recordingRef.current.start();
+    // Set reminder timeout (e.g., 60 seconds)
+    if (reminderTimeout) clearTimeout(reminderTimeout);
+    setReminderTimeout(setTimeout(() => setShowReminder(true), 60000));
+  };
+
+  // Helper: Stop listening
+  const stopListening = () => {
+    setIsListening(false);
+    if (recordingRef.current) recordingRef.current.stop();
+    if (reminderTimeout) clearTimeout(reminderTimeout);
+    setShowReminder(false);
+  };
+
+  // When a new question is to be asked (after interviewStarted)
+  useEffect(() => {
+    if (
+      interviewStarted &&
+      interview &&
+      currentQuestionIndex < interview.questions.length
+    ) {
+      // Set the pending question, but do not display it yet
+      setPendingQuestion(interview.questions[currentQuestionIndex].question);
+      // Here, trigger the AI to speak the question (if not already handled by vapi)
+      // The chat bubble will be shown after 'speech-end' event
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentQuestionIndex, interviewStarted, interview]);
+
+  // Listen for vapi 'speech-end' event to display the question
+  useEffect(() => {
+    const handleSpeechEnd = () => {
+      if (pendingQuestion) {
+        setChatHistory((prev) => [
+          ...prev,
+          { role: "assistant", content: pendingQuestion },
+        ]);
+        setPendingQuestion(null);
+        startListening();
+      }
+    };
+    vapi.on("speech-end", handleSpeechEnd);
+    return () => {
+      vapi.off("speech-end", handleSpeechEnd);
+    };
+  }, [pendingQuestion]);
+
+  // Handle starting the interview
+  const handleStartInterview = async () => {
+    setInterviewStarted(true);
+    setCurrentQuestionIndex(0);
+    setChatHistory([]);
+    // Start the call (voice SDK)
+    await handleStartCall();
+    // The first question will be shown after the simulated AI ask delay in useEffect above
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#59B7F2] flex items-center justify-center">
@@ -432,16 +533,16 @@ Important:
   }
 
   return (
-    <div className="min-h-screen bg-[#59B7F2] p-6">
-      {/* Header */}
-      <div className="max-w-4xl mx-auto mb-12 text-center">
+    <div className="min-h-screen bg-[#59B7F2] flex flex-col items-center justify-center p-6">
+      {/* Centered Interview Header */}
+      <div className="max-w-4xl w-full mx-auto mb-8 text-center">
         <h1 className="text-3xl font-bold text-white mb-2">
           {interview.company} - {interview.role} Interview
         </h1>
       </div>
 
       {/* Cards Container */}
-      <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="max-w-2xl w-full mx-auto grid grid-cols-2 gap-6 mb-8">
         {/* AI Interviewer Card */}
         <div className="bg-white rounded-2xl p-8 flex flex-col items-center justify-center relative">
           <div className="bg-[#E0F2FE] rounded-full p-6 mb-4 relative">
@@ -452,15 +553,11 @@ Important:
               height={64}
               className="w-16 h-16"
             />
-            {isSpeaking && (
-              <span className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-blue-500 animate-pulse rounded-full" />
-            )}
           </div>
           <h2 className="text-xl font-semibold text-[#1E3A8A] mb-2">
             AI Interviewer
           </h2>
         </div>
-
         {/* User Card */}
         <div className="bg-white rounded-2xl p-8 flex flex-col items-center justify-center">
           <div className="bg-[#E0F2FE] rounded-full p-6 mb-4">
@@ -476,84 +573,74 @@ Important:
         </div>
       </div>
 
-      {/* Last Message */}
-      {lastMessage && (
-        <div className="max-w-4xl mx-auto mt-8">
-          <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg p-4">
-            <p className="text-white text-center">{lastMessage}</p>
-          </div>
+      {/* Start Interview Button (centered, only before interview starts) */}
+      {!interviewStarted && (
+        <div className="flex flex-col items-center justify-center w-full">
+          <button
+            onClick={handleStartInterview}
+            className="bg-[#1E3A8A] hover:bg-[#22357A] text-white px-8 py-4 rounded-lg font-semibold text-xl shadow-md transition-colors mb-8"
+          >
+            Start Interview
+          </button>
         </div>
       )}
 
-      {/* Call Button */}
-      <div className="max-w-4xl mx-auto mt-8">
-        {callStatus !== CallStatus.ACTIVE ? (
-          <button
-            onClick={handleStartCall}
-            disabled={callStatus === CallStatus.CONNECTING}
-            className="w-full bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 text-white py-4 rounded-xl font-semibold text-lg transition-colors duration-200 flex items-center justify-center space-x-2 disabled:opacity-50"
-          >
-            {callStatus === CallStatus.CONNECTING ? (
-              <div className="flex items-center space-x-2">
-                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
-                <span>Connecting...</span>
-              </div>
-            ) : (
-              <>
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
+      {/* Chat UI, Listening, and Submit only after interview starts */}
+      {interviewStarted && (
+        <div className="flex flex-col items-center justify-center w-full">
+          {/* Chat UI (centered) */}
+          <div className="w-full flex flex-col items-center justify-center mb-8">
+            {chatHistory.map((msg, idx) => (
+              <div
+                key={idx}
+                className={`flex ${
+                  msg.role === "assistant" ? "justify-center" : "justify-center"
+                } mb-2 w-full`}
+              >
+                <div
+                  className={`rounded-lg px-4 py-2 max-w-[70%] text-center mx-auto ${
+                    msg.role === "assistant"
+                      ? "bg-white text-[#1E3A8A]"
+                      : "bg-[#1E3A8A] text-white"
+                  }`}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                  />
-                </svg>
-                <span>Start Interview</span>
-              </>
-            )}
-          </button>
-        ) : (
-          <button
-            onClick={handleEndCall}
-            disabled={isEndingCall || !interview?.id}
-            className="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-xl font-semibold text-lg transition-colors duration-200 flex items-center justify-center space-x-2 disabled:opacity-50"
-          >
-            {isEndingCall ? (
-              <div className="flex items-center space-x-2">
-                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
-                <span>Ending call...</span>
+                  {msg.content}
+                </div>
               </div>
-            ) : (
-              <>
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-                <span>End Call</span>
-              </>
-            )}
-          </button>
-        )}
-      </div>
+            ))}
+          </div>
 
-      {/* Interview Info */}
-      <div className="max-w-4xl mx-auto mt-6 flex justify-between items-center px-4">
+          {/* Listening Indicator & Reminder */}
+          {isListening && (
+            <div className="flex flex-col items-center mb-4">
+              <div className="flex items-center space-x-2">
+                <span className="animate-pulse w-3 h-3 bg-green-500 rounded-full"></span>
+                <span className="text-white font-semibold">Listening...</span>
+              </div>
+              {showReminder && (
+                <div className="mt-2 text-yellow-200 text-sm">
+                  Still there? Please answer the question when you're ready.
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* End Call Button (voice only) */}
+          {isListening && (
+            <div className="flex justify-center mb-8">
+              <button
+                onClick={handleEndCall}
+                className="bg-[#1E3A8A] hover:bg-[#22357A] text-white px-6 py-3 rounded-lg font-semibold text-lg shadow-md transition-colors"
+              >
+                End Call
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Interview Info (always show at bottom) */}
+      <div className="max-w-4xl mx-auto mt-6 flex flex-row justify-between items-center px-4 gap-16">
         <div className="text-white/80">
           <p className="text-lg">
             {interview.company} - {interview.role}
