@@ -23,6 +23,7 @@ export default function Signup() {
   });
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showCheckEmail, setShowCheckEmail] = useState<boolean>(false);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -60,8 +61,8 @@ export default function Signup() {
         formData.name,
         formData.background
       );
-      // Redirect to dashboard on success
-      router.push("/dashboard");
+      // Show check email message instead of redirecting
+      setShowCheckEmail(true);
     } catch (err: any) {
       console.error("Signup error:", err);
       setError(err.message || "An error occurred during signup");
@@ -105,34 +106,41 @@ export default function Signup() {
         </svg>
       </div>
 
-      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
-        <div className="flex justify-center">
-          <Link href="/">
-            <Image
-              src="/assets/logos/wallstreetai-logo.svg"
-              alt="WallStreetAI Logo"
-              width={70}
-              height={70}
-              className="mx-auto"
-            />
-          </Link>
-        </div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
-          Create your account
-        </h2>
-        <p className="mt-2 text-center text-sm text-white/80">
-          Already have an account?{" "}
-          <Link
-            href="/login"
-            className="font-medium text-[#B3E5FC] hover:text-white transition-colors duration-200"
-          >
-            Sign in
-          </Link>
-        </p>
-      </div>
-
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         <div className="bg-white/80 backdrop-blur-md py-8 px-4 shadow-lg sm:rounded-xl sm:px-10 border border-white/20">
+          <div className="flex flex-col items-center mb-6">
+            <Link href="/">
+              <Image
+                src="/assets/logos/wallstreetai-logo.svg"
+                alt="WallStreetAI Logo"
+                width={70}
+                height={70}
+                className="mx-auto"
+              />
+            </Link>
+            <h2 className="mt-4 text-center text-2xl font-bold text-[#1E3A8A]">
+              Create your account
+            </h2>
+            <p className="mt-2 text-center text-sm text-[#1E293B]/80">
+              Already have an account?{" "}
+              <Link
+                href="/login"
+                className="font-medium text-[#1E3A8A] hover:text-[#1E3A8A]/80 transition-colors duration-200"
+              >
+                Sign in
+              </Link>
+            </p>
+          </div>
+          {showCheckEmail && (
+            <div
+              className="mb-6 bg-blue-100 border border-blue-300 text-blue-700 px-4 py-3 rounded-lg relative"
+              role="alert"
+            >
+              <span className="block sm:inline">
+                Check your email to confirm your signup before logging in.
+              </span>
+            </div>
+          )}
           {error && (
             <div
               className="mb-6 bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-lg relative"

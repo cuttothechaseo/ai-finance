@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
 
     const origin = req.headers.get('origin') || 'http://localhost:3000';
     const success_url = `${origin}/success?session_id={CHECKOUT_SESSION_ID}`;
-    const cancel_url = `${origin}/pricing?canceled=1`;
+    const cancel_url = `${origin}/?canceled=1`;
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],

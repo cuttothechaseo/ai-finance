@@ -19,6 +19,7 @@ export default function Login() {
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [rememberMe, setRememberMe] = useState<boolean>(false);
+  const [showConfirmEmail, setShowConfirmEmail] = useState<boolean>(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -35,6 +36,7 @@ export default function Login() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
+    setShowConfirmEmail(false);
 
     if (!formData.email || !formData.password) {
       setError("Please enter both email and password");
@@ -48,7 +50,12 @@ export default function Login() {
       router.push("/");
     } catch (err: any) {
       console.error("Login error:", err);
-      setError(err.message || "Invalid email or password");
+      if (err.message && err.message.toLowerCase().includes("confirm")) {
+        setShowConfirmEmail(true);
+        setError("");
+      } else {
+        setError(err.message || "Invalid email or password");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -115,7 +122,7 @@ export default function Login() {
               <h5 className="text-[#1E293B] text-sm font-medium mb-1">
                 Please enter your details
               </h5>
-              <h2 className="text-[#1E293B] text-2xl font-bold">
+              <h2 className="text-[#1E3A8A] text-2xl font-bold">
                 Welcome back
               </h2>
             </div>
@@ -123,6 +130,13 @@ export default function Login() {
             {error && (
               <div className="mb-6 bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-lg text-sm">
                 {error}
+              </div>
+            )}
+
+            {showConfirmEmail && (
+              <div className="mb-6 bg-blue-100 border border-blue-300 text-blue-700 px-4 py-3 rounded-lg text-sm">
+                Please check your email to confirm your signup before logging
+                in.
               </div>
             )}
 
