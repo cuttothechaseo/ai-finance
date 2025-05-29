@@ -558,16 +558,13 @@ Important:
       <div className="max-w-2xl w-full mx-auto grid grid-cols-2 gap-6 mb-8">
         {/* AI Interviewer Card */}
         <div className="bg-white rounded-2xl p-8 flex flex-col items-center justify-center relative">
-          <div
-            className="bg-[#E0F2FE] rounded-full flex items-center justify-center mb-4"
-            style={{ width: 120, height: 120 }}
-          >
+          <div className="bg-[#E0F2FE] rounded-full p-6 mb-4 relative">
             <Image
               src="/assets/logos/wallstreetai-logo.svg"
               alt="AI Interviewer"
-              width={96}
-              height={96}
-              className="w-24 h-24"
+              width={64}
+              height={64}
+              className="w-16 h-16"
             />
           </div>
           <h2 className="text-xl font-semibold text-[#1E3A8A] mb-2">
