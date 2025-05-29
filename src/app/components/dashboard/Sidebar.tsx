@@ -301,6 +301,57 @@ export default function Sidebar({
               </div>
             );
           })}
+
+          {/* Contact Us Button */}
+          <div
+            className="relative mt-2"
+            onMouseEnter={() =>
+              !isOpen && !isMobile && setActiveTooltip("Contact Us")
+            }
+            onMouseLeave={() => setActiveTooltip(null)}
+          >
+            <Link
+              href="/dashboard/contact-us"
+              className={`
+                flex items-center px-4 py-3 rounded-lg transition-all duration-200
+                ${
+                  pathname === "/dashboard/contact-us"
+                    ? "bg-[#B3E5FC]/50 text-[#1E3A8A]"
+                    : "text-[#1E3A8A]/70 hover:bg-[#B3E5FC]/20 hover:text-[#1E3A8A]"
+                }
+              `}
+            >
+              <span className="flex-shrink-0">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  className={`w-5 h-5 ${
+                    pathname === "/dashboard/contact-us"
+                      ? "text-[#59B7F2]"
+                      : "text-[#1E3A8A]/70"
+                  }`}
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M22 16.92V19a2 2 0 0 1-2.18 2A19.72 19.72 0 0 1 3 5.18 2 2 0 0 1 5 3h2.09a2 2 0 0 1 2 1.72c.13 1.05.37 2.07.72 3.06a2 2 0 0 1-.45 2.11l-.27.27a16 16 0 0 0 6.29 6.29l.27-.27a2 2 0 0 1 2.11-.45c.99.35 2.01.59 3.06.72A2 2 0 0 1 22 16.92z" />
+                </svg>
+              </span>
+              <motion.span
+                variants={logoTextVariants}
+                className="ml-3 transition-all duration-200"
+              >
+                Contact Us
+              </motion.span>
+            </Link>
+            <Tooltip
+              show={!isOpen && !isMobile && activeTooltip === "Contact Us"}
+            >
+              Contact Us
+            </Tooltip>
+          </div>
         </nav>
 
         {/* Profile section */}

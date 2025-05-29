@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import dynamic from "next/dynamic";
 import SectionDivider from "@/app/components/ui/SectionDivider";
 import MockInterviewCard from "@/app/components/features/MockInterviewCard";
 import JoinWaitlist from "@/app/components/waitlist/Pricing";
+import SupportModal from "@/app/components/ui/SupportModal";
 
 // Dynamically import components to avoid hydration issues
 const Navbar = dynamic(() => import("@/app/components/navbar/Navbar"), {
@@ -38,6 +39,7 @@ const SuccessStories = dynamic(
 
 export default function Home() {
   const controls = useAnimation();
+  const [supportOpen, setSupportOpen] = useState(false);
 
   useEffect(() => {
     // Scroll to top when page loads
@@ -83,6 +85,31 @@ export default function Home() {
       <HowItWorks />
       <SectionDivider />
       <Pricing />
+      {/* Footer Banner */}
+      <footer className="w-full bg-[#59B7F2] border-t border-[#59B7F2] py-4 px-4 flex flex-col items-center justify-center gap-2 text-sm text-white">
+        <div className="flex flex-wrap gap-4 justify-center mb-2">
+          <a
+            href="#"
+            className="hover:underline text-white"
+            onClick={(e) => {
+              e.preventDefault();
+              setSupportOpen(true);
+            }}
+          >
+            Support
+          </a>
+          <a href="#" className="hover:underline text-white">
+            Terms of Service
+          </a>
+          <a href="#" className="hover:underline text-white">
+            Privacy Policy
+          </a>
+        </div>
+        <div className="text-white text-center">
+          © 2025 Wall Street AI. All rights reserved.
+        </div>
+      </footer>
+      <SupportModal open={supportOpen} onClose={() => setSupportOpen(false)} />
     </motion.main>
   );
 }
