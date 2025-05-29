@@ -69,6 +69,7 @@ export default function InterviewPage({
   const recordingRef = useRef<any>(null);
   const router = useRouter();
   const [pendingQuestion, setPendingQuestion] = useState<string | null>(null);
+  const [userAvatar, setUserAvatar] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchInterview = async () => {
@@ -106,6 +107,18 @@ export default function InterviewPage({
 
     fetchInterview();
   }, [resolvedParams.id, router]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      const avatarUrl =
+        data?.user?.user_metadata?.avatar_url ||
+        data?.user?.user_metadata?.picture ||
+        null;
+      setUserAvatar(avatarUrl);
+    };
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     const onCallStart = () => {
@@ -561,13 +574,23 @@ Important:
         {/* User Card */}
         <div className="bg-white rounded-2xl p-8 flex flex-col items-center justify-center">
           <div className="bg-[#E0F2FE] rounded-full p-6 mb-4">
-            <Image
-              src="/assets/icons/user-placeholder.svg"
-              alt="You"
-              width={64}
-              height={64}
-              className="w-16 h-16"
-            />
+            {userAvatar ? (
+              <Image
+                src={userAvatar}
+                alt="You"
+                width={64}
+                height={64}
+                className="w-16 h-16 rounded-full object-cover"
+              />
+            ) : (
+              <Image
+                src="/assets/icons/user-placeholder.svg"
+                alt="You"
+                width={64}
+                height={64}
+                className="w-16 h-16"
+              />
+            )}
           </div>
           <h2 className="text-xl font-semibold text-[#1E3A8A] mb-2">You</h2>
         </div>
