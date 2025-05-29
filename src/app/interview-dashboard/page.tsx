@@ -111,22 +111,6 @@ export default function InterviewDashboard() {
         />
       </div>
 
-      {/* Skills and Feedback */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <SkillsCard
-            analyses={hasRealData ? analyses : undefined}
-            mockSkills={getSkillsSummary()}
-          />
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <FeedbackCard
-            analyses={hasRealData ? analyses : undefined}
-            mockFeedback={getFeedbackHighlights()}
-          />
-        </div>
-      </div>
-
       {/* Recent Interviews Table */}
       <div className="bg-white p-6 rounded-lg shadow-sm">
         <h2 className="text-lg font-semibold text-[#1e3a8a] mb-4">

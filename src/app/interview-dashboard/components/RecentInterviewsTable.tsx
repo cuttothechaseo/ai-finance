@@ -42,7 +42,7 @@ export default function RecentInterviewsTable({
         }
       ),
       score: a.overall_score,
-      interviewType: a.session.interview.interview_type,
+      company: a.session.interview.company,
       interviewPosition: a.session.interview.role,
       categories: [
         ...(a.technical_score !== undefined ? ["Technical"] : []),
@@ -58,11 +58,17 @@ export default function RecentInterviewsTable({
       date: interview.date,
       formattedDate: interview.formattedDate,
       score: interview.score,
-      interviewType: interview.interviewType,
-      interviewPosition: interview.interviewPosition,
+      company: (interview as any).company || interview.interviewType,
+      interviewPosition:
+        (interview as any).role ||
+        interview.interviewPosition ||
+        interview.interviewType,
       categories: interview.categories,
     }));
   }
+
+  // Only show the last 3 interviews
+  const rowsToShow = rows.slice(0, 3);
 
   return (
     <div className="w-full bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
@@ -90,7 +96,7 @@ export default function RecentInterviewsTable({
             </tr>
           </thead>
           <tbody>
-            {rows.map((interview) => (
+            {rowsToShow.map((interview) => (
               <tr
                 key={interview.sessionId || interview.id}
                 className="border-b border-slate-200 hover:bg-slate-50"
@@ -105,7 +111,7 @@ export default function RecentInterviewsTable({
                 </td>
                 <td className="px-6 py-4 text-sm text-slate-700">
                   <div className="flex flex-col">
-                    <span>{interview.interviewType}</span>
+                    <span>{interview.company}</span>
                     <span className="text-slate-500 text-xs">
                       {interview.interviewPosition}
                     </span>
@@ -135,8 +141,13 @@ export default function RecentInterviewsTable({
       </div>
 
       {rows.length > 0 && (
-        <div className="px-6 py-3 text-center text-sm text-slate-500 border-t border-slate-200">
-          Recent interviews
+        <div className="px-6 py-3 text-center text-sm border-t border-slate-200">
+          <a
+            href="/interview-dashboard/generated-interviews"
+            className="text-[#1E3A8A] hover:underline font-medium"
+          >
+            View All
+          </a>
         </div>
       )}
 

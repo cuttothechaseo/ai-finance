@@ -70,6 +70,7 @@ export default function InterviewPage({
   const router = useRouter();
   const [pendingQuestion, setPendingQuestion] = useState<string | null>(null);
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
+  const [closingQueued, setClosingQueued] = useState(false);
 
   useEffect(() => {
     const fetchInterview = async () => {
@@ -362,28 +363,22 @@ export default function InterviewPage({
         formattedQuestions
       );
 
-      await vapi.start({
+      const vapiPayload = {
         name: "Finance Interviewer",
         firstMessage:
           "Hello! I'm your AI interviewer. Are you ready to begin the interview?",
         transcriber: {
-          provider: "deepgram",
+          provider: "deepgram" as const,
           model: "nova-2",
-          language: "en",
+          language: "en" as const,
         },
         voice: {
-          provider: "11labs",
-          voiceId: "sarah",
-          stability: 0.4,
-          similarityBoost: 0.8,
-          speed: 0.9,
-          style: 0.5,
-          useSpeakerBoost: true,
+          provider: "vapi" as const,
+          voiceId: "Paige" as "Paige",
         },
         model: {
-          provider: "openai",
-          model: "gpt-4",
-          temperature: 0.7,
+          provider: "google" as const,
+          model: "gemini-2.0-flash" as "gemini-2.0-flash",
           messages: [
             {
               role: "system" as const,
@@ -391,7 +386,7 @@ export default function InterviewPage({
 
 Instructions:
 1. After your greeting, IMMEDIATELY ask the first question below, without waiting for a response.
-2. After each candidate response, acknowledge briefly and move to the next question.
+2. After each candidate response, if there is another question, acknowledge briefly and move to the next question. If there are no more questions, you MUST say exactly and only: "Thank you for your time, the interview has been completed. You may end the call now."
 3. Here are the questions to ask, in order. Ask them exactly as written:
 
 ${formattedQuestions}
@@ -409,16 +404,20 @@ Important:
             },
           ],
         },
-      });
+      };
+
+      // Log the full payload for debugging
+      console.log("[Vapi] Payload being sent to vapi.start:", vapiPayload);
+
+      await vapi.start(vapiPayload);
       console.log("[Vapi] Call started successfully");
 
       // Log the complete configuration for debugging
       console.log("[Vapi] Complete configuration:", {
         name: "Finance Interviewer",
         model: {
-          provider: "openai",
-          model: "gpt-4",
-          temperature: 0.7,
+          provider: "google",
+          model: "gemini-2.0-flash",
           messages: [
             /* messages array */
           ],
@@ -499,9 +498,9 @@ Important:
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQuestionIndex, interviewStarted, interview]);
 
-  // Listen for vapi 'speech-end' event to display the question
+  // Listen for vapi 'speech-end' event to display the question or handle closing
   useEffect(() => {
-    const handleSpeechEnd = () => {
+    const handleSpeechEnd = async () => {
       if (pendingQuestion) {
         setChatHistory((prev) => [
           ...prev,
@@ -509,13 +508,17 @@ Important:
         ]);
         setPendingQuestion(null);
         startListening();
+      } else if (closingQueued) {
+        // Closing message was just spoken, end the call
+        setClosingQueued(false);
+        vapi.stop();
       }
     };
     vapi.on("speech-end", handleSpeechEnd);
     return () => {
       vapi.off("speech-end", handleSpeechEnd);
     };
-  }, [pendingQuestion]);
+  }, [pendingQuestion, closingQueued]);
 
   // Handle starting the interview
   const handleStartInterview = async () => {
@@ -526,6 +529,32 @@ Important:
     await handleStartCall();
     // The first question will be shown after the simulated AI ask delay in useEffect above
   };
+
+  // Helper: Handle user answer and advance question
+  // (Assume you have a function that processes user answers and advances the index)
+  // Add this logic where you process the user's answer:
+  //
+  // if (currentQuestionIndex === interview.questions.length - 1) {
+  //   // Last question just answered
+  //   setChatHistory((prev) => [
+  //     ...prev,
+  //     { role: "user", content: "That was the last question. You MUST say exactly and only: 'Thank you for your time. The interview has been completed. You may end the call now.'" },
+  //   ]);
+  //   setClosingQueued(true);
+  // } else {
+  //   // Not last question, proceed as normal
+  //   setCurrentQuestionIndex((prev) => prev + 1);
+  //   setChatHistory((prev) => [
+  //     ...prev,
+  //     { role: "assistant", content: "OK, next question." },
+  //   ]);
+  // }
+
+  // Also update any hardcoded closing message:
+  // setChatHistory((prev) => [
+  //   ...prev,
+  //   { role: "assistant", content: "Thank you for your time, the interview has been completed. You may end the call now." },
+  // ]);
 
   if (loading) {
     return (
@@ -599,6 +628,22 @@ Important:
         </div>
       </div>
 
+      {/* Display all questions as a numbered list after the interview starts, under the cards */}
+      {interviewStarted && (
+        <div className="max-w-2xl w-full mx-auto mb-8 bg-white/80 rounded-lg p-6 shadow">
+          <h3 className="text-lg font-semibold text-[#1E3A8A] mb-4">
+            Interview Questions
+          </h3>
+          <ol className="list-decimal list-inside space-y-2">
+            {interview.questions.map((q, idx) => (
+              <li key={idx} className="text-base text-[#1E3A8A]">
+                {q.question}
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+
       {/* Start Interview Button (centered, only before interview starts) */}
       {!interviewStarted && (
         <div className="flex flex-col items-center justify-center w-full">
@@ -614,28 +659,6 @@ Important:
       {/* Chat UI, Listening, and Submit only after interview starts */}
       {interviewStarted && (
         <div className="flex flex-col items-center justify-center w-full">
-          {/* Chat UI (centered) */}
-          <div className="w-full flex flex-col items-center justify-center mb-8">
-            {chatHistory.map((msg, idx) => (
-              <div
-                key={idx}
-                className={`flex ${
-                  msg.role === "assistant" ? "justify-center" : "justify-center"
-                } mb-2 w-full`}
-              >
-                <div
-                  className={`rounded-lg px-4 py-2 max-w-[70%] text-center mx-auto ${
-                    msg.role === "assistant"
-                      ? "bg-white text-[#1E3A8A]"
-                      : "bg-[#1E3A8A] text-white"
-                  }`}
-                >
-                  {msg.content}
-                </div>
-              </div>
-            ))}
-          </div>
-
           {/* Listening Indicator & Reminder */}
           {isListening && (
             <div className="flex flex-col items-center mb-4">

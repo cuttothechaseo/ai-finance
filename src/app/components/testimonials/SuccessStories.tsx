@@ -23,7 +23,7 @@ export default function SuccessStories() {
     {
       id: "1",
       quote:
-        "The AI interview practice was incredibly realistic and gave me a sense of what to expect. I ended up with an offer from Goldman Sachs.",
+        "The AI interview practice was incredibly realistic and gave me a sense of what to expect. I crushed my interviews and ended up with an offer from Goldman Sachs.",
       student: "Alex K.",
       company: "Goldman Sachs",
       profilePic: "/assets/Testimonials/Alex-K.png",

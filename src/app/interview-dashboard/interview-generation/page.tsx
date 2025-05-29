@@ -29,7 +29,7 @@ export default function InterviewGenerationPage() {
     company: "",
     role: roles[0],
     jobDescription: "",
-    questionCount: "4",
+    questionCount: "1",
     type: "mixed",
   });
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -241,9 +241,9 @@ export default function InterviewGenerationPage() {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#59B7F2] focus:border-transparent"
                     required
                   >
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                    {[1, 2, 3].map((num) => (
                       <option key={num} value={num}>
-                        {num} {num === 1 ? "Question" : "Questions"}
+                        {num}
                       </option>
                     ))}
                   </select>

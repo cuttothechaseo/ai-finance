@@ -140,15 +140,6 @@ export default function MockInterviewCard() {
           </h2>
           <PerformanceChart mockScores={interviewScores} />
         </div>
-        {/* Skills & Feedback Row */}
-        <div className="flex flex-col md:flex-row gap-6 mb-8">
-          <div className="flex-1 bg-white rounded-xl border border-slate-200 shadow-sm p-4">
-            <SkillsCard mockSkills={getSkillsSummary()} />
-          </div>
-          <div className="flex-1 bg-white rounded-xl border border-slate-200 shadow-sm p-4">
-            <FeedbackCard mockFeedback={getFeedbackHighlights()} />
-          </div>
-        </div>
         {/* Recent Interviews */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
           <RecentInterviewsTable mockInterviews={recentInterviews} />
