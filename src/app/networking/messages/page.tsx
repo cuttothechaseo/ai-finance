@@ -291,6 +291,27 @@ export default function NetworkingMessagesPage() {
     }
   };
 
+  // Add handleDelete function
+  const handleDelete = async (messageId: string) => {
+    if (
+      !window.confirm(
+        "Are you sure you want to delete this message? This action cannot be undone."
+      )
+    )
+      return;
+    try {
+      const { error } = await supabase
+        .from("networking_messages")
+        .delete()
+        .eq("id", messageId);
+      if (error) throw error;
+      setMessages((prev) => prev.filter((m) => m.id !== messageId));
+    } catch (err) {
+      alert("Failed to delete message. Please try again.");
+      console.error("Delete error:", err);
+    }
+  };
+
   return (
     <div className="flex min-h-screen bg-[#59B7F2]">
       <Sidebar
@@ -381,13 +402,38 @@ export default function NetworkingMessagesPage() {
                                 Generated on {formatDate(message.created_at)}
                               </p>
                             </div>
-                            <span
-                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getMessageTypeBadgeClass(
-                                message.message_type
-                              )}`}
-                            >
-                              {getMessageTypeLabel(message.message_type)}
-                            </span>
+                            <div className="flex flex-col items-end gap-2">
+                              <span
+                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getMessageTypeBadgeClass(
+                                  message.message_type
+                                )}`}
+                              >
+                                {getMessageTypeLabel(message.message_type)}
+                              </span>
+                              <button
+                                title="Delete Message"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDelete(message.id);
+                                }}
+                                className="mt-2 text-red-500 hover:text-red-700 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-red-300"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="currentColor"
+                                  className="w-5 h-5"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M6 7.5V19a2 2 0 002 2h8a2 2 0 002-2V7.5M4 7.5h16M10 11v6M14 11v6M9 7.5V5a2 2 0 012-2h2a2 2 0 012 2v2.5"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
                           </div>
 
                           <div className="mt-3 text-sm text-[#475569] line-clamp-3">
