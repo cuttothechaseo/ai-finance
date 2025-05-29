@@ -1,9 +1,10 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { signIn } from "@lib/auth";
+import { signIn, forgotPassword } from "@lib/auth";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { supabase } from "@/lib/supabaseClient";
 
 interface FormData {
   email: string;
@@ -20,6 +21,12 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [rememberMe, setRememberMe] = useState<boolean>(false);
   const [showConfirmEmail, setShowConfirmEmail] = useState<boolean>(false);
+  const [showForgotPassword, setShowForgotPassword] = useState<boolean>(false);
+  const [forgotEmail, setForgotEmail] = useState<string>("");
+  const [forgotStatus, setForgotStatus] = useState<string>("");
+  const [forgotLoading, setForgotLoading] = useState<boolean>(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [googleError, setGoogleError] = useState("");
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -58,6 +65,44 @@ export default function Login() {
       }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setForgotStatus("");
+    if (!forgotEmail) {
+      setForgotStatus("Please enter your email address.");
+      return;
+    }
+    setForgotLoading(true);
+    try {
+      await forgotPassword(forgotEmail);
+      setForgotStatus(
+        "If an account with that email exists, a password reset link has been sent."
+      );
+    } catch (err: any) {
+      setForgotStatus(err.message || "Failed to send reset email.");
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setGoogleError("");
+    setGoogleLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin,
+        },
+      });
+      if (error) setGoogleError(error.message);
+    } catch (err: any) {
+      setGoogleError(err.message || "Google sign-in failed.");
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -140,6 +185,57 @@ export default function Login() {
               </div>
             )}
 
+            {/* Google Sign In Button (restyled) */}
+            <button
+              type="button"
+              onClick={handleGoogleSignIn}
+              disabled={googleLoading}
+              className="w-full flex items-center justify-center py-3 px-4 mb-4 border border-[#D1D5DB] rounded-lg shadow-sm text-sm font-semibold bg-white text-[#1E293B] hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#DB4437]/30 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                className="mr-2"
+                aria-hidden="true"
+              >
+                <g>
+                  <path
+                    fill="#4285F4"
+                    d="M17.64 9.2045c0-.638-.0573-1.2518-.1636-1.8363H9v3.4818h4.8445c-.2082 1.1218-.8345 2.0736-1.7764 2.7136v2.2582h2.8727C16.3464 14.3464 17.64 11.9945 17.64 9.2045z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M9 18c2.43 0 4.4673-.8064 5.9564-2.1864l-2.8727-2.2582c-.7973.5345-1.8136.8491-3.0836.8491-2.3727 0-4.3846-1.6027-5.1045-3.7564H.8618v2.3364C2.3464 16.4327 5.4464 18 9 18z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M3.8955 10.6482c-.1818-.5345-.2864-1.1045-.2864-1.6482s.1045-1.1136.2864-1.6482V5.0155H.8618C.3127 6.1045 0 7.5045 0 9s.3127 2.8955.8618 3.9845l3.0337-2.3364z"
+                  />
+                  <path
+                    fill="#EA4335"
+                    d="M9 3.5791c1.3227 0 2.5045.4545 3.4364 1.3455l2.5773-2.5773C13.4645.8064 11.4273 0 9 0 5.4464 0 2.3464 1.5673.8618 4.0155l3.0337 2.3364C4.6155 5.1818 6.6273 3.5791 9 3.5791z"
+                  />
+                </g>
+              </svg>
+              <span className="font-medium" style={{ color: "#3c4043" }}>
+                {googleLoading
+                  ? "Signing in with Google..."
+                  : "Sign in with Google"}
+              </span>
+            </button>
+            {googleError && (
+              <div className="mb-4 bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-lg text-sm text-center">
+                {googleError}
+              </div>
+            )}
+            {/* OR Divider */}
+            <div className="flex items-center my-4">
+              <div className="flex-grow h-px bg-gray-300" />
+              <span className="mx-3 text-gray-400 text-sm font-medium">or</span>
+              <div className="flex-grow h-px bg-gray-300" />
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <input
@@ -188,12 +284,13 @@ export default function Login() {
                 </div>
 
                 <div className="text-sm">
-                  <Link
-                    href="#"
-                    className="font-medium text-[#1E3A8A] hover:text-[#1E3A8A]/80 transition-colors"
+                  <button
+                    type="button"
+                    onClick={() => setShowForgotPassword((v) => !v)}
+                    className="font-medium text-[#1E3A8A] hover:text-[#1E3A8A]/80 transition-colors focus:outline-none"
                   >
                     Forgot password
-                  </Link>
+                  </button>
                 </div>
               </div>
 
@@ -207,6 +304,42 @@ export default function Login() {
                 </button>
               </div>
             </form>
+
+            {/* Forgot Password Modal/Inline Form */}
+            {showForgotPassword && (
+              <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <form onSubmit={handleForgotPassword} className="space-y-3">
+                  <label
+                    htmlFor="forgot_email"
+                    className="block text-sm text-[#1E293B] mb-1"
+                  >
+                    Enter your email to reset your password:
+                  </label>
+                  <input
+                    id="forgot_email"
+                    name="forgot_email"
+                    type="email"
+                    value={forgotEmail}
+                    onChange={(e) => setForgotEmail(e.target.value)}
+                    className="block w-full px-3 py-2 border border-[#DCEFFB] rounded-lg shadow-sm placeholder-slate-400 bg-white text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/50 focus:border-[#1E3A8A] transition-all duration-200"
+                    placeholder="Email address"
+                    required
+                  />
+                  <button
+                    type="submit"
+                    disabled={forgotLoading}
+                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-md text-sm font-semibold text-white bg-[#1E3A8A] hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1E3A8A]/50 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {forgotLoading ? "Sending..." : "Send reset link"}
+                  </button>
+                  {forgotStatus && (
+                    <div className="text-sm text-[#1E3A8A] mt-2">
+                      {forgotStatus}
+                    </div>
+                  )}
+                </form>
+              </div>
+            )}
 
             <div className="mt-5 text-center text-sm">
               <p className="text-[#1E293B]">

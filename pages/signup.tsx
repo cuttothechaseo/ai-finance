@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { signUp } from "@lib/auth";
 import Image from "next/image";
+import { supabase } from "@/lib/supabaseClient";
 
 interface FormData {
   email: string;
@@ -24,6 +25,8 @@ export default function Signup() {
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showCheckEmail, setShowCheckEmail] = useState<boolean>(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [googleError, setGoogleError] = useState("");
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -68,6 +71,24 @@ export default function Signup() {
       setError(err.message || "An error occurred during signup");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSignUp = async () => {
+    setGoogleError("");
+    setGoogleLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin,
+        },
+      });
+      if (error) setGoogleError(error.message);
+    } catch (err: any) {
+      setGoogleError(err.message || "Google sign up failed.");
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -121,7 +142,7 @@ export default function Signup() {
             <h2 className="mt-4 text-center text-2xl font-bold text-[#1E3A8A]">
               Create your account
             </h2>
-            <p className="mt-2 text-center text-sm text-[#1E293B]/80">
+            <p className="mt-2 text-center text-sm text-[#1E3A8A]/80">
               Already have an account?{" "}
               <Link
                 href="/login"
@@ -149,6 +170,57 @@ export default function Signup() {
               <span className="block sm:inline">{error}</span>
             </div>
           )}
+
+          {/* Google Sign Up Button */}
+          <button
+            type="button"
+            onClick={handleGoogleSignUp}
+            disabled={googleLoading}
+            className="w-full flex items-center justify-center py-3 px-4 mb-4 border border-[#D1D5DB] rounded-lg shadow-sm text-sm font-semibold bg-white text-[#1E293B] hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#DB4437]/30 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              className="mr-2"
+              aria-hidden="true"
+            >
+              <g>
+                <path
+                  fill="#4285F4"
+                  d="M17.64 9.2045c0-.638-.0573-1.2518-.1636-1.8363H9v3.4818h4.8445c-.2082 1.1218-.8345 2.0736-1.7764 2.7136v2.2582h2.8727C16.3464 14.3464 17.64 11.9945 17.64 9.2045z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M9 18c2.43 0 4.4673-.8064 5.9564-2.1864l-2.8727-2.2582c-.7973.5345-1.8136.8491-3.0836.8491-2.3727 0-4.3846-1.6027-5.1045-3.7564H.8618v2.3364C2.3464 16.4327 5.4464 18 9 18z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M3.8955 10.6482c-.1818-.5345-.2864-1.1045-.2864-1.6482s.1045-1.1136.2864-1.6482V5.0155H.8618C.3127 6.1045 0 7.5045 0 9s.3127 2.8955.8618 3.9845l3.0337-2.3364z"
+                />
+                <path
+                  fill="#EA4335"
+                  d="M9 3.5791c1.3227 0 2.5045.4545 3.4364 1.3455l2.5773-2.5773C13.4645.8064 11.4273 0 9 0 5.4464 0 2.3464 1.5673.8618 4.0155l3.0337 2.3364C4.6155 5.1818 6.6273 3.5791 9 3.5791z"
+                />
+              </g>
+            </svg>
+            <span className="font-medium" style={{ color: "#3c4043" }}>
+              {googleLoading
+                ? "Signing up with Google..."
+                : "Sign up with Google"}
+            </span>
+          </button>
+          {googleError && (
+            <div className="mb-4 bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-lg text-sm text-center">
+              {googleError}
+            </div>
+          )}
+          {/* OR Divider */}
+          <div className="flex items-center my-4">
+            <div className="flex-grow h-px bg-gray-300" />
+            <span className="mx-3 text-gray-400 text-sm font-medium">or</span>
+            <div className="flex-grow h-px bg-gray-300" />
+          </div>
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>

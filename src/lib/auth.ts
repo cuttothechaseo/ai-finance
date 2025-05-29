@@ -147,4 +147,14 @@ export const logOut = async (): Promise<void> => {
 };
 
 // Alias for logOut for compatibility
-export const signOut = logOut; 
+export const signOut = logOut;
+
+// Forgot password function
+export const forgotPassword = async (email: string) => {
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    // Optionally, set a redirect URL after password reset
+    // redirectTo: 'https://your-app.com/reset',
+  });
+  if (error) throw error;
+  return data;
+}; 
