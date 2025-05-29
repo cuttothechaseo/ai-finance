@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { logOut } from "@lib/auth";
+import { supabase } from "@/lib/supabaseClient";
 
 interface NavbarProps {
   toggleSidebar: () => void;
@@ -14,6 +15,16 @@ export default function InterviewDashboardNavbar({
 }: NavbarProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [user, setUser] = useState<any>(null);
+
+  // Fetch user from Supabase
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data?.user || null);
+    };
+    fetchUser();
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -51,23 +62,29 @@ export default function InterviewDashboardNavbar({
     },
   };
 
-  // TODO: Replace with real user context/prop
-  const user = {
-    name: "Chase Ottimo",
-    email: "chaseottimo@gmail.com",
-    avatar_url: undefined,
-  }; // TEMP: Replace with real user
-  const firstInitial = user?.name ? user.name.charAt(0).toUpperCase() : "U";
-
+  // Get avatar URL from Google or other providers
+  const avatarUrl =
+    user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
+  const displayName =
+    user?.user_metadata?.full_name ||
+    user?.user_metadata?.name ||
+    user?.email ||
+    "User";
   const getUserInitials = () => {
-    if (!user?.name) return "U";
-
-    const nameParts = user.name.split(" ");
-    if (nameParts.length === 1) return nameParts[0].charAt(0).toUpperCase();
-
-    return (
-      nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0)
-    ).toUpperCase();
+    if (user?.user_metadata?.full_name) {
+      const nameParts = user.user_metadata.full_name.split(" ");
+      if (nameParts.length === 1) return nameParts[0].charAt(0).toUpperCase();
+      return (
+        nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0)
+      ).toUpperCase();
+    }
+    if (user?.user_metadata?.name) {
+      return user.user_metadata.name.charAt(0).toUpperCase();
+    }
+    if (user?.email) {
+      return user.email.charAt(0).toUpperCase();
+    }
+    return "U";
   };
 
   const handleLogout = async () => {
@@ -140,15 +157,17 @@ export default function InterviewDashboardNavbar({
                   aria-haspopup="true"
                 >
                   <span className="sr-only">Open user menu</span>
-                  {user?.avatar_url ? (
+                  {avatarUrl ? (
                     <img
-                      src={user.avatar_url}
-                      alt={user.name || "User"}
+                      src={avatarUrl}
+                      alt={displayName}
                       className="h-9 w-9 rounded-full object-cover border-2 border-[#59B7F2]"
                     />
                   ) : (
                     <div className="h-9 w-9 rounded-full bg-[#59B7F2] text-white flex items-center justify-center">
-                      <span className="text-lg font-bold">{firstInitial}</span>
+                      <span className="text-lg font-bold">
+                        {getUserInitials()}
+                      </span>
                     </div>
                   )}
                 </motion.button>
@@ -170,10 +189,7 @@ export default function InterviewDashboardNavbar({
                     <div className="px-4 py-3 border-b border-gray-100">
                       <p className="text-sm text-gray-500">Signed in as</p>
                       <p className="text-sm font-medium truncate text-[#1E3A8A]">
-                        {user?.name || "User"}
-                      </p>
-                      <p className="text-xs text-gray-500 truncate">
-                        {user?.email || "user@example.com"}
+                        {displayName}
                       </p>
                     </div>
 
