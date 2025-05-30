@@ -7,6 +7,7 @@ import SectionDivider from "@/app/components/ui/SectionDivider";
 import MockInterviewCard from "@/app/components/features/MockInterviewCard";
 import JoinWaitlist from "@/app/components/waitlist/Pricing";
 import SupportModal from "@/app/components/ui/SupportModal";
+import Link from "next/link";
 
 // Dynamically import components to avoid hydration issues
 const Navbar = dynamic(() => import("@/app/components/navbar/Navbar"), {
@@ -98,12 +99,12 @@ export default function Home() {
           >
             Support
           </a>
-          <a href="#" className="hover:underline text-white">
+          <Link href="/TOS" className="hover:underline text-white">
             Terms of Service
-          </a>
-          <a href="#" className="hover:underline text-white">
+          </Link>
+          <Link href="/PrivacyPolicy" className="hover:underline text-white">
             Privacy Policy
-          </a>
+          </Link>
         </div>
         <div className="text-white text-center">
           © 2025 Wall Street AI. All rights reserved.

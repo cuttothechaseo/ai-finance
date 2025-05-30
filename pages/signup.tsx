@@ -330,13 +330,19 @@ export default function Signup() {
           <div className="mt-6">
             <p className="text-xs text-center text-[#1E293B]">
               By signing up, you agree to our{" "}
-              <a href="#" className="text-[#1E3A8A] hover:text-[#1E3A8A]/80">
+              <Link
+                href="/TOS"
+                className="text-[#1E3A8A] hover:text-[#1E3A8A]/80"
+              >
                 Terms of Service
-              </a>{" "}
+              </Link>{" "}
               and{" "}
-              <a href="#" className="text-[#1E3A8A] hover:text-[#1E3A8A]/80">
+              <Link
+                href="/PrivacyPolicy"
+                className="text-[#1E3A8A] hover:text-[#1E3A8A]/80"
+              >
                 Privacy Policy
-              </a>
+              </Link>
               .
             </p>
           </div>

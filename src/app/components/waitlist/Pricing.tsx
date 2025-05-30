@@ -119,7 +119,7 @@ export default function Pricing() {
             Wall Street AI Pro
           </h2>
           <p className="text-[#1E3A8A]/80 mb-6">
-            Land elite finance roles with AI on your side
+            Unlock Your Finance Career with AI-Powered Prep
           </p>
           <div className="mb-2 flex items-end gap-2">
             <span className="text-3xl font-extrabold text-[#1E3A8A]">$119</span>
@@ -135,16 +135,16 @@ export default function Pricing() {
           </div>
           <ul className="mb-8 space-y-3">
             <li className="flex items-center gap-2 text-[#1E3A8A] text-sm">
+              <CheckIcon /> AI Resume Analysis
+            </li>
+            <li className="flex items-center gap-2 text-[#1E3A8A] text-sm">
+              <CheckIcon /> AI Networking Generator
+            </li>
+            <li className="flex items-center gap-2 text-[#1E3A8A] text-sm">
               <CheckIcon /> AI-powered mock interviews (behavioral + technical)
             </li>
             <li className="flex items-center gap-2 text-[#1E3A8A] text-sm">
-              <CheckIcon /> Smart resume + cover letter builder
-            </li>
-            <li className="flex items-center gap-2 text-[#1E3A8A] text-sm">
-              <CheckIcon /> AI feedback on your interview performance
-            </li>
-            <li className="flex items-center gap-2 text-[#1E3A8A] text-sm">
-              <CheckIcon /> Personalized networking message generator
+              <CheckIcon /> AI Interview Performance Tracking and Analysis
             </li>
             <li className="flex items-center gap-2 text-[#1E3A8A] text-sm">
               <CheckIcon /> Lifetime access — no subscription
