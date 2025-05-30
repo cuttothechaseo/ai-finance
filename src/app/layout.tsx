@@ -14,7 +14,7 @@ import AuthProvider from "@/components/AuthProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 // Environment variables
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-7QXXKWRKSK";
 
 // Metadata configuration
 export const metadata: Metadata = {
